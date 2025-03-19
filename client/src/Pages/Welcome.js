@@ -4,37 +4,43 @@ export default function WelcomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1a1a] relative overflow-hidden">
-      {/* Decorative elements using CSS instead of images */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/4 bg-green-600 opacity-20 rounded-bl-full z-0"></div>
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/3 bg-green-700 opacity-20 rounded-tr-full z-0"></div>
-      
-      {/* Additional decorative elements */}
-      <div className="absolute top-20 right-20 w-16 h-16 bg-green-500 opacity-10 rounded-full z-0"></div>
-      <div className="absolute bottom-20 left-20 w-24 h-24 bg-green-800 opacity-10 rounded-full z-0"></div>
-
+    <div style={{minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#f5f0e6", position: "relative", overflow: "hidden"}}>
       {/* Content container */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 z-10">
-        <div className="w-full max-w-xs text-center">
-          <h1 className="text-3xl font-serif mb-10 text-white">Choose your option</h1>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "0 1.5rem", zIndex: 10, marginTop: "15vh" }}>
+        <div style={{width: "100%", maxWidth: "20rem", textAlign: "center"}}>
+          <h1 style={{fontSize: "1.875rem", marginBottom: "2.5rem", color: "#333", fontFamily: "serif"}}>Welcome to PlantKeeper!</h1>
           
-          <div className="space-y-4">
+          <div style={{display: "flex", flexDirection: "column"}}>
             <button 
               onClick={() => navigate("/login")}
-              className="w-full bg-[#2d2d2d] text-white py-3 rounded-md font-medium hover:bg-black transition-colors"
+              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500, marginBottom: "1rem"}}
             >
               Login
             </button>
             
             <button 
               onClick={() => navigate("/register")}
-              className="w-full bg-[#2d2d2d] text-white py-3 rounded-md font-medium hover:bg-black transition-colors"
+              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500}}
             >
               Sign Up
             </button>
           </div>
         </div>
       </div>
+      {/* Image at the bottom */}
+      <img 
+      src="/welcome_big_green_leaf.png" 
+      alt="Green Leaf" 
+      style={{
+        width: "350px",  // Adjust width
+        height: "350px", // Adjust height
+        objectFit: "cover", // Keep original proportions
+        position: "absolute",
+        bottom: "-140px", // Move slightly up from bottom
+        left: "50%", // Center it horizontally
+        transform: "translateX(-50%)" // Ensure perfect centering
+      }} 
+    />
     </div>
   );
 }
