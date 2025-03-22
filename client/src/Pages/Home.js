@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../firebase/firebase";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const Home = () => {
@@ -10,8 +11,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    const auth = getAuth();
-    const db = getFirestore();
+    //const auth = getAuth();
+    //const db = getFirestore();
     
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
