@@ -13,14 +13,14 @@ export default function WelcomePage() {
           <div style={{display: "flex", flexDirection: "column"}}>
             <button 
               onClick={() => navigate("/login")}
-              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500, marginBottom: "1rem"}}
+              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", cursor: "pointer", borderRadius: "0.375rem", fontWeight: 500, marginBottom: "1rem"}}
             >
               Login
             </button>
             
             <button 
               onClick={() => navigate("/register")}
-              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500}}
+              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", cursor: "pointer", borderRadius: "0.375rem", fontWeight: 500}}
             >
               Sign Up
             </button>
