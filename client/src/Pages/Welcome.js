@@ -29,18 +29,18 @@ export default function WelcomePage() {
       </div>
       {/* Image at the bottom */}
       <img 
-      src="/welcome_big_green_leaf.png" 
+      src="/WelcomePageButtomLeaf.png" 
       alt="Green Leaf" 
       style={{
-        width: "350px",  // Adjust width
-        height: "350px", // Adjust height
-        objectFit: "cover", // Keep original proportions
+        width: "200px",  // Adjust width for responsiveness
+        height: "auto", // Maintain aspect ratio
+        objectFit: "cover", 
         position: "absolute",
-        bottom: "-140px", // Move slightly up from bottom
-        left: "50%", // Center it horizontally
-        transform: "translateX(-50%)" // Ensure perfect centering
+        bottom: "0px",
+        right: "0", // Stick to the right
       }} 
     />
     </div>
   );
 }
+

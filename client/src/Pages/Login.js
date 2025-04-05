@@ -25,24 +25,24 @@ export default function Login() {
         <div style={{width: "100%", maxWidth: "20rem", textAlign: "center"}}>
           <h2 style={{fontSize: "1.875rem", marginBottom: "2rem", color: "#333", fontFamily: "serif"}}>Login</h2>
           
-          <form onSubmit={handleLogin} style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
+          <form onSubmit={handleLogin} style={{display: "flex", flexDirection: "column", gap: "1rem", width: "100%"}}>
             <input
               type="email"
               placeholder="Email"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white"}}
+              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <input
               type="password"
               placeholder="Password"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white"}}
+              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button 
               type="submit"
-              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500, cursor: "pointer"}}
+              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500, cursor: "pointer", boxSizing: "border-box"}}
             >
               Login
             </button>
@@ -67,6 +67,18 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <img 
+      src="/LoginRegisterPageUpperHalfLeaf.png" 
+      alt="Green Leaf" 
+      style={{
+        width: "70px",  // Adjust size if needed
+        height: "auto", 
+        position: "absolute",
+        top: "0", // Align to the top
+        right: "0", // Align to the right
+        zIndex: 20, // Ensure it stays above other elements
+      }} 
+    />
     </div>
   );
 }
