@@ -25,6 +25,7 @@ export default function Register() {
       // First, create the authentication user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
+      console.log("The user auth id: " + uid);
       
       // Then create a new User instance using our model
       const newUser = new User(
@@ -70,11 +71,11 @@ export default function Register() {
             </div>
           )}
           
-          <form onSubmit={handleRegister} style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
+          <form onSubmit={handleRegister} style={{display: "flex", flexDirection: "column", gap: "1rem", width: "100%"}}>
             <input
               type="text"
               placeholder="First Name"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white"}}
+              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
@@ -82,7 +83,7 @@ export default function Register() {
             <input
               type="text"
               placeholder="Last Name"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white"}}
+              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
@@ -90,7 +91,7 @@ export default function Register() {
             <input
               type="email"
               placeholder="Email"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white"}}
+              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -98,7 +99,7 @@ export default function Register() {
             <input
               type="password"
               placeholder="Password"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white"}}
+              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -110,7 +111,8 @@ export default function Register() {
                 width: "100%", 
                 backgroundColor: loading ? "#999" : "#333", 
                 color: "white", 
-                padding: "0.75rem", 
+                padding: "0.75rem",
+                boxSizing: "border-box", 
                 borderRadius: "0.375rem", 
                 fontWeight: 500, 
                 cursor: loading ? "not-allowed" : "pointer"
@@ -139,6 +141,18 @@ export default function Register() {
           </div>
         </div>
       </div>
+      <img 
+      src="/LoginRegisterPageUpperHalfLeaf.png" 
+      alt="Green Leaf" 
+      style={{
+        width: "70px",  // Adjust size if needed
+        height: "auto", 
+        position: "absolute",
+        top: "0", // Align to the top
+        right: "0", // Align to the right
+        zIndex: 20, // Ensure it stays above other elements
+      }} 
+    />
     </div>
   );
 }
