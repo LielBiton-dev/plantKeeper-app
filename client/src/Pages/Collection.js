@@ -5,17 +5,8 @@ import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 const Collection = () => {
-  const plants = [
-    { id: 1, name: 'Peace Lily', image: 'peace_lily.png' },
-    { id: 2, name: 'Snake Plant', image: 'snake_plant.png' },
-    { id: 3, name: 'Chinese Money', image: 'chinese_money.png' },
-    { id: 4, name: 'Orchid', image: 'orchid.png' },
-    { id: 5, name: 'Monstera', image: 'monstera.png' }
-  ];
-
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
-  const [loading, setLoading] = useState(true);
   const [userPlants, setUserPlants] = useState([]);
 
   useEffect(() => {
@@ -42,8 +33,6 @@ const Collection = () => {
           } catch (error) {
             console.error("Error fetching user data:", error);
             setUserName("Plant Lover");
-          } finally {
-            setLoading(false);
           }
 
         // Get user plants collection
