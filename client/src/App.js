@@ -8,6 +8,7 @@ import WelcomePage from "./Pages/Welcome";
 import SplashScreen from "./components/SplashScreen";
 import LocationScreen from "./components/LocationScreen";
 import NotificationScreen from "./components/NotificationScreen";
+import Collection from './Pages/Collection';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -83,6 +84,7 @@ function App() {
               <Navigate to="/welcome" />
           } 
         />
+        <Route path="/collection" element={<Collection />} />
       </Routes>
     </Router>
   );
