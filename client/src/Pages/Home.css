@@ -43,18 +43,27 @@
   }
 
   /* Location display */
-    .location-display {
-    color: #666;
-    margin-bottom: 1.5rem;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .location-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 0.95rem;
   }
   
   .location-icon {
-    margin-right: 0.5rem;
+    width: 16px;
+    height: 16px;
+    color: #2e553d;
+    stroke-width: 1.8;
+    opacity: 0.8;
+  }
+
+  .location-text {
+    color: #2e553d;
+    font-weight: 500;
+    letter-spacing: 0.25px;
   }
   
   /* Content area */
@@ -72,7 +81,7 @@
   
   .content-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 300px;
   }
   
   /* Greeting section */
@@ -81,16 +90,21 @@
   }
   
   .greeting h2 {
-    font-size: 1.25rem;
+    font-size: 1.8rem;
     font-weight: 500;
     color: #333;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+    line-height: 1; 
+    font-family: 'Poppins', sans-serif;
   }
   
   .greeting p {
     font-size: 1rem;
     color: #555;
+    font-family: 'Poppins', sans-serif;
   }
+
+
 
 /* CSS for the status card using img with src */
 .status-card {
@@ -99,12 +113,43 @@
     overflow: hidden;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     height: 140px; /* Set a fixed height - adjust this value to make it smaller */
-    width: 75%;
-    max-width: 500px; /* Make it slightly narrower than full width */
+    width: 100%;
+    /*max-width: 400px; /* Make it slightly narrower than full width */
     margin-left: auto; /* Center the card */
     margin-right: auto; /* Center the card */
+    font-family: 'Poppins', sans-serif;
+
+    /*Movement added*/
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideInRight 0.8s ease-out forwards;
+    animation-delay: 0.3s;
   }
+
+  @keyframes slideInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* First card: appears quicker */
+.status-card:nth-child(1) {
+  opacity: 0;
+  transform: translateX(100%);
+  animation: slideInRight 0.6s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+/* Second card: delayed entrance */
+.status-card:nth-child(2) {
+  opacity: 0;
+  transform: translateX(100%);
+  animation: slideInRight 0.6s ease-out forwards;
+  animation-delay: 0.2s;
+}
   
+    
   .status-card-container {
     position: relative;
     width: 100%;
@@ -124,20 +169,26 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 70%; /* top half */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 0.2rem; /* Increase top padding */
-    padding-left: 1.2rem;
-    padding-right: 1.5rem;
-    padding-bottom: 1.5rem;
-    background: rgba(255, 255, 255, 0.6);
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.7) 60%,
+      rgba(255, 255, 255, 0.3) 90%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    backdrop-filter: blur(1px);
     text-align: left;
+    line-height: 1;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
   }
   
   .status-card-content h3 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: #222;
     margin-bottom: 0.2rem;
@@ -168,6 +219,7 @@
     font-weight: 600;
     color: #333;
     margin-bottom: 0.25rem;
+    
   }
   
   .task-content p {
@@ -187,7 +239,14 @@
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
     margin-bottom: 2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
+
+  /* Hover effect */
+.action-btn:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
   
   .action-btn {
     background-color: #28433F;
@@ -201,6 +260,7 @@
     text-align: center;
     cursor: pointer;
     font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
   }
   
   .action-icon {
@@ -211,6 +271,7 @@
     font-size: 0.7rem;
     opacity: 0.8;
     margin-top: 0.25rem;
+    font-family: 'Poppins', sans-serif;
   }
   
   /* Bottom navigation */
@@ -239,4 +300,24 @@
   
   .nav-btn.active {
     color: white;
+  }
+
+  .typewriter-text {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    border-right: 2px solid #2e553d; /* optional: cursor effect */
+    color: #2e553d;
+    font-weight: 500;
+    animation: typing 1.8s steps(12, end), blink-caret 0.75s step-end infinite;
+  }
+  
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 9ch } /* matches character count */
+  }
+  
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #2e553d }
   }

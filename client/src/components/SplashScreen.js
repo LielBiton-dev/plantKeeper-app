@@ -30,7 +30,7 @@ const SplashScreen = ({ onAnimationComplete }) => {
         alt="PlantKeeper Logo" 
         className="logo"
       />
-      {showText && <h1 className="app-name">PlantKeeper</h1>}
+      {showText && <h2 className="app-name">PlantKeeper</h2>}
     </div>
   );
 };
