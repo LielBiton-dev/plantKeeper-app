@@ -19,12 +19,12 @@
   }
   
   .app-name {
-    font-size: 32px;
-    font-weight: bold;
+    font-size: 27px;
     color: #333;
-    margin-top: 20px;
+    margin-top: 1px;
     opacity: 0;
     animation: fadeIn 1s ease-in-out forwards;
+    font-family: 'Poppins', sans-serif;
   }
   
   @keyframes spin {

@@ -9,6 +9,7 @@ import SplashScreen from "./components/SplashScreen";
 import LocationScreen from "./components/LocationScreen";
 import NotificationScreen from "./components/NotificationScreen";
 import Collection from './Pages/Collection';
+import CareInstructions from './Pages/CareInstructions';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -85,6 +86,7 @@ function App() {
           } 
         />
         <Route path="/collection" element={<Collection />} />
+        <Route path="/care-instructions" element={<CareInstructions />} />
       </Routes>
     </Router>
   );

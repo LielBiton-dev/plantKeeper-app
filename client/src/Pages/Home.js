@@ -92,7 +92,7 @@ const Home = () => {
           </svg>
         </div>
         <div className="top-nav-user">
-          <span>{userName}</span>
+          <span>Hi, {userName} | </span>
           <button onClick={handleLogout} className="logout-btn">
             Logout
           </button>
@@ -107,7 +107,7 @@ const Home = () => {
           <div className="content-container">
             {/* Greeting */}
             <div className="greeting">
-              <h2>Hi, {userName}</h2>
+              <h2>Welcome to your greenhouse</h2>
               <p>Let's see how your plants are doing</p>
                 {/* Location display */}
               <p className="location-display">
@@ -126,7 +126,7 @@ const Home = () => {
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path> 
                   <circle cx="12" cy="10" r="3"></circle> 
                 </svg>
-                {userLocation}
+                <span className="location-text">{userLocation}</span>
               </p>
             </div>
 
