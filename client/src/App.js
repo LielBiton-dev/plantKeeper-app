@@ -10,12 +10,15 @@ import LocationScreen from "./components/LocationScreen";
 import NotificationScreen from "./components/NotificationScreen";
 import Collection from './Pages/Collection';
 import CareInstructions from './Pages/CareInstructions';
+import PlantScan from "./Pages/PlantScan";
+import CameraScreen from "./components/CameraScreen";
 
 function App() {
   const [user, setUser] = useState(null);
   const [showSplash, setShowSplash] = useState(true);
   const [locationCompleted, setLocationCompleted] = useState(false);
   const [notificationCompleted, setNotificationCompleted] = useState(false);
+  const [cameraCompleted, setCameraCompleted] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
@@ -24,9 +27,11 @@ function App() {
     // Check if steps were completed in local storage
     const hasCompletedLocation = localStorage.getItem("locationCompleted") === "true";
     const hasCompletedNotification = localStorage.getItem("notificationCompleted") === "true";
+    const hasCompletedCamera = localStorage.getItem("cameraCompleted") === "true";
     
     setLocationCompleted(hasCompletedLocation);
     setNotificationCompleted(hasCompletedNotification);
+    setCameraCompleted(hasCompletedCamera);
     });
     return () => unsubscribe();
   }, []);
@@ -43,6 +48,11 @@ function App() {
   const handleNotificationComplete = () => {
     localStorage.setItem("notificationCompleted", "true");
     setNotificationCompleted(true);
+  };
+
+  const handleCameraComplete = () => {
+    localStorage.setItem("cameraCompleted", "true");
+    setCameraCompleted(true);
   };
 
   if (showSplash) {
@@ -72,6 +82,14 @@ function App() {
           } 
         />
         <Route 
+          path="/camera" 
+          element={
+            user && !cameraCompleted ? 
+            <CameraScreen onComplete={handleCameraComplete} /> : 
+            <Navigate to={cameraCompleted && !cameraCompleted ? "/scan" : "/"} />
+          } 
+        />
+        <Route 
           path="/" 
           element={
             user ? 
@@ -87,6 +105,8 @@ function App() {
         />
         <Route path="/collection" element={<Collection />} />
         <Route path="/care-instructions" element={<CareInstructions />} />
+        <Route path="/camera" element={<CameraScreen />} />
+        <Route path="/scan" element={<PlantScan />} />
       </Routes>
     </Router>
   );

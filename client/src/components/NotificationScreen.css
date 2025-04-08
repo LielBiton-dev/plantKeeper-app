@@ -11,6 +11,7 @@
   .content-container {
     flex: 1;
     display: flex;
+    margin: 0 auto;
     flex-direction: column;
     align-items: center;
     justify-content: center;
