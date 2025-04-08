@@ -283,7 +283,6 @@
     display: flex;
     justify-content: space-around;
     background-color: #28433F;
-    padding: 0.75rem 0 0.5rem 0;
     z-index: 20;
   }
   
@@ -296,6 +295,8 @@
     cursor: pointer;
     color: rgba(255,255,255,0.7);
     font-size: 0.75rem;
+    flex: 1;
+    padding: 0.75rem 0 0.5rem 0;
   }
   
   .nav-btn.active {
