@@ -1,18 +1,17 @@
-  
-  .location-page {
+
+.camera-page {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     background-color: #f5f0e6;
     position: relative;
     overflow: hidden;
-
   }
   
   .content-container {
     flex: 1;
-    margin: 0 auto;
     display: flex;
+    margin: 0 auto;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -33,7 +32,7 @@
     font-family: serif;
   }
   
-  .location-image {
+  .camera-image {
     width: 250px;
     height: auto;
     margin-bottom: 1.5rem;

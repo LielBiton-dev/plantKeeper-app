@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaPaw } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useLocation } from "react-router-dom";
@@ -108,15 +109,8 @@ const CareInstructions = () => {
 
         <div className="care-tags">
           <div className="care-tag">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 12c1.5-2 4-2 5 0 1 2-1 4-2 5-1-1-3-2-3-5z" />
-            <circle cx="8" cy="8" r="1.5" />
-            <circle cx="16" cy="8" r="1.5" />
-            <circle cx="8.5" cy="14.5" r="1.5" />
-            <circle cx="15.5" cy="14.5" r="1.5" />
-          </svg>
-            <div>Pet Friendly</div>
+          <FaPaw />
+          <div>Pet Friendly</div>
           </div>
           <div className="care-tag">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -134,9 +128,10 @@ const CareInstructions = () => {
             <div>{careData.sunlight} Hours</div>
           </div>
           <div className="care-tag">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 14.76V3.5a1.5 1.5 0 0 0-3 0v11.26a5 5 0 1 0 3 0z" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+            <circle cx="11.5" cy="18" r="0.5" fill="currentColor" />
           </svg>
             <div>{careData.temperature_range_celsius}°</div>
           </div>
