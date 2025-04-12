@@ -67,6 +67,8 @@ const Collection = () => {
   const handleCollection = () => navigate("/collection");
   const handleScan = () => navigate("/scan");
   const handleProfile = () => navigate("/profile");
+  const handleNotifications  = () => navigate("/tasks");
+
 
   const handleLogout = async () => {
     try {
@@ -88,7 +90,10 @@ const Collection = () => {
         </header>
       <PageTransition>
         <div className="collection-container">
-          <h2 className="collection-title">My plants</h2>
+        <div className="greeting">
+          <h2>My Plant Collection</h2>
+          <p>You’re growing {userPlants.length} beautiful plants</p>
+      </div>
 
           <div className="plant-grid">
             {userPlants.map(plant => (
@@ -135,7 +140,7 @@ const Collection = () => {
           </button>
 
           {/* Notifications */}
-          <button className="nav-btn">
+          <button onClick={handleNotifications} className="nav-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />

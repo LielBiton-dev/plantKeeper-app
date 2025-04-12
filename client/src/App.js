@@ -12,6 +12,8 @@ import Collection from './Pages/Collection';
 import CareInstructions from './Pages/CareInstructions';
 import PlantScan from "./Pages/PlantScan";
 import CameraScreen from "./components/CameraScreen";
+import IdentificationResults from "./Pages/Identification";
+import Notifications from "./Pages/Notifications";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -107,6 +109,8 @@ function App() {
         <Route path="/care-instructions" element={<CareInstructions />} />
         <Route path="/camera" element={<CameraScreen />} />
         <Route path="/scan" element={<PlantScan />} />
+        <Route path="/identification" element={<IdentificationResults />} />
+        <Route path="/tasks" element={<Notifications />} />
       </Routes>
     </Router>
   );
