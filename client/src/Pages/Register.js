@@ -52,30 +52,21 @@ export default function Register() {
   };
 
   return (
-    <div style={{minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#f5f0e6", position: "relative", overflow: "hidden"}}>
-      {/* Content container */}
-      <div style={{flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 1.5rem", zIndex: 10}}>
-        <div style={{width: "100%", maxWidth: "20rem", textAlign: "center"}}>
-          <h2 style={{fontSize: "1.875rem", marginBottom: "2rem", color: "#333", fontFamily: "serif"}}>Sign Up</h2>
-          
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-form-container">
+          <h2 className="auth-title">Sign Up</h2>
           {error && (
-            <div style={{
-              padding: "0.75rem", 
-              marginBottom: "1rem", 
-              backgroundColor: "#fdecea", 
-              color: "#b71c1c", 
-              borderRadius: "0.375rem",
-              fontSize: "0.875rem"
-            }}>
+            <div className="auth-error">
               {error}
             </div>
           )}
           
-          <form onSubmit={handleRegister} style={{display: "flex", flexDirection: "column", gap: "1rem", width: "100%"}}>
+          <form onSubmit={handleRegister} className="auth-form">
             <input
               type="text"
               placeholder="First Name"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
+              className="auth-input"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
@@ -83,7 +74,7 @@ export default function Register() {
             <input
               type="text"
               placeholder="Last Name"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
+              className="auth-input"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
@@ -91,7 +82,7 @@ export default function Register() {
             <input
               type="email"
               placeholder="Email"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
+              className="auth-input"              
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -99,7 +90,7 @@ export default function Register() {
             <input
               type="password"
               placeholder="Password"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
+              className="auth-input"              
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -122,37 +113,30 @@ export default function Register() {
             </button>
           </form>
           
-          <div style={{textAlign: "center", marginTop: "1.5rem"}}>
+          <div className="auth-link-container">
             <button
               onClick={() => navigate("/login")}
-              style={{color: "#333", cursor: "pointer", background: "none", border: "none", textDecoration: "underline"}}
-            >
+              className="auth-link"            
+              >
               Already have an account? Login
             </button>
           </div>
           
-          <div style={{textAlign: "center", marginTop: "1rem"}}>
+          <div className="auth-link-container">
             <button
               onClick={() => navigate("/welcome")}
-              style={{color: "#333", cursor: "pointer", background: "none", border: "none", fontSize: "0.875rem", textDecoration: "underline"}}
-            >
+              className="auth-link"            
+              >
               Back to welcome page
             </button>
           </div>
         </div>
       </div>
       <img 
-      src="/LoginRegisterPageUpperHalfLeaf.png" 
-      alt="Green Leaf" 
-      style={{
-        width: "70px",  // Adjust size if needed
-        height: "auto", 
-        position: "absolute",
-        top: "0", // Align to the top
-        right: "0", // Align to the right
-        zIndex: 20, // Ensure it stays above other elements
-      }} 
-    />
+        src="/LoginRegisterPageUpperHalfLeaf.png" 
+        alt="Green Leaf" 
+        className="auth-leaf-top"
+      />
     </div>
   );
 }

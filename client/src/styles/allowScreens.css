@@ -1,0 +1,63 @@
+    /* ==========================================================================
+    FORM SCREENS CSS - PlantKeeper App
+    Shared styles for Camera, Location, and Notification screens
+    Each style is annotated with its original source file and class name
+    ========================================================================== */
+
+    /* --------------------------------
+    From: CameraScreen.css, LocationScreen.css, NotificationScreen.css
+    Original: .camera-page, .location-page, .notification-page
+    -------------------------------- */
+    .form-screen {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-white);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* --------------------------------
+        From: CameraScreen.css, LocationScreen.css, NotificationScreen.css
+        Original: .content-container
+        -------------------------------- */
+    .form-content-container {
+        flex: 1;
+        display: flex;
+        margin: 0 auto;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 1.5rem;
+        z-index: 10;
+    }
+    
+    /* --------------------------------
+        From: CameraScreen.css, LocationScreen.css
+        Original: .camera-image, .location-image
+        -------------------------------- */
+    .form-image {
+        width: 250px;
+        height: auto;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* --------------------------------
+        From: NotificationScreen.css
+        Original: .notification-image-container
+        -------------------------------- */
+    .notification-image-container {
+        margin-bottom: 2rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    /* --------------------------------
+        From: NotificationScreen.css
+        Original: .notification-image
+        -------------------------------- */
+    .notification-image {
+        width: 220px;
+        height: auto;
+    }

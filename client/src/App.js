@@ -12,6 +12,9 @@ import Collection from './Pages/Collection';
 import CareInstructions from './Pages/CareInstructions';
 import PlantScan from "./Pages/PlantScan";
 import CameraScreen from "./components/CameraScreen";
+import './styles/global.css';
+import './styles/allowScreens.css';
+import './styles/auth.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -64,17 +67,17 @@ function App() {
       <Routes>
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-        <Route path="/register" element={!user ? <Register /> : <Navigate to="/location" />} />
+        <Route path="/register" element={!user ? <Register /> : <Navigate to="/allow-location" />} />
         <Route 
-          path="/location" 
+          path="/allow-location" 
           element={
             user && !locationCompleted ? 
             <LocationScreen onComplete={handleLocationComplete} /> : 
-            <Navigate to={locationCompleted && !notificationCompleted ? "/notifications" : "/"} />
+            <Navigate to={locationCompleted && !notificationCompleted ? "/allow-notifications" : "/"} />
           } 
         />
          <Route 
-          path="/notifications" 
+          path="/allow-notifications" 
           element={
             user && locationCompleted && !notificationCompleted ? 
             <NotificationScreen onComplete={handleNotificationComplete} /> : 
@@ -82,11 +85,11 @@ function App() {
           } 
         />
         <Route 
-          path="/camera" 
+          path="/allow-camera" 
           element={
             user && !cameraCompleted ? 
             <CameraScreen onComplete={handleCameraComplete} /> : 
-            <Navigate to={cameraCompleted && !cameraCompleted ? "/scan" : "/"} />
+            <Navigate to={cameraCompleted ? "/scan" : "/"} />
           } 
         />
         <Route 
@@ -94,9 +97,9 @@ function App() {
           element={
             user ? 
               (!locationCompleted ? 
-                <Navigate to="/location" /> : 
+                <Navigate to="/allow-location" /> : 
                 (!notificationCompleted ? 
-                  <Navigate to="/notifications" /> : 
+                  <Navigate to="/allow-notifications" /> : 
                   <Home />
                 )
               ) : 
@@ -105,7 +108,6 @@ function App() {
         />
         <Route path="/collection" element={<Collection />} />
         <Route path="/care-instructions" element={<CareInstructions />} />
-        <Route path="/camera" element={<CameraScreen />} />
         <Route path="/scan" element={<PlantScan />} />
       </Routes>
     </Router>
