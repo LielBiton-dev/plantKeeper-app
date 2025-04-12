@@ -1,0 +1,235 @@
+/* NotificationPage.css */
+
+.notification-page {
+    background-color: #f5f5f4; /*#f5f3ef;*/
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .top-nav {
+    background-color: #28433F;
+    color: #F3EBDF;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+  }
+  
+  .top-nav-logo img {
+    height: 40px;
+    width: 40px;
+  }
+
+  /* Header */
+  .notification-header {
+    background-color: #28433F;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-header .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .notification-header .user-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .notification-header .user-section button {
+    background: none;
+    color: #d1fae5;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  /* Content */
+  .notification-content {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 1rem;
+    padding-bottom: 10rem; /* leave room for bottom nav */
+  }
+  
+  .notification-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .notification-filters {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+  }
+  
+  .notification-filters button {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #6b7280;
+    cursor: pointer;
+  }
+  
+  .notification-filters .active {
+    color: #047857;
+    border-bottom-color: #047857;
+  }
+  
+  /* Notification card */
+  .notification-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: background 0.2s;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+  }
+  
+  .notification-card.unread {
+    border-left-color: #34d399;
+  }
+  
+  .notification-card:hover {
+    background-color: #f9fafb;
+  }
+  
+  .notification-icon {
+    background-color: #d1fae5;
+    padding: 0.5rem;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  
+  .notification-content {
+    flex: 1;
+  }
+  
+  .notification-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .notification-plant {
+    font-weight: 600;
+  }
+  
+  .notification-time {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #1f2937;
+  }
+  
+  .notification-message {
+    font-size: 0.9rem;
+    color: #4b5563;
+  }
+  
+  .notification-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #34d399;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-top: 0.25rem;
+  }
+  
+  /* Empty state */
+  .notification-empty {
+    text-align: center;
+    color: #6b7280;
+    padding: 3rem 0;
+  }
+  
+  .notification-empty h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Bottom navigation */
+  .notification-footer {
+    background-color: #28433F;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 50;
+  }
+  
+  .notification-footer button {
+    background: none;
+    border: none;
+    color: #e5e7eb;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.15s ease;
+  }
+  
+  .notification-footer button:hover {
+    transform: translateY(-2px);
+  }
+  
+  .notification-footer .active {
+    color: white;
+    font-weight: 500;
+  }
+  
+
+  .mark-all-button {
+    background: none;
+    border: none;
+    color: #16a34a;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .mark-all-button:hover {
+    color: #15803d;
+  }
+
+
+  .notification-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Optional inner content section inside each card */
+.notification-content-inner {
+    flex: 1;
+  }
+
+  @keyframes pulseOnce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background-color: #ecfdf5; }
+    100% { transform: scale(1); }
+  }
+  
+  .notification-card:active {
+    animation: pulseOnce 0.4s ease;
+  }
