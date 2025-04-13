@@ -4,43 +4,33 @@ export default function WelcomePage() {
   const navigate = useNavigate();
 
   return (
-    <div style={{minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#f5f0e6", position: "relative", overflow: "hidden"}}>
-      {/* Content container */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "0 1.5rem", zIndex: 10, marginTop: "15vh" }}>
-        <div style={{width: "100%", maxWidth: "20rem", textAlign: "center"}}>
-          <h1 style={{fontSize: "1.875rem", marginBottom: "2.5rem", color: "#333", fontFamily: "serif"}}>Welcome to PlantKeeper!</h1>
+    <div className="auth-page">
+      <div className="auth-welcome-container">
+        <div className="auth-form-container">
+          <h1 className="auth-title">Welcome to PlantKeeper!</h1>
           
-          <div style={{display: "flex", flexDirection: "column"}}>
+          <div className="auth-buttons">
             <button 
               onClick={() => navigate("/login")}
-              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", cursor: "pointer", borderRadius: "0.375rem", fontWeight: 500, marginBottom: "1rem"}}
+              className="auth-action-button"
             >
               Login
             </button>
             
             <button 
               onClick={() => navigate("/register")}
-              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", cursor: "pointer", borderRadius: "0.375rem", fontWeight: 500}}
+              className="auth-action-button"
             >
               Sign Up
             </button>
           </div>
         </div>
       </div>
-      {/* Image at the bottom */}
       <img 
-      src="/WelcomePageButtomLeaf.png" 
-      alt="Green Leaf" 
-      style={{
-        width: "200px",  // Adjust width for responsiveness
-        height: "auto", // Maintain aspect ratio
-        objectFit: "cover", 
-        position: "absolute",
-        bottom: "0px",
-        right: "0", // Stick to the right
-      }} 
-    />
-    </div>
-  );
+        src="/WelcomePageButtomLeaf.png" 
+        alt="Green Leaf" 
+        className="auth-leaf-bottom"
+      />
+    </div>)
 }
 

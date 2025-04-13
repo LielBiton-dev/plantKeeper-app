@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./LocationScreen.css";
 
 export default function LocationScreen({ onComplete }) {
     const [error, setError] = useState("");
@@ -29,16 +28,15 @@ export default function LocationScreen({ onComplete }) {
   };
 
   return (
-    <div className="location-page">
-      {/* Content container */}
-      <div className="content-container">
+    <div className="form-screen">
+      <div className="form-content-container">
         <div className="form-container">
           <h2 className="page-title">Where Are You?</h2>
           
           <img 
             src="/AllowLocation.png" 
             alt="Location" 
-            className="location-image"
+            className="form-image"
           />
           
           <p className="description-text">

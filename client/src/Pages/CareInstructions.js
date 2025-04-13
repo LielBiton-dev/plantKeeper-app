@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaPaw } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useLocation } from "react-router-dom";
@@ -7,14 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import "./CareInstructions.css";
 
-// icons
-import { FaPaw } from "react-icons/fa";
-import { MdOutlineWaterDrop, MdOutlineWbSunny  } from "react-icons/md";
-import { LiaTemperatureHighSolid } from "react-icons/lia";
-import { IoIosHeart, IoIosHeartEmpty  } from "react-icons/io";
-
 const CareInstructions = () => {
-  const iconSize = 25;
   const navigate = useNavigate();
   const location = useLocation();
   const type = location.state?.type;
@@ -55,7 +49,6 @@ const CareInstructions = () => {
     const handleCollection = () => navigate("/collection");
     const handleScan = () => navigate("/scan");
     const handleProfile = () => navigate("/profile");
-    const handleNotifications  = () => navigate("/tasks");
   
     const handleLogout = async () => {
       try {
@@ -73,7 +66,7 @@ const CareInstructions = () => {
         const plantSnap = await getDoc(plantRef);
 
         if (plantSnap.exists()) {
-          const plantInfo = {id: plantSnap.id, ...plantSnap.data()};
+          const plantInfo = plantSnap.data();
           setPlantData(plantInfo);
 
           const careRef = doc(db, "care_instructions", plantInfo.care_id);
@@ -92,14 +85,12 @@ const CareInstructions = () => {
   }, [type]);
 
   if (!plantData || !careData) return <div className="loading">Loading...</div>;
-  console.log("User's plant IDs:", userPlants);
-  console.log("Current plantData.id:", plantData.id);
-  console.log("Match found?", userPlants.includes(plantData.id));
+
   const isInCollection = userPlants.includes(plantData.id);
 
   return (
     <div className="care-page">
-      <header className="top-nav">
+      <header className="care-header">
         <img src="/logo_no_background.png" alt="Logo" className="care-logo" />
         <div className="top-nav-user">
           <span>Hi, {userName} | </span>
@@ -111,29 +102,37 @@ const CareInstructions = () => {
       <div className="care-card">
         <div className="image-container">
           <img src={plantData.image_url} alt={plantData.name} className="plant-image" />
-          <div className="heart-icon">
-          {isInCollection ? (<IoIosHeart size={iconSize} color="#c43d3d" />) : 
-          (<IoIosHeartEmpty size={iconSize} />)}
-        </div>
+          <div className={`heart-icon ${isInCollection ? 'filled' : ''}`}>&#9829;</div>
         </div>
         <h1 className="plant-name">{plantData.name}</h1>
         <p className="plant-description">{plantData.description}</p>
 
         <div className="care-tags">
           <div className="care-tag">
-          <FaPaw size={iconSize-2}/>
+          <FaPaw />
           <div>Pet Friendly</div>
           </div>
           <div className="care-tag">
-          <MdOutlineWaterDrop size={iconSize}/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C10 6 6 9 6 13a6 6 0 1 0 12 0c0-4-4-7-6-11z" />
+            </svg>
             <div>Every {careData.watering_frequency_days} days</div>
           </div>
           <div className="care-tag">
-          <MdOutlineWbSunny size={iconSize}/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
             <div>{careData.sunlight} Hours</div>
           </div>
           <div className="care-tag">
-          <LiaTemperatureHighSolid size={iconSize}/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+            <circle cx="11.5" cy="18" r="0.5" fill="currentColor" />
+          </svg>
             <div>{careData.temperature_range_celsius}°</div>
           </div>
         </div>
@@ -171,7 +170,7 @@ const CareInstructions = () => {
         </button>
 
         {/* Notifications */}
-        <button onClick={handleNotifications} className="nav-btn">
+        <button className="nav-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />

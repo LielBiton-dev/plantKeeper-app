@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./CameraScreen.css";
 
 export default function CameraScreen({ onComplete }) {
   const [error, setError] = useState("");
@@ -42,23 +41,20 @@ export default function CameraScreen({ onComplete }) {
   };
 
   return (
-    <div className="camera-page">
-      <div className="content-container">
+    <div className="form-screen">
+      <div className="form-content-container">
         <div className="form-container">
           <h2 className="page-title">Camera Access</h2>
+        
+          <img 
+            src="/AllowCamera.png" 
+            alt="Camera Access" 
+            className="form-image"
+          />
           
           <p className="description-text">
             Allow access to your camera to take photos of your plants
           </p>
-          
-          <div className="camera-image">
-            <img 
-              src="/AllowCamera.png" 
-              alt="Camera Access" 
-              className="camera-image"
-            />
-          </div>
-          
           {error && (
             <p className="error-text">
               {error}

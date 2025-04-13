@@ -19,48 +19,47 @@ export default function Login() {
   };
 
   return (
-    <div style={{minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#f5f0e6", position: "relative", overflow: "hidden"}}>
-      {/* Content container */}
-      <div style={{flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 1.5rem", zIndex: 10}}>
-        <div style={{width: "100%", maxWidth: "20rem", textAlign: "center"}}>
-          <h2 style={{fontSize: "1.875rem", marginBottom: "2rem", color: "#333", fontFamily: "serif"}}>Login</h2>
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-form-container">
+          <h2 className="auth-title">Login</h2>
           
-          <form onSubmit={handleLogin} style={{display: "flex", flexDirection: "column", gap: "1rem", width: "100%"}}>
+          <form onSubmit={handleLogin} className="auth-form">
             <input
               type="email"
               placeholder="Email"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
+              className="auth-input"
               onChange={(e) => setEmail(e.target.value)}
               required
-            />
+          />
             <input
               type="password"
               placeholder="Password"
-              style={{width: "100%", padding: "0.75rem", border: "1px solid #ccc", borderRadius: "0.375rem", backgroundColor: "white", boxSizing: "border-box"}}
+              className="auth-input"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button 
               type="submit"
-              style={{width: "100%", backgroundColor: "#333", color: "white", padding: "0.75rem", borderRadius: "0.375rem", fontWeight: 500, cursor: "pointer", boxSizing: "border-box"}}
+              className="auth-submit"
             >
               Login
             </button>
           </form>
           
-          <div style={{textAlign: "center", marginTop: "1.5rem"}}>
+          <div className="auth-link-container">
             <button
               onClick={() => navigate("/register")}
-              style={{color: "#333", cursor: "pointer", background: "none", border: "none", textDecoration: "underline"}}
+              className="auth-link"
             >
               Don't have an account? Sign Up
             </button>
           </div>
           
-          <div style={{textAlign: "center", marginTop: "1rem"}}>
+          <div className="auth-link-container">
             <button
               onClick={() => navigate("/welcome")}
-              style={{color: "#333", cursor: "pointer", background: "none", border: "none", fontSize: "0.875rem", textDecoration: "underline"}}
+              className="auth-link"
             >
               Back to welcome page
             </button>
@@ -68,18 +67,10 @@ export default function Login() {
         </div>
       </div>
       <img 
-      src="/LoginRegisterPageUpperHalfLeaf.png" 
-      alt="Green Leaf" 
-      style={{
-        width: "70px",  // Adjust size if needed
-        height: "auto", 
-        position: "absolute",
-        top: "0", // Align to the top
-        right: "0", // Align to the right
-        zIndex: 20, // Ensure it stays above other elements
-      }} 
-    />
+        src="/LoginRegisterPageUpperHalfLeaf.png" 
+        alt="Green Leaf" 
+        className="auth-leaf-top"
+      />
     </div>
   );
 }
-//color: "rgba(37, 36, 36, 0.7)"
