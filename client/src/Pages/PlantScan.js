@@ -49,7 +49,7 @@ const PlantScan = () => {
     console.log("File selected:", file.name);
     
     // Example: navigate to results after processing
-    navigate("/identification", { state: { file } });
+    // navigate("/identification-results");
   };
 
   const handleUploadClick = () => {
