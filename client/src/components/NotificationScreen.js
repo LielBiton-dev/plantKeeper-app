@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./NotificationScreen.css";
 
 export default function NotificationScreen({ onComplete }) {
   const [error, setError] = useState("");
@@ -35,20 +36,23 @@ export default function NotificationScreen({ onComplete }) {
   };
 
   return (
-    <div className="form-screen">
-      <div className="form-content-container">
+    <div className="notification-page">
+      <div className="content-container">
         <div className="form-container">
           <h2 className="page-title">Push Notifications</h2>
-
-          <img 
-            src="/AllowNotifications.png" 
-            alt="Notifications" 
-            className="form-image"
-          />
           
           <p className="description-text">
             Get notified when it's time to care for your plants
           </p>
+          
+          <div className="notification-image-container">
+            <img 
+              src="/AllowNotifications.png" 
+              alt="Notifications" 
+              className="notification-image"
+            />
+          </div>
+          
           {error && (
             <p className="error-text">
               {error}
