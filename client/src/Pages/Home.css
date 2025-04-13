@@ -1,5 +1,47 @@
 /* Home.css */
 
+/* Main container */
+.home-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f4; /*#F0E7D8;*/
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Top navigation */
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #28433F;
+    padding: 0.75rem 1rem;
+    color: white;
+  }
+  
+  .top-nav-logo img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .top-nav-user {
+    display: flex;
+    align-items: center;
+  }
+  
+  .top-nav-user span {
+    margin-right: 0.5rem;
+  }
+  
+  .logout-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
   /* Location display */
   .location-display {
       display: flex;
@@ -46,8 +88,8 @@
   .greeting {
     margin-bottom: 0.5rem;
   }
-  
-  .greeting h2 {
+
+  .greeting title {
     font-size: 1.8rem;
     font-weight: 500;
     color: #333;
@@ -63,45 +105,42 @@
   }
 
 
-  .status-cards-grid {
-    display: grid;
-    grid-template-columns: 1fr;  /* Single column on mobile */
-    gap: 1.5rem;
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-
 /* CSS for the status card using img with src */
 .status-card {
-  margin-bottom: 0; /* Remove margin-bottom as grid gap handles spacing */
-  border-radius: 1.25rem;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-  height: 140px;
-  width: 100%;
-  font-family: 'Poppins', sans-serif;
+    margin-bottom: 1.5rem;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    margin-left: auto; /* Center the card */
+    margin-right: auto; /* Center the card */
+    font-family: 'Poppins', sans-serif;
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideInRight 0.8s ease-out forwards;
+    animation-delay: 0.3s;
+  }
 
-  /* Movement animation */
+  @keyframes slideInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* First card: appears quicker */
+.status-card:nth-child(1) {
   opacity: 0;
   transform: translateX(100%);
-  animation: slideInRight 0.8s ease-out forwards;
-  animation-delay: 0.3s;
-}
-
-@keyframes slideInRight {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* First card animation */
-.status-card:nth-child(1) {
+  animation: slideInRight 0.6s ease-out forwards;
   animation-delay: 0.5s;
 }
 
-/* Second card animation */
+/* Second card: delayed entrance */
 .status-card:nth-child(2) {
+  opacity: 0;
+  transform: translateX(100%);
+  animation: slideInRight 0.6s ease-out forwards;
   animation-delay: 0.2s;
 }
   
@@ -153,30 +192,6 @@
   .status-card-content p {
     color: #333;
     font-size: 1rem;
-  }
-
-  @media (min-width: 768px) {
-    .status-cards-grid {
-      grid-template-columns: repeat(2, 1fr); /* Two columns on tablet */
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .status-cards-grid {
-      gap: 2rem;
-    }
-  
-    .status-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-  
-    .status-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    }
   }
   
   /* Task card specific */
@@ -252,6 +267,35 @@
     opacity: 0.8;
     margin-top: 0.25rem;
     font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Bottom navigation */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    background-color: #28433F;
+    z-index: 20;
+  }
+  
+  .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.75rem;
+    flex: 1;
+    padding: 0.75rem 0 0.5rem 0;
+  }
+  
+  .nav-btn.active {
+    color: white;
   }
 
   .typewriter-text {

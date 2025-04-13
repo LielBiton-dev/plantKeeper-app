@@ -15,6 +15,9 @@ import CameraScreen from "./components/CameraScreen";
 import './styles/global.css';
 import './styles/allowScreens.css';
 import './styles/auth.css';
+import IdentificationResults from "./Pages/Identification";
+import Notifications from "./Pages/Notifications";
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -109,6 +112,8 @@ function App() {
         <Route path="/collection" element={<Collection />} />
         <Route path="/care-instructions" element={<CareInstructions />} />
         <Route path="/scan" element={<PlantScan />} />
+        <Route path="/identification" element={<IdentificationResults />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
     </Router>
   );
