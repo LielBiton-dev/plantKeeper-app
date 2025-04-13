@@ -1,0 +1,190 @@
+/* Modal Overlay - covers the entire screen */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  /* Modal Header */
+  .modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2e7d32;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Close Button */
+  .close-button {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+  }
+  
+  .close-button:hover {
+    color: #333;
+  }
+  
+  /* Recommendation Content Container */
+  .recommendation-content {
+    margin-top: 16px;
+    min-height: 180px;
+  }
+  
+  /* Loading State */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    color: #666;
+  }
+  
+  .loading p {
+    margin-top: 16px;
+    color: #2e7d32;
+  }
+  
+  /* Loading Spinner */
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    animation: rotate 2s linear infinite;
+  }
+  
+  .loading-spinner .path {
+    stroke: #2e7d32;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
+  }
+  
+  /* Error State */
+  .error {
+    color: #e53935;
+    padding: 16px;
+    border-radius: 4px;
+    background-color: rgba(229, 57, 53, 0.1);
+  }
+  
+  /* Recommendation Text */
+  .recommendation-text {
+    line-height: 1.6;
+    color: #333;
+    white-space: pre-wrap;
+    font-size: 1rem;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #2e7d32;
+  }
+  
+  /* Typing Cursor */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+  }
+  
+  /* Action Area */
+  .action-area {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    gap: 16px;
+  }
+  
+  /* Modal Action Buttons */
+  .modal-action-btn {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+  }
+  
+  .try-another {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .try-another:hover {
+    background-color: #c8e6c9;
+  }
+  
+  .add-to-collection {
+    background-color: #2e7d32;
+    color: white;
+  }
+  
+  .add-to-collection:hover {
+    background-color: #1b5e20;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
