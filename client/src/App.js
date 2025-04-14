@@ -12,6 +12,8 @@ import Collection from './Pages/Collection';
 import CareInstructions from './Pages/CareInstructions';
 import PlantScan from "./Pages/PlantScan";
 import CameraScreen from "./components/CameraScreen";
+import Notifications from "./Pages/Notifications";
+import IdentificationResults from "./Pages/Identification";
 import './styles/global.css';
 import './styles/allowScreens.css';
 import './styles/auth.css';
@@ -109,6 +111,8 @@ function App() {
         <Route path="/collection" element={<Collection />} />
         <Route path="/care-instructions" element={<CareInstructions />} />
         <Route path="/scan" element={<PlantScan />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/identification" element={<IdentificationResults />} />
       </Routes>
     </Router>
   );
