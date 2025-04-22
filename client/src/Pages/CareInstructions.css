@@ -1,117 +1,167 @@
-/* PlantCareInstructions.css */
+/* CareInstructions.css - Responsive redesign */
 
-.care-page {
-    background-color: #f0e7d8;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding-bottom: 5rem;
-  }
-  
-  .care-header {
-    background-color: #28433F;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    color: white;
-  }
-  
-  .care-logo {
-    height: 40px;
-  }
-  
-  .care-user {
-    font-size: 0.95rem;
-  }
-  
-  .logout {
-    text-decoration: underline;
-    cursor: pointer;
-    margin-left: 0.5rem;
-  }
-  
+/* Plant details container */
+.care-card {
+  background: #fff;
+  border-radius: 2rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image container */
+.image-container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto 0.5rem;
+  display: flex;
+  justify-content: center;
+  max-height: 250px;
+}
+
+.care-plant-image {
+  max-width: 250px;
+  max-height: 250px;
+  width: 100%;
+  height: auto;
+  border-radius: 1.5rem;
+  display: block;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Plant information */
+.plant-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a3a1a;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.plant-description {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  padding: 0 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Care tags section */
+.care-tags {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.care-tag {
+  background-color: #b8c89f;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  min-height: 100px;
+  transition: transform 0.2s ease;
+}
+
+.care-tag:hover {
+  transform: translateY(-3px);
+}
+
+.care-tag svg {
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: #28433F;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
   .care-card {
-    background: #fff;
-    border-radius: 2rem;
-    padding: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    max-width: 300px;
-    margin: 2rem auto;
+    max-width: 700px;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
   }
-  
   
   .image-container {
-    position: relative;
-    width: 100%;
-    max-width: 200px; /* Reduce width for better balance */
-    margin: 0 auto 1.5rem; /* Center horizontally */
+    width: 40%;
+    margin: 0;
   }
   
-  .plant-image {
-    width: 100%;
-    height: auto;
-    border-radius: 1.5rem;
-    display: block;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional: soft shadow */
+  .care-plant-image {
+    max-width: 100%;
   }
   
-  .heart-icon {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 40px;
-    color: #333;
-    padding: 6px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .heart-icon.filled {
-    color: red;
+  .plant-info-container {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
   }
   
   .plant-name {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #1a3a1a;
-    text-align: center;
-    margin: 0.5rem 0;
+    text-align: left;
+    font-size: 2rem;
   }
   
   .plant-description {
-    text-align: center;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #333;
-    padding: 0 1rem;
+    text-align: left;
+    padding: 0;
   }
   
   .care-tags {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .care-card {
+    max-width: 900px;
   }
   
-  .care-tag {
-    width: 120px;
-    height: 100px;
-    background-color: #b8c89f;
-    border-radius: 1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-align: center;
+  .care-tags {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* For extra small devices */
+@media (max-width: 375px) {
+  .care-card {
+    padding: 1rem;
+    border-radius: 1.5rem;
   }
   
-  .care-tag svg {
-    margin-bottom: 6px;
-    font-size: 20px;
+  .plant-name {
+    font-size: 1.5rem;
   }
+  
+  .care-tags {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .care-plant-image {
+    max-height: 180px;
+  }
+}

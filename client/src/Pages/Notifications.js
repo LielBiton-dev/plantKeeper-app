@@ -31,20 +31,6 @@ const Notifications = () => {
       return () => unsubscribe();
     } , []);
 
-  const handleCollection = () => navigate("/collection");
-  const handleScan = () => navigate("/scan");
-  const handleProfile = () => navigate("/profile");
-  const handleNotifications  = () => navigate("/tasks");
-  
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/welcome");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
-
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -105,7 +91,7 @@ const Notifications = () => {
 
 
   return (
-    <div className="notification-page">
+    <div className="page-container bg-light">
       <TopNav userName={userName} />
       
       <div className="notification-content">

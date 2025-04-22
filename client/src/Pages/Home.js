@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { IoLocationOutline } from "react-icons/io5";
 import "./Home.css";
+import StarActionButton from '../components/StarActionButton';
 
 
 const Home = () => {
@@ -13,7 +15,8 @@ const Home = () => {
   const [userName, setUserName] = useState("");
   const [userLocation, setUserLocation] = useState("");
   const [loading, setLoading] = useState(true);
-  const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('new');
   
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -32,8 +35,14 @@ const Home = () => {
               setUserName("Plant Lover");
               console.log("No name found in user data, using default");
             }          
-            // Default location for now
-            setUserLocation("Your Garden");
+            // Check if user has saved a location and locationEnable is set to 1
+            if (userData.userLocation && userData.locationEnable === 1) {
+              setUserLocation(userData.userLocation);
+              console.log("User location set to:", userData.userLocation);
+            } else {
+              setUserLocation("Your Garden");
+              console.log("Using default location");
+            }
           } else {
             console.log("No user document found for ID:", user.uid);
             // Document doesn't exist - use default
@@ -57,8 +66,9 @@ const Home = () => {
     return () => unsubscribe();
   }, [navigate]);
 
-  const handleRecommendations = () => {
-    setIsRecommendationModalOpen(true);
+  const handleOpenModal = (mode) => {
+    setModalMode(mode);
+    setModalOpen(true);
   };
 
   return (
@@ -76,21 +86,7 @@ const Home = () => {
               <h2 className="page-title">Welcome to your greenhouse</h2>
               <p className="description-text">Let's see how your plants are doing</p>
               <p className="location-display">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  className="location-icon"
-                > 
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path> 
-                  <circle cx="12" cy="10" r="3"></circle> 
-                </svg>
+              <IoLocationOutline color="#2e553d"/>
                 <span className="location-text">{userLocation}</span>
               </p>
             </section>
@@ -125,38 +121,21 @@ const Home = () => {
               </div>
             </section>
           </div>
-            
-            {/* Action Buttons */}
             <div className="action-buttons">
-              <button className="action-btn hover-scale">
-                <span className="action-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2v8"></path>
-                    <path d="M12 22v-8"></path>
-                    <path d="M18 15l-6-6-6 6"></path>
-                  </svg>
-                </span>
-                Explore New Tips
-                <span className="action-subtitle">
-                  Prepare your plants for the coming season!
-                </span>
-              </button>
-              
-              <button 
-                onClick={handleRecommendations}
-                className="action-btn hover-scale"
-              >
-                <span className="action-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
-                    <path d="M12 6v6l4 2"></path>
-                  </svg>
-                </span>
-                Try a New Plant
-                <span className="action-subtitle">
-                  Add a Monstera to your collection
-                </span>
-              </button>
+
+            <StarActionButton 
+              icon="🌿"
+              title="Plant Match"
+              subtitle="Discover new plants for your space"
+              onClick={() => handleOpenModal('new')}  // Pass 'new' mode
+            />
+
+            <StarActionButton 
+              icon="💚"
+              title="Plant Care"
+              subtitle="Tips for your existing plants"
+              onClick={() => handleOpenModal('care')}  // Pass 'care' mode
+            />
             </div>
           </div>
         )}
@@ -164,8 +143,9 @@ const Home = () => {
 
       <BotNav />    
       <RecommendationModal 
-        isOpen={isRecommendationModalOpen} 
-        onClose={() => setIsRecommendationModalOpen(false)} 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        mode={modalMode}
       />
     </div>
   );

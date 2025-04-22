@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import "./PlantScan.css";
+import { IoIosArrowBack } from "react-icons/io";
 
 const PlantScan = () => {
   const navigate = useNavigate();
@@ -68,6 +69,14 @@ const PlantScan = () => {
 
   return (
     <div className="scan-container">
+      <div 
+        className="back-button" 
+        onClick={() => navigate("/")}
+        style={{ color: "white" }}
+      >
+        <IoIosArrowBack size={20} color="white" />
+        <span>Back</span>
+      </div>
       <div className="scan-content">
         <div className="scan-instruction">
           <h2>Get ready to scan<br />your image</h2>

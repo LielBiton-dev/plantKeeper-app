@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { TopNav, BotNav } from '../components/Nav';
 import { useLocation, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { IoIosArrowBack } from "react-icons/io";
 import PageTransition from "../components/PageTransition";
 import axios from "axios";
 import "./Identification.css";
@@ -18,12 +19,46 @@ const IdentificationResults = () => {
     const [userName, setUserName] = useState("");
     const [confidence, setConfidence] = useState(0);
     const [feedbackGiven, setFeedbackGiven] = useState(false);
+    const [addingToCollection, setAddingToCollection] = useState(false);
+    const [addedToCollection, setAddedToCollection] = useState(false);
 
     const handleFeedback = (isGood) => {
         setFeedbackGiven(true);
         console.log(`User feedback: ${isGood ? 'Good' : 'Bad'} identification`);
         // Optionally send this to Firestore or analytics
-      };
+    };
+
+    const handleAddToCollection = async () => {
+        setAddingToCollection(true);
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error("User not authenticated");
+                return;
+            }
+
+            const plantId = cleanPlantId; // Using the cleanPlantId from the component
+            const userPlantsRef = doc(db, "user_plants", `user_${user.uid}`);
+            const userPlantsDoc = await getDoc(userPlantsRef);
+            
+            if (userPlantsDoc.exists()) {
+                await updateDoc(userPlantsRef, {
+                    plants: arrayUnion(plantId)
+                });
+            } else {
+                await setDoc(userPlantsRef, {
+                    plants: [plantId]
+                });
+            }
+            
+            console.log("Plant added to collection:", plantId);
+            setAddedToCollection(true);
+        } catch (error) {
+            console.error("Error adding plant to collection:", error);
+        } finally {
+            setAddingToCollection(false);
+        }
+    };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -117,13 +152,15 @@ const IdentificationResults = () => {
   return (
     <div className="identification-page">
       <TopNav userName={userName} />
-
+      <div className="back-button" onClick={() => navigate("/scan")}>
+        <IoIosArrowBack size={20} />
+        <span>Back</span>
+        </div>
       <PageTransition>
       <div className="identification-content">
         <div className="greeting">
             <p>Your plant is</p>
             <h2 id="main">{mainName}</h2>
-            <p id="secondary">({secondaryName})</p>
         </div>
         <div className="identification-image-container">
             <svg className="progress-ring" viewBox="0 0 260 260">
@@ -163,19 +200,29 @@ const IdentificationResults = () => {
                 ) : (
                 <div className="fade-in care-transition">
                     <p className="text-emerald-700 font-medium mb-3">Thanks for your feedback!</p>
-                    <button
-                        className="care-tips-btn"
-                        onClick={() => navigate("/care-instructions", { state: { type: cleanPlantId } })}
-                    >
-                        🌿 Get Care Tips
-                    </button>
+                    <div className="action-buttons">
+                        <button
+                            className="care-tips-btn"
+                            onClick={() => navigate("/care-instructions", { state: { type: cleanPlantId } })}
+                        >
+                            🌿 Get Care Tips
+                        </button>
+                        
+                        <button
+                            className="care-tips-btn"
+                            onClick={handleAddToCollection}
+                            disabled={addingToCollection || addedToCollection}
+                        >
+                            {addingToCollection ? "Adding..." : 
+                             addedToCollection ? "Added ✓" : "🪴 Add to Collection"}
+                        </button>
+                    </div>
                 </div>
                 )}
         </div>
       </div>
 
-      </PageTransition>      
-      <BotNav />    
+      </PageTransition>
     </div>
   );
 };

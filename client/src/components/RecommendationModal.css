@@ -172,6 +172,12 @@
   .add-to-collection:hover {
     background-color: #1b5e20;
   }
+
+  @media (max-width: 480px) {
+    .modal-content {
+      width: 85%;
+    }
+  }
   
   /* Animations */
   @keyframes fadeIn {
