@@ -3,16 +3,21 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
-import { User, userConverter } from "../firebase/user"; // Import the User model
+import { User, userConverter } from "../firebase/user";
 
 export default function Register() {
-  // Enhanced state management with all required fields
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Focus states for floating labels
+  const [isFocusedFirstName, setIsFocusedFirstName] = useState(false);
+  const [isFocusedLastName, setIsFocusedLastName] = useState(false);
+  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
+  const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   
   const navigate = useNavigate();
 
@@ -22,12 +27,10 @@ export default function Register() {
     setError(null);
     
     try {
-      // First, create the authentication user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
       console.log("The user auth id: " + uid);
       
-      // Then create a new User instance using our model
       const newUser = new User(
         uid,                // Use the Firebase Auth UID as our user ID
         firstName,
@@ -52,91 +55,115 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-form-container">
-          <h2 className="auth-title">Sign Up</h2>
-          {error && (
-            <div className="auth-error">
-              {error}
-            </div>
-          )}
-          
-          <form onSubmit={handleRegister} className="auth-form">
-            <input
-              type="text"
-              placeholder="First Name"
-              className="auth-input"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="auth-input"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="auth-input"              
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="auth-input"              
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button 
-              type="submit"
-              disabled={loading}
-              style={{
-                width: "100%", 
-                backgroundColor: loading ? "#999" : "#333", 
-                color: "white", 
-                padding: "0.75rem",
-                boxSizing: "border-box", 
-                borderRadius: "0.375rem", 
-                fontWeight: 500, 
-                cursor: loading ? "not-allowed" : "pointer"
-              }}
-            >
-              {loading ? "Creating Account..." : "Sign Up"}
-            </button>
-          </form>
-          
-          <div className="auth-link-container">
-            <button
-              onClick={() => navigate("/login")}
-              className="auth-link"            
-              >
-              Already have an account? Login
-            </button>
+    <div
+      className="login-page-container"
+      style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/login_back2.jpg)` }}
+    >
+      <form onSubmit={handleRegister}>
+        <h1>Sign Up</h1>
+        
+        {error && (
+          <div className="auth-error">
+            {error}
           </div>
-          
-          <div className="auth-link-container">
-            <button
-              onClick={() => navigate("/welcome")}
-              className="auth-link"            
-              >
-              Back to welcome page
-            </button>
-          </div>
+        )}
+        
+        <div className="floating-label-group">
+          <input
+            type="text"
+            id="firstName"
+            className="glass-input"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            onFocus={() => setIsFocusedFirstName(true)}
+            onBlur={() => setIsFocusedFirstName(false)}
+            placeholder={isFocusedFirstName ? "" : "Enter your First Name"}
+            required
+          />
+          <label 
+            htmlFor="firstName" 
+            className={`floating-label ${isFocusedFirstName || firstName ? 'active' : ''}`}
+          >
+            First Name
+          </label>
         </div>
-      </div>
-      <img 
-        src="/LoginRegisterPageUpperHalfLeaf.png" 
-        alt="Green Leaf" 
-        className="auth-leaf-top"
-      />
+        
+        <div className="floating-label-group">
+          <input
+            type="text"
+            id="lastName"
+            className="glass-input"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            onFocus={() => setIsFocusedLastName(true)}
+            onBlur={() => setIsFocusedLastName(false)}
+            placeholder={isFocusedLastName ? "" : "Enter your Last Name"}
+            required
+          />
+          <label 
+            htmlFor="lastName" 
+            className={`floating-label ${isFocusedLastName || lastName ? 'active' : ''}`}
+          >
+            Last Name
+          </label>
+        </div>
+        
+        <div className="floating-label-group">
+          <input
+            type="email"
+            id="email"
+            className="glass-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onFocus={() => setIsFocusedEmail(true)}
+            onBlur={() => setIsFocusedEmail(false)}
+            placeholder={isFocusedEmail ? "" : "Enter your Email"}
+            required
+          />
+          <label 
+            htmlFor="email" 
+            className={`floating-label ${isFocusedEmail || email ? 'active' : ''}`}
+          >
+            Email
+          </label>
+        </div>
+        
+        <div className="floating-label-group">
+          <input
+            type="password"
+            id="password"
+            className="glass-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onFocus={() => setIsFocusedPassword(true)}
+            onBlur={() => setIsFocusedPassword(false)}
+            placeholder={isFocusedPassword ? "" : "Enter your Password"}
+            required
+          />
+          <label 
+            htmlFor="password" 
+            className={`floating-label ${isFocusedPassword || password ? 'active' : ''}`}
+          >
+            Password
+          </label>
+        </div>
+        
+        <button 
+          type="submit" 
+          className="login_button"
+          disabled={loading}
+        >
+          {loading ? "Creating Account..." : "Sign Up"}
+        </button>
+        
+        <button
+          type="button"
+          onClick={() => navigate("/login")}
+          className="auth-link"
+        >
+          Already have an account? Login
+        </button>
+      </form>
     </div>
   );
 }

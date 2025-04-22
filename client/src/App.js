@@ -13,6 +13,7 @@ import CareInstructions from './Pages/CareInstructions';
 import PlantScan from "./Pages/PlantScan";
 import CameraScreen from "./components/CameraScreen";
 import Notifications from "./Pages/Notifications";
+import Profile from "./Pages/Profile";
 import IdentificationResults from "./Pages/Identification";
 import './styles/global.css';
 import './styles/allowScreens.css';
@@ -113,6 +114,7 @@ function App() {
         <Route path="/scan" element={<PlantScan />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/identification" element={<IdentificationResults />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );

@@ -1,9 +1,4 @@
-.collection-page {
-    background-color: #F0E7D8;
-    min-height: 100vh;
-    padding-bottom: 80px;
-  }
-  
+ 
   .collection-header {
     background-color: #28433F;
     color: #F3EBDF;
@@ -19,16 +14,6 @@
     height: 40px;
   }
   
-  .top-nav-user {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logout-btn {
-    color: #F3EBDF;
-    cursor: pointer;
-    font-weight: bold;
-  }
   
   .collection-container {
     max-width: 300px;
@@ -39,11 +24,13 @@
   .collection-title {
     color: #1a3a1a;
   }
-  
+
   .plant-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 2rem;
   }
   
   .plant-card {
@@ -64,7 +51,7 @@
   
   .plant-card img {
     width: 100%;
-    height: 100px;
+    height: 110px;
     object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
@@ -94,4 +81,10 @@
   /* Show the care badge only on hover */
   .plant-card:hover .next-care {
     opacity: 1;
+  }
+
+  @media (max-width: 480px) {
+    .plant-grid{
+      grid-template-columns: repeat(2, 1fr);
+    }
   }

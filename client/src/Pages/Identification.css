@@ -66,10 +66,15 @@
   }
   
   .plant-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
+    min-width: 100%;
+    min-height: 100%;
   }
   
  .identification-content #main {
@@ -141,9 +146,12 @@
     width: 240px;
     height: 240px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: fill;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 2;
+    position: relative;
   }
 
   .confidence-badge {
@@ -228,7 +236,7 @@
     border: none;
     padding: 12px 24px;
     border-radius: 24px;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;

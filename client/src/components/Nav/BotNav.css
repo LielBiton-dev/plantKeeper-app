@@ -1,224 +1,132 @@
-/* Main container for the navigation */
-.navigation-container {
+* {
+  box-sizing: border-box;
+}
+
+/* Navbar container */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  background: var(--primary-color);
+  width: 100%;
+  z-index: 100;
+}
+
+/* Tabs container */
+.tabs {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+/* Hide radio inputs */
+.tabs > input {
+  display: none;
+}
+
+/* Buttons container */
+.buttons {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* Label styling */
+.buttons label {
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  flex: 1 1 auto;
+  opacity: 0.7;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  height: 100%;
+}
+
+.underline {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.underline::after {
+  content: "";
+  display: block;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Position the underline based on which tab is selected */
+.tabs input:nth-child(1):checked ~ .buttons .underline {
+  translate: 0 0;
+}
+
+.tabs input:nth-child(2):checked ~ .buttons .underline {
+  translate: 100% 0;
+}
+
+.tabs input:nth-child(3):checked ~ .buttons .underline {
+  translate: 200% 0;
+}
+
+.tabs input:nth-child(4):checked ~ .buttons .underline {
+  translate: 300% 0;
+}
+
+.tabs input:nth-child(5):checked ~ .buttons .underline {
+  translate: 400% 0;
+}
+
+/* Icon label specific styling */
+.icon-label {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Highlight active icon */
+.tabs input:nth-child(1):checked ~ .buttons label:nth-child(1),
+.tabs input:nth-child(2):checked ~ .buttons label:nth-child(2),
+.tabs input:nth-child(3):checked ~ .buttons label:nth-child(3),
+.tabs input:nth-child(4):checked ~ .buttons label:nth-child(4),
+.tabs input:nth-child(5):checked ~ .buttons label:nth-child(5) {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* Style for the scan button (middle button) */
+.tabs input:nth-child(3):checked ~ .buttons .underline::after {
+  width: 45px;
+  height: 45px;
+}
+
+/* Responsive adjustments */
+@media (min-width: 440px) {
+  .tabs {
     width: 100%;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
   }
-  
-  /* Navigation bar styling */
-  .bottom-nav-new {
-    background-color: var(--primary-color);
-    /*border-top-left-radius: 16px;
-    border-top-right-radius: 16px;*/
-    padding: 8px 20px 12px; /* Reduce vertical padding to make it shorter */
-    position: relative;
-  }
-  
-  /* Container for navigation items */
-  .nav-items {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-  }
-  
-  /* Individual navigation item styling */
-  .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    padding: 8px 0;
-  }
-  
-  /* Active navigation item styling */
-  .nav-item.active {
-    color: var(--secondary-color, #F5A623);
-  }
-  
-  /* Icon container styling */
-  .icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 4px;
-    transition: transform 0.3s ease, color 0.3s ease;
-  }
-  
-  /* Active icon animation */
-  .nav-item.active .icon-container {
-    transform: translateY(-4px) scale(1.1);
-  }
-  
-  /* Text label styling */
-  .nav-item span {
-    margin-top: 8px;
-    font-size: 11px;
-    opacity: 0;
-    transform: translateY(-8px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-  
-  /* Active text label styling */
-  .nav-item.active span {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* Center button container */
-  .center-button-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-  }
-  
-  /* Center button styling */
-  .center-button {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: var(--secondary-color, #F5A623);
-    border: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    color: white;
-    position: absolute;
-    bottom: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-  }
-  
-  /* Active center button styling */
-  .center-button.active {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    background-color: #fff;
-    color: var(--secondary-color, #F5A623);
-  }
-  
-  /* Center button hover effect */
-  .center-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-  }
-  
-  /* Center button label */
-  .center-label {
-    font-size: 11px;
-    margin-top: 4px;
-    opacity: 0;
-    transform: translateY(-8px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    position: absolute;
-    bottom: -20px;
-  }
-  
-  /* Active center button label */
-  .center-button.active .center-label {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 480px) {
-    .bottom-nav-new {
-      padding: 8px 16px 12px;
-    }
-    
-    .nav-item {
-      width: 60px;
-      font-size: 10px;
-    }
-    
-    .center-button {
-      width: 50px;
-      height: 50px;
-    }
-    
-    .icon-container svg {
-      width: 20px;
-      height: 20px;
-    }
-    
-    .center-button svg {
-      width: 24px;
-      height: 24px;
-    }
-  }
-  
-  /* Small mobile devices */
-  @media (max-width: 360px) {
-    .bottom-nav-new {
-      padding: 6px 10px 10px;
-    }
-    
-    .nav-item {
-      width: 48px;
-    }
-    
-    .center-button {
-      width: 45px;
-      height: 45px;
-    }
-    
-    .icon-container svg {
-      width: 18px;
-      height: 18px;
-    }
-    
-    .center-button svg {
-      width: 20px;
-      height: 20px;
-    }
-    
-    .nav-item span, 
-    .center-label {
-      font-size: 9px;
-    }
-  }
-  
-  /* Tablet and desktop styles */
-  @media (min-width: 768px) {
-    .bottom-nav-new {
-      /*border-top-left-radius: 20px;
-      border-top-right-radius: 20px;*/
-      padding: 12px 30px 20px;
-    }
-    
-    .center-button {
-      width: 65px;
-      height: 65px;
-    }
-    
-    .nav-item {
-      width: 80px;
-    }
-    
-    .nav-item span, 
-    .center-label {
-      font-size: 12px;
-    }
-  }
-  
-  /* Large screens */
-  @media (min-width: 1024px) {
-    
-    .nav-item:hover .icon-container {
-      transform: translateY(-2px);
-    }
-    
-    .center-button:hover {
-      transform: translateY(-4px);
-    }
-  }
+}
