@@ -124,14 +124,12 @@ const Home = () => {
             <div className="action-buttons">
 
             <StarActionButton 
-              icon="🌿"
               title="Plant Match"
               subtitle="Discover new plants for your space"
               onClick={() => handleOpenModal('new')}  // Pass 'new' mode
             />
 
             <StarActionButton 
-              icon="💚"
               title="Plant Care"
               subtitle="Tips for your existing plants"
               onClick={() => handleOpenModal('care')}  // Pass 'care' mode

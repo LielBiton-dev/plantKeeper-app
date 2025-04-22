@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #28433F;
+  background-color: #0e2516;
   position: relative;
   overflow: hidden;
 }
@@ -36,7 +36,6 @@
 .scan-instruction {
   width: 100%;
   text-align: center;
-  margin-bottom: 2rem;
 }
 
 .scan-instruction h2 {
@@ -57,12 +56,10 @@
 
 .image-preview {
   width: 100%;
-  max-width: 380px;
-  height: 280px;
-  border-radius: 100px;
+  max-width: 320px;
+  border-radius: 0px;
   overflow: hidden;
   position: relative;
-  background-color: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,8 +98,8 @@
 }
 
 .upload-btn {
-  background-color: #F5A623;
-  color: white;
+  background-color: #89c955;
+  color: #003820;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,8 +110,8 @@
 }
 
 .photo-btn {
-  background-color: #F5A623;
-  color: white;
+  background-color: #89c955;
+  color: #003820;
   display: flex;
   align-items: center;
   justify-content: center;
