@@ -125,7 +125,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
   }
   
   .notification-plant {
@@ -206,6 +205,8 @@
     font-weight: 500;
     cursor: pointer;
     transition: color 0.2s ease;
+    align-self: flex-end;
+    padding-bottom: 1px;
   }
 
   .mark-all-button:hover {

@@ -70,7 +70,7 @@ const Collection = () => {
       <TopNav userName={userName} />
       <PageTransition>
         <div className="content-container">
-          <h2 className="collection-title">My plants</h2>
+          <h2 className="page-title">My plants</h2>
 
           <div className="plant-grid">
             {userPlants.map(plant => (
