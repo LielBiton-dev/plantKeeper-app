@@ -106,7 +106,7 @@ function App() {
                   <Home />
                 )
               ) : 
-              <Navigate to="/welcome" />
+              <Navigate to="/login" />
           } 
         />
         <Route path="/collection" element={<Collection />} />

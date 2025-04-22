@@ -2,9 +2,8 @@
 
 /* Profile content container */
 .profile-content {
-  padding: 1.5rem 1rem 6rem;
+  padding: 1.5rem 1rem 6rem !important;
   width: 100%;
-  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -13,7 +12,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.5rem !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -54,7 +53,7 @@
 .section-heading {
   font-size: 1.2rem;
   color: var(--text-dark);
-  margin: 2rem 0 1rem;
+  margin: 0.5rem 0 1rem;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -101,6 +100,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .profile-info-label {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TopNav, BotNav } from '../components/Nav';
+import { TopNav } from '../components/Nav';
 import { useLocation, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
@@ -145,9 +145,6 @@ const IdentificationResults = () => {
   const cleanPlantId = prediction.name.split("(")[0].trim().toLowerCase().replace(/\s+/g, "_");
 
   const mainName = prediction.name.split("(")[0].trim();
-  const secondaryName = prediction.name.includes("(")
-    ? prediction.name.split("(")[1].replace(")", "").trim()
-    : null;
 
   return (
     <div className="identification-page">

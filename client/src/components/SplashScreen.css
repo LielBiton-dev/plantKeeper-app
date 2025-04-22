@@ -20,11 +20,13 @@
   
   .app-name {
     font-size: 27px;
-    color: #333;
+    color: var(--text-dark);
     margin-top: 1px;
     opacity: 0;
     animation: fadeIn 1s ease-in-out forwards;
+    font-weight: 600;
     font-family: 'Poppins', sans-serif;
+    line-height: 1; 
   }
   
   @keyframes spin {

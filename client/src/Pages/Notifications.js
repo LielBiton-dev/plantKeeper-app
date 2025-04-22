@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { TopNav, BotNav } from '../components/Nav';
-import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import PageTransition from "../components/PageTransition";
 import "./Notifications.css";
 
 const Notifications = () => {
-  const navigate = useNavigate();
   const [userName, setUserName] = useState("");
 
 
@@ -93,16 +92,16 @@ const Notifications = () => {
   return (
     <div className="page-container bg-light">
       <TopNav userName={userName} />
-      
-      <div className="notification-content">
+      <PageTransition>
+      <div className="content-container notification-content">
         <div className="notification-header-row">
-          <h2 className="notification-title">Notifications</h2>
-          <button onClick={markAllAsRead} className="mark-all-button">
-            Mark all as read
-          </button>
+          <h2 className="page-title">Notifications</h2>
         </div>
 
         <div className="notification-container">
+          <button onClick={markAllAsRead} className="mark-all-button">
+              Mark all as read
+          </button>
           {notifications.map(notification => (
             <div
               key={notification.id}
@@ -137,7 +136,8 @@ const Notifications = () => {
               <p className="text-gray-500">You're all caught up!</p>
             </div>
           )}
-      
+
+      </PageTransition>
       <BotNav />    
     </div>
   );
