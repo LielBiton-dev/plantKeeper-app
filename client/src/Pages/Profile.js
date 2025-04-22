@@ -5,15 +5,22 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
-import { IoPersonOutline, IoMailOutline, IoNotificationsOutline, IoLocationOutline, IoLockClosedOutline, IoTrashOutline } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
+import { 
+  IoPersonOutline,
+  IoNotificationsOutline, 
+  IoLocationOutline, 
+  IoLockClosedOutline, 
+  IoTrashOutline,
+  IoSettingsOutline,
+  IoChevronForwardOutline,
+  IoChevronDownOutline
+} from "react-icons/io5";
 import "./Profile.css";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -24,6 +31,9 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  
+  // Accordion state
+  const [openSection, setOpenSection] = useState(null);
 
   // Fetch user data
   useEffect(() => {
@@ -71,7 +81,7 @@ const Profile = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setSaving(true);
     setError(null);
     setSuccess(false);
@@ -90,7 +100,7 @@ const Profile = () => {
       });
       
       setSuccess(true);
-      setEditing(false);
+      setOpenSection(null);
       
       // Update local user state to reflect changes
       setUser({
@@ -108,9 +118,17 @@ const Profile = () => {
     }
   };
 
+  const toggleSection = (section) => {
+    if (openSection === section) {
+      setOpenSection(null);
+    } else {
+      setOpenSection(section);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="page-container bg-light">
+      <div className="page-container">
         <TopNav userName={formData.firstName || "User"} />
         <div className="content-container">
           <div className="loading-animation">
@@ -124,7 +142,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="page-container bg-light">
+    <div className="page-container profile-page">
       <TopNav userName={formData.firstName || "User"} />
       
       <PageTransition>
@@ -143,191 +161,158 @@ const Profile = () => {
           )}
           
           <div className="profile-header">
-            <div className="profile-avatar">
-              {formData.firstName ? formData.firstName.charAt(0).toUpperCase() : "U"}
-              {formData.lastName ? formData.lastName.charAt(0).toUpperCase() : ""}
-            </div>
-            <div className="profile-name">
-              <h3>{formData.firstName} {formData.lastName}</h3>
-              <p>{formData.email}</p>
+            <div className="profile-initials">LB</div>
+            <h1 className="profile-name">{formData.firstName || "Liel"} {formData.lastName || "Biton"}</h1>
+            <p className="profile-account-type">Personal Account</p>
+          </div>
+          
+          {/* Accordion Menu */}
+          <div className="profile-menu">
+            {/* My Account Section */}
+            <div className="menu-item">
+              <button 
+                className="menu-button" 
+                onClick={() => toggleSection('myAccount')}
+              >
+                <div className="menu-icon">
+                  <IoPersonOutline />
+                </div>
+                <span className="menu-title">My account</span>
+                <div className="menu-arrow">
+                  {openSection === 'myAccount' ? <IoChevronDownOutline /> : <IoChevronForwardOutline />}
+                </div>
+              </button>
               
-              {!editing && (
-                <button 
-                  className="profile-edit-btn" 
-                  onClick={() => setEditing(true)}
-                >
-                  <MdEdit size={18} /> Edit Profile
-                </button>
+              {openSection === 'myAccount' && (
+                <div className="menu-content">
+                  <div className="account-form">
+                    <div className="form-field">
+                      <div className="field-label">First Name</div>
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="field-input"
+                      />
+                    </div>
+                    
+                    <div className="form-field">
+                      <div className="field-label">Last Name</div>
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="field-input"
+                      />
+                    </div>
+                    
+                    <div className="form-field">
+                      <div className="field-label">Email</div>
+                      <div className="email-field">
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          className="field-input disabled"
+                          disabled
+                        />
+                        <div className="field-note">Email cannot be changed</div>
+                      </div>
+                    </div>
+                    
+                    <div className="form-actions">
+                      <button
+                        className="save-button"
+                        onClick={handleSubmit}
+                        disabled={saving}
+                      >
+                        {saving ? "Saving..." : "Save Changes"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Settings Section */}
+            <div className="menu-item">
+              <button 
+                className="menu-button" 
+                onClick={() => toggleSection('settings')}
+              >
+                <div className="menu-icon settings-icon">
+                  <IoSettingsOutline />
+                </div>
+                <span className="menu-title">Settings</span>
+                <div className="menu-arrow">
+                  {openSection === 'settings' ? <IoChevronDownOutline /> : <IoChevronForwardOutline />}
+                </div>
+              </button>
+              
+              {openSection === 'settings' && (
+                <div className="menu-content">
+                  <div className="settings-content">
+                    <div className="setting-item">
+                      <div className="setting-icon notification-icon">
+                        <IoNotificationsOutline />
+                      </div>
+                      <span className="setting-label">Enable Notifications</span>
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          name="notificationsEnabled"
+                          checked={formData.notificationsEnabled}
+                          onChange={handleChange}
+                        />
+                        <span className="slider round"></span>
+                      </label>
+                    </div>
+                    
+                    <div className="setting-item">
+                      <div className="setting-icon location-icon">
+                        <IoLocationOutline />
+                      </div>
+                      <span className="setting-label">Enable Location Services</span>
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          name="locationEnabled"
+                          checked={formData.locationEnabled}
+                          onChange={handleChange}
+                        />
+                        <span className="slider round"></span>
+                      </label>
+                    </div>
+                    
+                    <div className="setting-item clickable">
+                      <div className="setting-icon password-icon">
+                        <IoLockClosedOutline />
+                      </div>
+                      <div className="setting-details">
+                        <div className="setting-label">Change Password</div>
+                        <div className="setting-description">Update your security</div>
+                      </div>
+                    </div>
+                    
+                    <div className="setting-item clickable delete-item">
+                      <div className="setting-icon delete-icon">
+                        <IoTrashOutline />
+                      </div>
+                      <div className="setting-details">
+                        <div className="setting-label">Delete Account</div>
+                        <div className="setting-description">Remove all your data</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </div>
           
-          {!editing ? (
-            <>
-              <h2 className="section-heading">Personal Information</h2>
-              <div className="profile-info">
-                <div className="profile-info-row">
-                  <div className="profile-info-icon">
-                    <IoPersonOutline size={22} />
-                  </div>
-                  <div className="profile-info-details">
-                    <span className="profile-info-label">Name</span>
-                    <span className="profile-info-value">{formData.firstName} {formData.lastName}</span>
-                  </div>
-                </div>
-                
-                <div className="profile-info-row">
-                  <div className="profile-info-icon">
-                    <IoMailOutline size={22} />
-                  </div>
-                  <div className="profile-info-details">
-                    <span className="profile-info-label">Email</span>
-                    <span className="profile-info-value">{formData.email}</span>
-                  </div>
-                </div>
-                
-                <div className="profile-info-row">
-                  <div className="profile-info-icon">
-                    <IoNotificationsOutline size={22} />
-                  </div>
-                  <div className="profile-info-details">
-                    <span className="profile-info-label">Notifications</span>
-                    <span className="profile-info-value status-indicator">
-                      <span className={`status-dot ${formData.notificationsEnabled ? 'active' : 'inactive'}`}></span>
-                      {formData.notificationsEnabled ? "Enabled" : "Disabled"}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="profile-info-row">
-                  <div className="profile-info-icon">
-                    <IoLocationOutline size={22} />
-                  </div>
-                  <div className="profile-info-details">
-                    <span className="profile-info-label">Location Services</span>
-                    <span className="profile-info-value status-indicator">
-                      <span className={`status-dot ${formData.locationEnabled ? 'active' : 'inactive'}`}></span>
-                      {formData.locationEnabled ? "Enabled" : "Disabled"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              
-              <h2 className="section-heading">Account Settings</h2>
-              <div className="account-actions">
-                <div className="action-buttons">
-                  <button className="action-btn">
-                    <div className="action-icon">
-                      <IoLockClosedOutline size={24} />
-                    </div>
-                    Change Password
-                    <div className="action-subtitle">Update your security</div>
-                  </button>
-                  <button className="action-btn" style={{backgroundColor: "#b71c1c"}}>
-                    <div className="action-icon">
-                      <IoTrashOutline size={24} />
-                    </div>
-                    Delete Account
-                    <div className="action-subtitle">Remove all your data</div>
-                  </button>
-                </div>
-              </div>
-            </>
-          ) : (
-            <form onSubmit={handleSubmit} className="profile-form">
-              <h2 className="section-heading">Edit Profile</h2>
-              
-              <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="auth-input"
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="auth-input"
-                  required
-                />
-              </div>
-              
-              <div className="form-group email-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  className="auth-input disabled"
-                  disabled
-                />
-                <small>Email cannot be changed</small>
-              </div>
-              
-              <h2 className="section-heading">Preferences</h2>
-              
-              <div className="toggle-group">
-                <div className="toggle-label">
-                  <IoNotificationsOutline size={20} />
-                  <span>Enable Notifications</span>
-                </div>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    name="notificationsEnabled"
-                    checked={formData.notificationsEnabled}
-                    onChange={handleChange}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              
-              <div className="toggle-group">
-                <div className="toggle-label">
-                  <IoLocationOutline size={20} />
-                  <span>Enable Location Services</span>
-                </div>
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    name="locationEnabled"
-                    checked={formData.locationEnabled}
-                    onChange={handleChange}
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={() => setEditing(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="save-btn"
-                  disabled={saving}
-                >
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </form>
-          )}
+          {/* Extra space to prevent content from being hidden by bottom nav */}
+          <div className="bottom-spacing"></div>
         </main>
       </PageTransition>
       

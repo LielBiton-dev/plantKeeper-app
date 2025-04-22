@@ -1,247 +1,274 @@
-/* Profile.css - Modern Clean Design */
+/* Profile.css - Clean Modern Design */
+
+/* Use global variables from the app */
+.profile-page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.bottom-spacing {
+  height: 120px;
+}
 
 /* Profile content container */
 .profile-content {
-  padding: 1.5rem 1rem 6rem !important;
+  padding: 0;
   width: 100%;
+  max-width: 700px;
   margin: 0 auto;
 }
 
-/* User profile header section */
+/* Profile header styling */
 .profile-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+  padding: 20px 0;
 }
 
-.profile-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-right: 1.5rem;
-  margin-top: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
+.profile-initials {
+  font-size: 20px;
+  color: var(--text-dark);
+  margin-bottom: 16px;
 }
 
 .profile-name {
-  flex: 1;
-}
-
-.profile-name h3 {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-dark);
-  font-size: 1.6rem;
-}
-
-.profile-name p {
-  margin: 0;
-  color: var(--text-medium);
-  font-size: 0.95rem;
-}
-
-/* Section heading */
-.section-heading {
-  font-size: 1.2rem;
-  color: var(--text-dark);
-  margin: 0.5rem 0 1rem;
+  font-size: 24px;
   font-weight: 600;
-  display: flex;
-  align-items: center;
+  margin: 0 0 8px 0;
+  color: var(--text-dark);
 }
 
-.section-heading::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background-color: rgba(0, 0, 0, 0.08);
-  margin-left: 0.75rem;
+.profile-account-type {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
 }
 
-/* Profile info section */
-.profile-info {
-  margin-bottom: 2rem;
+/* Menu styling */
+.profile-menu {
+  width: 100%;
+  max-width: 700px;
+  margin: 24px 16px;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.profile-info-row {
-  display: flex;
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  align-items: center;
+.menu-item {
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.profile-info-row:last-child {
+.menu-item:last-child {
   border-bottom: none;
 }
 
-.profile-info-icon {
+.menu-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-button:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.menu-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: rgba(40, 67, 63, 0.08);
   border-radius: 50%;
-  margin-right: 1rem;
+  background-color: rgba(40, 67, 63, 0.1);
+  margin-right: 16px;
   color: var(--primary-color);
-  flex-shrink: 0;
+  font-size: 20px;
 }
 
-.profile-info-details {
+.settings-icon {
+  background-color: rgba(40, 67, 63, 0.1);
+  color: var(--primary-color);
+}
+
+.menu-title {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.profile-info-label {
-  font-size: 0.85rem;
-  color: var(--text-medium);
-  margin-bottom: 0.25rem;
-}
-
-.profile-info-value {
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-dark);
-  font-size: 1rem;
 }
 
-/* Status indicator */
-.status-indicator {
+.menu-arrow {
+  color: #999;
   display: flex;
   align-items: center;
+  font-size: 20px;
 }
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
+/* Menu content (expanded sections) */
+.menu-content {
+  background-color: #9e9e9e24;
+  padding: 20px;
 }
 
-.status-dot.active {
-  background-color: #4CAF50;
-}
-
-.status-dot.inactive {
-  background-color: #9e9e9e;
-}
-
-/* Edit profile button */
-.profile-edit-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background-color: var(--primary-color);
-  color: white;
-  padding: 0.75rem 1.5rem;
+/* Form styling for My Account section */
+.form-container {
+  padding: 20px;
+  background-color: #9e9e9e24;
   border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.2s;
-  margin-top: 1rem;
 }
 
-.profile-edit-btn:hover {
-  background-color: #1e322f;
+.form-field {
+  margin-bottom: 20px;
 }
 
-/* Form styling for edit mode */
-.profile-form {
-  padding-top: 1rem;
-  width: 100%;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
+.field-label {
   font-weight: 500;
   color: var(--text-dark);
-  font-size: 0.9rem;
+  margin-bottom: 8px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="email"] {
+.field-input {
   width: 100%;
-  padding: 0.75rem;
+  padding: 12px;
+  font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: white;
-  font-size: 1rem;
-  color: var(--text-dark);
-  box-sizing: border-box;
-  transition: border-color 0.2s;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="email"]:focus {
-  border-color: var(--primary-color);
+.field-input:focus {
   outline: none;
+  border-color: var(--primary-color);
 }
 
-.form-group small {
-  display: block;
-  color: var(--text-medium);
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
+.field-input.disabled {
+  background-color: #f8f8f8;
+  color: #666;
 }
 
-.auth-input.disabled {
-  background-color: #f9f9f9;
-  color: var(--text-medium);
+.field-note {
+  font-size: 14px;
+  color: #888;
+  margin-top: 4px;
 }
 
-/* Toggle switches */
-.toggle-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
-  padding: 0.5rem 0;
-}
-
-.toggle-label {
-  display: flex;
-  align-items: center;
+/* Save button */
+.save-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: 500;
-  color: var(--text-dark);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: block;
+  margin: 8px 0;
 }
 
-.toggle-label svg {
-  margin-right: 0.75rem;
+.save-button:hover {
+  background-color: #1a2e2a;
+}
+
+.save-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Settings section styling */
+.settings-content {
+  padding: 0;
+  background-color: transparent;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item.clickable {
+  cursor: pointer;
+}
+
+.setting-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.notification-icon {
+  background-color: rgba(40, 67, 63, 0.1);
   color: var(--primary-color);
 }
 
-.toggle-switch {
+.location-icon {
+  background-color: rgba(40, 67, 63, 0.1);
+  color: var(--primary-color);
+}
+
+.password-icon {
+  background-color: rgba(40, 67, 63, 0.1);
+  color: var(--primary-color);
+}
+
+.delete-icon {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+}
+
+.setting-label {
+  flex: 1;
+  font-size: 16px;
+  color: var(--text-dark);
+}
+
+.setting-details {
+  flex: 1;
+}
+
+.setting-description {
+  font-size: 14px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* Modern switch styling */
+.switch {
   position: relative;
   display: inline-block;
-  width: 48px;
+  width: 50px;
   height: 24px;
 }
 
-.toggle-switch input {
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.toggle-slider {
+.slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -250,87 +277,52 @@
   bottom: 0;
   background-color: #ccc;
   transition: .4s;
-  border-radius: 24px;
 }
 
-.toggle-slider:before {
+.slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
   background-color: white;
   transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
   border-radius: 50%;
 }
 
-input:checked + .toggle-slider {
-  background-color: var(--primary-color);
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(24px);
-}
-
-/* Form actions */
-.form-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2rem;
-  width: 100%;
-}
-
-.cancel-btn {
-  color: var(--text-dark);
-  font-weight: 500;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0.75rem 1rem;
-}
-
-.save-btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  min-width: 120px;
-  cursor: pointer;
-}
-
-.save-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Account actions section */
-.account-actions {
-  margin-top: 2rem;
-}
-
-/* Success message */
+/* Status messages */
 .success-message {
   background-color: rgba(76, 175, 80, 0.15);
   color: #2e7d32;
-  padding: 1rem;
+  padding: 12px;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin: 16px;
   text-align: center;
   font-weight: 500;
 }
 
-/* Error message */
 .error-text {
   background-color: rgba(244, 67, 54, 0.15);
   color: #d32f2f;
-  padding: 1rem;
+  padding: 12px;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin: 16px;
   text-align: center;
   font-weight: 500;
 }
@@ -341,7 +333,7 @@ input:checked + .toggle-slider:before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 30px;
 }
 
 .loading-spinner {
@@ -351,7 +343,7 @@ input:checked + .toggle-slider:before {
   border-radius: 50%;
   border-left-color: var(--primary-color);
   animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
 }
 
 @keyframes spin {
@@ -359,63 +351,53 @@ input:checked + .toggle-slider:before {
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .profile-header {
-    flex-direction: column;
-    text-align: center;
+/* Responsive styles for My Account form */
+@media (min-width: 768px) {
+  .form-field {
+    display: flex;
+    align-items: center;
   }
   
-  .profile-avatar {
-    margin-right: 0;
-    margin-bottom: 1rem;
+  .field-label {
+    width: 120px;
+    margin-bottom: 0;
+    margin-right: 16px;
+    text-align: right;
   }
   
-  .profile-info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  .field-input {
+    flex: 1;
   }
   
-  .profile-info-icon {
-    margin-bottom: 0.75rem;
+  .email-field {
+    flex: 1;
   }
   
-  .profile-info-details {
-    width: 100%;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .save-btn, .cancel-btn {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .toggle-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  }
-  
-  .toggle-switch {
-    align-self: flex-start;
+  .save-button {
+    margin-left: auto;
+    display: block;
   }
 }
 
-@media (min-width: 768px) {
-  .profile-content {
-    padding: 2rem;
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .profile-menu {
+    margin: 16px 8px;
+  }
+  
+  .menu-button {
+    padding: 14px;
+  }
+  
+  .menu-content {
+    padding: 16px;
+  }
+  
+  .setting-item {
+    padding: 12px;
+  }
+  
+  .profile-name {
+    font-size: 22px;
   }
 }
