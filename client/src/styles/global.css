@@ -59,6 +59,10 @@
     position: relative;
     overflow: hidden;
   }
+
+  .bottom-spacing {
+    height: 120px;
+  }
   
   /* --------------------------------
      From: Home.css
