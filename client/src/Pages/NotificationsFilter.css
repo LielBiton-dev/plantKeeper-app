@@ -1,0 +1,151 @@
+/* Notification Filter Styles */
+
+/* Filter toggle button */
+.notification-filter-toggle {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+  }
+  
+  .notification-filter-toggle:hover {
+    background-color: rgba(40, 67, 63, 0.1);
+  }
+  
+  .notification-filter-icon {
+    font-size: 1.1rem;
+    margin-right: 20rem;
+  }
+  
+  /* Filter panel */
+  .notification-filter-panel {
+    width: 100%;
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .notification-filter-group {
+    margin-bottom: 1rem;
+  }
+  
+  .notification-filter-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+  
+  .notification-filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  
+  .notification-filter-option {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background-color: var(--bg-lighter);
+    transition: background-color 0.2s ease;
+  }
+  
+  .notification-filter-option:hover {
+    background-color: var(--bg-light);
+  }
+  
+  .notification-filter-checkbox {
+    margin-right: 0.5rem;
+    accent-color: var(--primary-color);
+  }
+  
+  .notification-filter-label {
+    color: var(--text-dark);
+  }
+  
+  /* Filter action buttons */
+  .notification-filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  
+  .notification-filter-apply,
+  .notification-filter-reset {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    border: none;
+  }
+  
+  .notification-filter-apply {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .notification-filter-reset {
+    background-color: transparent;
+    color: var(--text-dark);
+    border: 1px solid #d1d5db;
+  }
+  
+  .notification-filter-apply:hover,
+  .notification-filter-reset:hover {
+    opacity: 0.9;
+  }
+  
+  /* Filter results summary */
+  .notification-filter-summary {
+    font-size: 0.8rem;
+    color: var(--text-medium);
+    text-align: right;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Notification actions row */
+  .notification-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* Media queries for responsiveness */
+  @media (max-width: 480px) {
+    .notification-filter-options {
+      max-height: 100px;
+    }
+    
+    .notification-filter-action {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .notification-filter-panel {
+      padding: 1.25rem;
+    }
+    
+    .notification-filter-options {
+      max-height: 150px;
+    }
+  }
