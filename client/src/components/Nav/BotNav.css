@@ -125,8 +125,10 @@
 }
 
 /* Responsive adjustments */
-@media (min-width: 440px) {
-  .tabs {
-    width: 100%;
+@media (max-width: 480px) {
+  .navbar {
+    height: 80px;
+    padding-bottom: 30px;
+    padding-top: 15px;
   }
 }

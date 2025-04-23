@@ -24,6 +24,7 @@
     width: 100%;
     max-width: 20rem;
     text-align: center;
+    background-color: #f5f5f4 !important;
   }
   
   .page-title {
