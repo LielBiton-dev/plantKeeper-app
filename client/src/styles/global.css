@@ -39,7 +39,8 @@
     --text-medium: rgba(37, 36, 36, 0.7); /* From various form screens' .description-text */
     --error-color: #b71c1c;          /* From Register.js error div */
     --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* From CareInstructions.css (.care-card) */
-    --light-green: #b8c89f;          /* From CareInstructions.css (.care-tag) */
+    --light-green: #b8c89f; 
+    --main-page: #f5f5f4;
   }
   
   /* --------------------------------

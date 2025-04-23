@@ -161,8 +161,11 @@ const Profile = () => {
           )}
           
           <div className="profile-header">
-            <div className="profile-initials">LB</div>
-            <h1 className="profile-name">{formData.firstName || "Liel"} {formData.lastName || "Biton"}</h1>
+              <div className="profile-initials">
+                  {formData.firstName ? formData.firstName.charAt(0).toUpperCase() : ""}
+                  {formData.lastName ? formData.lastName.charAt(0).toUpperCase() : ""}
+                </div>
+            <h1 className="profile-name">{formData.firstName || ""} {formData.lastName || ""}</h1>
             <p className="profile-account-type">Personal Account</p>
           </div>
           
