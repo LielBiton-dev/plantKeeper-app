@@ -82,60 +82,101 @@ const Home = () => {
         ) : (
           <div className="content-container">
             {/* Greeting section */}
-            <section className="greeting">
-              <h2 className="page-title">Welcome to your greenhouse</h2>
-              <p className="description-text">Let's see how your plants are doing</p>
+            <section>
+              <h2 className="page-title" id="home-title">WELCOME TO YOUR GREENHOUSE</h2>
+              <p className="description-text" id="home-description">Let's see how your plants are doing</p>
               <p className="location-display">
               <IoLocationOutline color="#2e553d"/>
                 <span className="location-text">{userLocation}</span>
               </p>
             </section>
+
+            <hr class="section-divider" />
             
-          {/* Status Cards */}
-          <div className="status-cards-grid">
-            <section className="status-card">
+            {/* Status Cards */}
+            <div className="status-cards-grid">
+            <section className="status-card" id="wateredTodayCard">
               <div className="status-card-container">
-                <img 
-                  src="/spanHomePage1.png" 
-                  alt="Plants watered" 
-                  className="status-card-image" 
+                <img
+                  src="/spanHomePage1.png"
+                  alt="Plants watered"
+                  className="status-card-image"
                 />
                 <div className="status-card-content">
-                  <h3>3 Plants Watered</h3>
-                  <p>Well done! Your plants are happy</p>
+                  <h3>WATERED TODAY</h3>
+                  <p id="wateredProgressText">You've watered <b>3</b> out of <b>5</b> plants today!</p>
                 </div>
               </div>
             </section>
-            
-            <section className="status-card">
-              <div className="status-card-container">
-                <img 
-                  src="/spanHomePage2.png" 
-                  alt="Next task" 
-                  className="status-card-image" 
-                />
-                <div className="status-card-content">
-                  <h3>Your next task</h3>
-                  <p>Water your Lilys</p>
+              
+              <section className="status-card">
+                <div className="status-card-container">
+                  <img 
+                    src="/spanHomePage2.png" 
+                    alt="Next task" 
+                    className="status-card-image" 
+                  />
+                  <div className="status-card-content">
+                    <h3>YOUR NEXT TASK</h3>
+                    <p>Water your Lilys</p>
+                  </div>
                 </div>
-              </div>
-            </section>
-          </div>
+              </section>
+            </div>
+
             <div className="action-buttons">
 
-            <StarActionButton 
-              title="Plant Match"
-              subtitle="Discover new plants for your space"
-              onClick={() => handleOpenModal('new')}  // Pass 'new' mode
-            />
+              <StarActionButton 
+                title="Plant Match"
+                subtitle="Discover new plants for your space"
+                onClick={() => handleOpenModal('new')}  // Pass 'new' mode
+              />
 
-            <StarActionButton 
-              title="Plant Care"
-              subtitle="Tips for your existing plants"
-              onClick={() => handleOpenModal('care')}  // Pass 'care' mode
-            />
+              <StarActionButton 
+                title="Plant Care"
+                subtitle="Tips for your existing plants"
+                onClick={() => handleOpenModal('care')}  // Pass 'care' mode
+              />
+            </div>
+            
+
+            {/* Care Articles */}
+            <div class="tips-section">
+              <h2 class="section-title page-title">Plant Care Tips</h2>
+              <hr class="section-divider" />
+              <div class="tips-carousel">
+                <div class="tip-card">
+                  <img src="/root-rot.png" alt="Root Rot Prevention" class="tip-image" />
+                  <div class="tip-content">
+                    <h3>How to Prevent Root Rot</h3>
+                    <p>Learn the signs of overwatering and how to save your plants from root rot.</p>
+                  </div>
+                </div>
+                <div class="tip-card">
+                  <img src="/repotting.png" alt="Repotting 101" class="tip-image" />
+                  <div class="tip-content">
+                    <h3>Repotting 101</h3>
+                    <p>Step-by-step guide to repotting your plants without stress.</p>
+                  </div>
+                </div>
+                <div class="tip-card">
+                <img src="/light-indoor.png" alt="Repotting 101" class="tip-image" />
+                  <div class="tip-content">
+                    <h3>Lighting for Indoor Plants</h3>
+                    <p>Understanding your home's light conditions for healthier plants.</p>
+                  </div>
+                </div>
+                <div class="tip-card">
+                <img src="/pest-control.png" alt="Pest Control" class="tip-image" />
+                  <div class="tip-content">
+                    <h3>Natural Pest Control</h3>
+                    <p>Eco-friendly solutions to common plant pests.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
         )}
       </main>
 

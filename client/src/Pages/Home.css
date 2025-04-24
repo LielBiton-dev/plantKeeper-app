@@ -20,8 +20,7 @@
 
   .location-text {
     color: #2e553d;
-    font-weight: 500;
-    letter-spacing: 0.25px;
+    font-weight: 600;
   }
   
   /* Content area */
@@ -30,7 +29,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.5rem 1rem 5rem 1rem;
   }
   
   .loading-text {
@@ -39,27 +37,17 @@
   
   .content-container {
     width: 100%;
-    max-width: 300px;
-  }
-  
-  /* Greeting section */
-  .greeting {
-    margin-bottom: 0.5rem;
-  }
-  
-  .greeting h2 {
-    font-size: 1.8rem;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 0.2rem;
-    line-height: 1; 
-    font-family: 'Poppins', sans-serif;
+    max-width: 95%;
   }
   
   .greeting p {
     font-size: 1rem;
     color: #555;
     font-family: 'Poppins', sans-serif;
+  }
+
+  .description-text {
+    margin-bottom: 1rem !important;
   }
 
 
@@ -71,15 +59,14 @@
     margin-bottom: 2rem;
   }
 
-/* CSS for the status card using img with src */
+/* Status cards */
 .status-card {
-  margin-bottom: 0; /* Remove margin-bottom as grid gap handles spacing */
+  margin-bottom: 0;
   border-radius: 1.25rem;
   overflow: hidden;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   height: 140px;
   width: 100%;
-  font-family: 'Poppins', sans-serif;
 
   /* Movement animation */
   opacity: 0;
@@ -145,14 +132,14 @@
   
   .status-card-content h3 {
     font-size: 1.2rem;
-    font-weight: 600;
+    font-weight: 500;
     color: #222;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0rem;
   }
   
   .status-card-content p {
     color: #333;
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
 
   @media (min-width: 768px) {
@@ -177,40 +164,6 @@
       transform: translateY(-4px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
-  }
-  
-  /* Task card specific */
-  .task-card {
-    margin-bottom: 1.5rem;
-  }
-  
-  .task-content {
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-  }
-  
-  .task-content div:first-child {
-    flex: 1;
-  }
-  
-  .task-content h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.25rem;
-    
-  }
-  
-  .task-content p {
-    color: #666;
-  }
-  
-  .task-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 0.25rem;
-    object-fit: cover;
   }
   
   /* Action buttons */
@@ -261,6 +214,16 @@
     font-family: 'Poppins', sans-serif;
     position: relative;
     z-index: 2;
+  }
+
+  #home-title {
+    margin-bottom: 0rem;
+    font-size: 2rem;
+    color: #2e553d;
+  }
+
+  #home-description {
+    margin-bottom: 2rem;
   }
 
   /* Stars container */
@@ -378,3 +341,88 @@
     from, to { border-color: transparent }
     50% { border-color: #2e553d }
   }
+
+
+  .tips-section {
+    margin-bottom: 5rem;
+    /* No specific width constraints here */
+  }
+  
+  
+  .tips-carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    padding: 1rem;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 auto;
+    box-sizing: border-box;
+    /* Significantly increase side padding for mobile visibility */
+    padding-left: 0rem; /* Adjust this value as needed */
+    padding-right: 0rem; /* Adjust this value as needed */
+    
+  }
+  
+  .tip-card {
+    background-color: white;
+    border-radius: 1rem;
+    max-width: 80vw; /* Limit the maximum width */
+    flex: 0 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .tip-image {
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .tip-content {
+    padding: 1rem;
+  }
+  
+  .tip-content h3 {
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .tip-content p {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+  }
+  
+  /* Adjust for larger screens where the very wide cards might look odd */
+  @media (min-width: 768px) {
+    .tips-carousel {
+      padding-left: 3rem;
+      padding-right: 3rem;
+      gap: 1.5rem;
+    }
+  
+    .tip-card {
+      min-width: 280px; /* Revert to a fixed width on larger screens */
+      max-width: 320px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .tips-carousel {
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  
+.section-divider {
+  width: 15%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+  border: none;
+  border-radius: 999px;
+  margin: 0.5rem auto 1.5rem; /* center & space */
+}

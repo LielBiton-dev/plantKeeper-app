@@ -4,7 +4,7 @@
 .care-card {
   background: #fff;
   border-radius: 2rem;
-  padding: 1.5rem;
+  padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   max-width: 90%;
   margin: 0 auto;
@@ -20,6 +20,7 @@
   display: flex;
   justify-content: center;
   max-height: 250px;
+  margin-top: 2rem;
 }
 
 .care-plant-image {
@@ -57,21 +58,22 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;
+  margin-bottom: 2rem;
 }
 
 .care-tag {
-  background-color: #b8c89f;
-  border-radius: 1rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: var(--light-green-2);
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  font-size: 0.95rem;
+  padding: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 500;
   text-align: center;
-  min-height: 100px;
+  min-height: 80px;
   transition: transform 0.2s ease;
 }
 
