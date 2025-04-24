@@ -4,6 +4,7 @@ import { auth } from "./firebase/firebase";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Home from "./Pages/Home";
+
 import WelcomePage from "./Pages/Welcome";
 import SplashScreen from "./components/SplashScreen";
 import LocationScreen from "./components/LocationScreen";
