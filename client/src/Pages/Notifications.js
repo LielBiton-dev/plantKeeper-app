@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { TopNav, BotNav } from '../components/Nav';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import "./Notifications.css";
 import { IoFilterOutline } from "react-icons/io5";
 
 const Notifications = () => {
   const [userName, setUserName] = useState("");
+  const [notifications, setNotifications] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPlants, setSelectedPlants] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
@@ -18,6 +19,7 @@ const Notifications = () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
+          // Fetch user name
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const userData = userDoc.data();
@@ -25,125 +27,203 @@ const Notifications = () => {
           } else {
             setUserName("Plant Lover");
           }
+  
+          // Fetch user notifications
+          const notificationsRef = collection(db, "notifications");
+          const q = query(notificationsRef, where("user_id", "==", user.uid));
+          const querySnapshot = await getDocs(q);
+  
+          // Fetch plant names to map plant_id -> display name
+          const plantsSnapshot = await getDocs(collection(db, "plants"));
+          const plantNameMap = {};
+          plantsSnapshot.forEach((doc) => {
+            plantNameMap[doc.id] = doc.data().name || doc.id; 
+            // If plant doc has "name" field, use it. Otherwise fallback to ID.
+          });
+  
+          const fetchedNotifications = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const prettyPlantName = data.plant_id ? (plantNameMap[data.plant_id] || data.plant_id) : null;
+  
+            return {
+              id: doc.id,
+              type: data.type,
+              plant: prettyPlantName || "Unknown Plant",
+              scheduledDate: data.scheduled_date,
+              isRead: data.isRead || false,
+              icon: getIconByType(data.type),
+              message: generateMessage(data.type, prettyPlantName),
+              timeAgo: calculateTimeAgo(data.scheduled_date)
+            };
+          });
+  
+          // 🔥 Filter only notifications from today and sort
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+  
+          const sortedNotifications = fetchedNotifications
+            .filter(n => {
+              const date = new Date(n.scheduledDate.year, n.scheduledDate.month - 1, n.scheduledDate.day);
+              date.setHours(0, 0, 0, 0);
+              return date >= today;
+            })
+            .sort((a, b) => {
+              const aDate = new Date(a.scheduledDate.year, a.scheduledDate.month - 1, a.scheduledDate.day);
+              const bDate = new Date(b.scheduledDate.year, b.scheduledDate.month - 1, b.scheduledDate.day);
+              return aDate - bDate;
+            });
+  
+          setNotifications(sortedNotifications);
+  
         } catch (error) {
-          console.error("Failed to fetch user name:", error);
+          console.error("Failed to fetch notifications:", error);
           setUserName("Plant Lover");
         }
       }
     });
+  
     return () => unsubscribe();
   }, []);
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: 'watering',
-      plant: 'Monstera Deliciosa',
-      message: 'Time to water your plant',
-      timeAgo: '2 hours ago',
-      isRead: false,
-      icon: '💧'
-    },
-    {
-      id: 2,
-      type: 'fertilizer',
-      plant: 'Snake Plant',
-      message: 'Fertilizing reminder',
-      timeAgo: '1 day ago',
-      isRead: true,
-      icon: '🌱'
-    },
-    {
-      id: 3,
-      type: 'repotting',
-      plant: 'Fiddle Leaf Fig',
-      message: 'Your plant needs a bigger pot',
-      timeAgo: '3 days ago',
-      isRead: false,
-      icon: '🪴'
-    },
-    {
-      id: 4,
-      type: 'light',
-      plant: 'Pothos',
-      message: 'Consider moving to a brighter spot',
-      timeAgo: '1 week ago',
-      isRead: true,
-      icon: '☀️'
-    },
-    {
-      id: 5,
-      type: 'tip',
-      plant: null,
-      message: 'New plant care guide available: Spring Care Tips',
-      timeAgo: '2 weeks ago',
-      isRead: true,
-      icon: '📚'
+  // Helper: get icon based on type
+  const getIconByType = (type) => {
+    switch (type) {
+      case "watering":
+        return "💧";
+      case "fertilizer":
+        return "🌱";
+      case "repotting":
+        return "🪴";
+      case "light":
+        return "☀️";
+      case "tip":
+        return "📚";
+      default:
+        return "🔔";
     }
-  ]);
+  };
 
-  // Extract unique plant names and notification types for filter options
+  // Helper: create a message based on type
+  const generateMessage = (type, plantId) => {
+    switch (type) {
+      case "watering":
+        return `Time to water your ${plantId}`;
+      case "fertilizer":
+        return `Fertilize your ${plantId}`;
+      case "repotting":
+        return `${plantId} needs a bigger pot`;
+      case "light":
+        return `Move ${plantId} to a brighter spot`;
+      case "tip":
+        return `Check the latest plant care tips!`;
+      default:
+        return `New notification`;
+    }
+  };
+
+  // Helper: calculate time ago or in future
+  const calculateTimeAgo = (scheduledDate) => {
+    if (!scheduledDate) return "Unknown time";
+  
+    const { year, month, day } = scheduledDate;
+    const scheduled = new Date(year, month - 1, day);
+    const now = new Date();
+  
+    scheduled.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
+  
+    const diffTime = scheduled.getTime() - now.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays > 1) return `In ${diffDays} days`;
+    if (diffDays === -1) return "1 day ago";
+    if (diffDays > -7) return `${Math.abs(diffDays)} days ago`;
+    return `${Math.abs(Math.floor(diffDays / 7))} week${Math.abs(Math.floor(diffDays / 7)) > 1 ? "s" : ""} ago`;
+  };
+
+  // Extract unique plant names and notification types for filters
   const plantOptions = [...new Set(notifications.filter(n => n.plant).map(n => n.plant))];
   const typeOptions = [...new Set(notifications.map(n => n.type))];
 
-  // Apply filters to notifications
+  // Apply filters
   const applyFilters = () => {
     let results = [...notifications];
-    
+
     if (selectedPlants.length > 0) {
-      results = results.filter(notification => 
+      results = results.filter(notification =>
         notification.plant && selectedPlants.includes(notification.plant)
       );
     }
-    
+
     if (selectedTypes.length > 0) {
-      results = results.filter(notification => 
+      results = results.filter(notification =>
         selectedTypes.includes(notification.type)
       );
     }
-    
+
     setFilteredNotifications(results);
   };
 
-  // Reset filters
   const resetFilters = () => {
     setSelectedPlants([]);
     setSelectedTypes([]);
     setFilteredNotifications([]);
   };
 
-  // Toggle plant selection in filter without immediate filtering
   const togglePlantSelection = (plant) => {
-    setSelectedPlants(prevSelected => 
-      prevSelected.includes(plant)
-        ? prevSelected.filter(p => p !== plant)
-        : [...prevSelected, plant]
+    setSelectedPlants(prev => 
+      prev.includes(plant) ? prev.filter(p => p !== plant) : [...prev, plant]
     );
   };
 
-  // Toggle type selection in filter without immediate filtering
   const toggleTypeSelection = (type) => {
-    setSelectedTypes(prevSelected => 
-      prevSelected.includes(type)
-        ? prevSelected.filter(t => t !== type)
-        : [...prevSelected, type]
+    setSelectedTypes(prev => 
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
   };
 
-  // Display filtered notifications only if filters have been applied by clicking "Apply"
   const displayedNotifications = filteredNotifications.length > 0
     ? filteredNotifications
     : notifications;
 
-  const markAsRead = (id) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === id ? { ...notification, isRead: true } : notification
-    ));
-  };
+    const markAsRead = async (id) => {
+      try {
+        // 1. Update Firestore
+        const notifDocRef = doc(db, "notifications", id);
+        await updateDoc(notifDocRef, { isRead: true });
+    
+        // 2. Update local state
+        setNotifications(prevNotifications => 
+          prevNotifications.map(notification => 
+            notification.id === id ? { ...notification, isRead: true } : notification
+          )
+        );
+    
+        setFilteredNotifications(prevFiltered => 
+          prevFiltered.map(notification => 
+            notification.id === id ? { ...notification, isRead: true } : notification
+          )
+        );
+      } catch (error) {
+        console.error("Failed to mark notification as read:", error);
+      }
+    };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(notification => ({ ...notification, isRead: true })));
-  };
+    const markAllAsRead = async () => {
+      try {
+        const updatePromises = notifications.map(notification => 
+          updateDoc(doc(db, "notifications", notification.id), { isRead: true })
+        );
+        await Promise.all(updatePromises);
+    
+        setNotifications(notifications.map(notification => ({ ...notification, isRead: true })));
+        setFilteredNotifications(filteredNotifications.map(notification => ({ ...notification, isRead: true })));
+      } catch (error) {
+        console.error("❌ Failed to mark all notifications as read:", error);
+      }
+    };
 
   return (
     <div className="page-container bg-light">
@@ -166,9 +246,10 @@ const Notifications = () => {
                 <span className="notification-filter-icon"> <IoFilterOutline size={22} /> </span>
               </button>
             </div>
-            
+
             {showFilters && (
               <div className="notification-filter-panel">
+                {/* Plant Filter */}
                 <div className="notification-filter-group">
                   <h3 className="notification-filter-title">Filter by Plant</h3>
                   <div className="notification-filter-options">
@@ -186,6 +267,7 @@ const Notifications = () => {
                   </div>
                 </div>
 
+                {/* Type Filter */}
                 <div className="notification-filter-group">
                   <h3 className="notification-filter-title">Filter by Type</h3>
                   <div className="notification-filter-options">
@@ -215,13 +297,13 @@ const Notifications = () => {
                 </div>
               </div>
             )}
-            
+
             {filteredNotifications.length > 0 && (
               <div className="notification-filter-summary">
                 Showing {filteredNotifications.length} of {notifications.length} notifications
               </div>
             )}
-            
+
             {displayedNotifications.length > 0 ? (
               displayedNotifications.map(notification => (
                 <div

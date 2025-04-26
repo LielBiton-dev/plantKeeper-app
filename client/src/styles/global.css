@@ -28,6 +28,7 @@
   :root {
     --primary-color: #0e2516; /*#28433F; */       /* From multiple files (PlantScan, Home, CareInstructions, Collection) */
     --secondary-color: #F5A623;      /* From PlantScan.css (.upload-btn, .photo-btn) */
+    --primary-green: #3b945e;
     --bg-light: #F0E7D8;             /* From multiple files (Home, Collection) */
     --bg-lighter: #f5f0e6;           /* From multiple files (CameraScreen, LocationScreen, NotificationScreen) */
     --bg-white: #FFFFFF;             /* From multiple components */
