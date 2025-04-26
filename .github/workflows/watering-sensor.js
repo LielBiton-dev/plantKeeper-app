@@ -1,7 +1,16 @@
 const admin = require('firebase-admin');
 
-// Initialize Firebase automatically (credentials from GOOGLE_APPLICATION_CREDENTIALS)
-admin.initializeApp();
+// Decode the credentials from FIREBASE_CREDENTIALS_BASE64
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_CREDENTIALS_BASE64, 'base64').toString('utf8')
+);
+
+// Initialize Firebase Admin SDK properly
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  projectId: serviceAccount.project_id,
+});
+
 const db = admin.firestore();
 
 // Helper: Get today's date as { year, month, day }
