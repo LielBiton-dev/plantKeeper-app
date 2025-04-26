@@ -13,11 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository (read-only)
+      - name: Checkout repository (no submodules)
         uses: actions/checkout@v3
         with:
-          persist-credentials: false  # Important! Don't save git credentials.
-          fetch-depth: 1              # Only latest commit, faster
+          submodules: false
         
       - name: Set up Node.js
         uses: actions/setup-node@v3
