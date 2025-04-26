@@ -13,19 +13,29 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// Helper: Get today's date as { year, month, day }
+// Helper: today's date
 function getTodayDate() {
   const today = new Date();
-  return {
-    year: today.getFullYear(),
-    month: today.getMonth() + 1,
-    day: today.getDate(),
-  };
+  return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
+}
+
+// Helper: add days to a Date
+function addDays(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+// Helper: convert Date -> {year, month, day}
+function toDateObj(date) {
+  return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 }
 
 (async () => {
   try {
-    const today = getTodayDate();
+    const today = new Date();
+    const oneWeekLater = addDays(today, 7);
+
     const userPlantSnapshot = await db.collection('user_plant').get();
 
     for (const userDoc of userPlantSnapshot.docs) {
@@ -56,31 +66,35 @@ function getTodayDate() {
           .limit(1)
           .get();
 
-        let nextDate = new Date();
+        let lastWaterDate = today;
+
         if (!existing.empty) {
           const last = existing.docs[0].data().scheduled_date;
-          const lastDate = new Date(last.year, last.month - 1, last.day);
-          nextDate = new Date(lastDate.getTime() + wateringFrequency * 24 * 60 * 60 * 1000);
+          lastWaterDate = new Date(last.year, last.month - 1, last.day);
+        } else {
+          console.log(`🌱 No previous watering found for ${plantId}, starting from today.`);
         }
 
-        const now = new Date();
-        if (now >= nextDate) {
-          const newDate = getTodayDate();
+        let nextDate = lastWaterDate;
+
+        while (nextDate <= oneWeekLater) {
+          const newScheduledDate = toDateObj(nextDate);
+
           await notificationsRef.add({
             type: 'watering',
             user_id: userId,
             plant_id: plantId,
-            scheduled_date: newDate,
+            scheduled_date: newScheduledDate,
           });
 
-          console.log(`✅ Created watering task: user ${userId}, plant ${plantId}`);
-        } else {
-          console.log(`ℹ️ No watering needed today: user ${userId}, plant ${plantId}`);
+          console.log(`✅ Scheduled watering for user ${userId}, plant ${plantId} on ${newScheduledDate.year}-${newScheduledDate.month}-${newScheduledDate.day}`);
+
+          nextDate = addDays(nextDate, wateringFrequency);
         }
       }
     }
 
-    console.log('🌱 Watering check complete!');
+    console.log('🌟 Watering tasks generated for the next week!');
   } catch (error) {
     console.error('❌ Error running watering sensor:', error);
     process.exit(1);
