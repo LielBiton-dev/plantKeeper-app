@@ -23,7 +23,8 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install sensor dependencies
+        working-directory: .github/workflows
         run: npm install
 
       - name: Run watering sensor script
