@@ -5,14 +5,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
       margin-top: 6px;
       font-size: 0.95rem;
   }
   
   .location-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     color: #2e553d;
     stroke-width: 1.8;
     opacity: 0.8;
@@ -20,7 +20,12 @@
 
   .location-text {
     color: #2e553d;
-    font-weight: 600;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    opacity: 0.8;
   }
   
   /* Content area */
@@ -37,7 +42,7 @@
   
   .content-container {
     width: 100%;
-    max-width: 95%;
+    max-width: 100%;
   }
   
   .greeting p {
@@ -171,7 +176,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    margin-bottom: 2rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
@@ -218,12 +222,13 @@
 
   #home-title {
     margin-bottom: 0rem;
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: #2e553d;
   }
 
   #home-description {
-    margin-bottom: 2rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
   }
 
   /* Stars container */
@@ -283,7 +288,6 @@
     color: var(--primary-color);
     border: 2px solid var(--bg-white);
     transform: translateY(-2px);
-    /*box-shadow: 0 4px 12px rgba(46, 85, 61, 0.2);*/
   }
 
   /* Make stars visible and animate them on hover */
@@ -343,9 +347,11 @@
   }
 
 
-  .tips-section {
-    margin-bottom: 5rem;
-    /* No specific width constraints here */
+  .home-section {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 2rem auto;
+    box-sizing: border-box;
   }
   
   
@@ -370,8 +376,17 @@
     max-width: 80vw; /* Limit the maximum width */
     flex: 0 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    text-decoration: none;
+    color: inherit;
   }
-  
+
+  a.tip-card, 
+  .tip-card:link, 
+  .tip-card:visited {
+    text-decoration: none;
+    color: inherit;
+  }
+    
   .tip-image {
     width: 100%;
     height: 60%;
@@ -424,5 +439,146 @@
   background: linear-gradient(to right, transparent, var(--primary-color), transparent);
   border: none;
   border-radius: 999px;
-  margin: 0.5rem auto 1.5rem; /* center & space */
+  margin: 0.5rem auto 1.5rem;
 }
+
+.section-title {
+  text-align: left;
+}
+
+.plant-stories-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0rem 0rem 0rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.plant-story {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scroll-snap-align: start;
+  text-align: center;
+}
+
+/* Outer gradient ring */
+.plant-story-ring {
+  background: conic-gradient(
+    #88c57f, 
+    #3b945e, 
+    #b9fbc0, 
+    #88c57f
+  );
+  border-radius: 50%;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+}
+
+/* Inner white gap */
+.plant-story-gap {
+  background: white;
+  border-radius: 50%;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Actual image inside */
+.plant-story-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Label */
+.plant-story-label {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #28433F;
+  max-width: 70px;         /* restrict width */
+  white-space: nowrap;     /* prevent line break */
+  overflow: hidden;        /* hide overflow */
+  text-overflow: ellipsis; /* show ... for long names */
+  text-align: center;
+}
+
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-all-link {
+  font-size: 0.75rem;
+  color: #2e553d;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.view-all-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.task-item {
+  background: #f8f8f8;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.task-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.task-dot.water {
+  background: #8ac926;
+}
+
+.task-dot.prune {
+  background: #f78c6b;
+}
+
+.task-dot.sunlight {
+  background: #ffd60a;
+}
+
+.task-text strong {
+  font-size: 0.95rem;
+  color: #2e553d;
+  display: block;
+}
+
+.task-sub {
+  font-size: 0.75rem;
+  color: #777;
+  margin-top: 2px;
+}
+

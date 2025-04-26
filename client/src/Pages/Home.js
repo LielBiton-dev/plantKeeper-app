@@ -17,6 +17,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('new');
+  const [userPlants, setUserPlants] = useState([]);
   
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -56,6 +57,23 @@ const Home = () => {
         } finally {
           setLoading(false);
         }
+
+        // Get user plants collection
+        const userPlantDoc = await getDoc(doc(db, "user_plants", `user_${user.uid}`));
+
+        if (userPlantDoc.exists()) {
+          const plantIds = userPlantDoc.data().plants; 
+          const plantPromises = plantIds.map(id => getDoc(doc(db, "plants", id)));
+          const plantDocs = await Promise.all(plantPromises);
+          const fullPlantData = plantDocs
+          .filter(doc => doc.exists())
+          .map(doc => ({ id: doc.id, ...doc.data() }));
+          setUserPlants(fullPlantData);
+        } else {
+          console.log("No user_plants document found");
+          setUserPlants([]);
+        }
+
       } else {
         // User not logged in, redirect to welcome
         console.log("No authenticated user, redirecting");
@@ -90,89 +108,117 @@ const Home = () => {
                 <span className="location-text">{userLocation}</span>
               </p>
             </section>
-
-            <hr class="section-divider" />
             
-            {/* Status Cards */}
-            <div className="status-cards-grid">
-            <section className="status-card" id="wateredTodayCard">
-              <div className="status-card-container">
-                <img
-                  src="/spanHomePage1.png"
-                  alt="Plants watered"
-                  className="status-card-image"
-                />
-                <div className="status-card-content">
-                  <h3>WATERED TODAY</h3>
-                  <p id="wateredProgressText">You've watered <b>3</b> out of <b>5</b> plants today!</p>
+            {/* Your Plants */}
+            <section className="home-section plants-section">
+              <div className="section-title-row">
+                <h3 className="section-title">Your Plants</h3>
+                <span className="view-all-link" onClick={() => navigate("/collection")}>
+                  View all
+                </span>
+              </div>
+              <div className="plant-stories-carousel">
+                {userPlants.map((plant) => (
+                  <div 
+                    key={plant.id} 
+                    className="plant-story" 
+                    onClick={() => navigate("/care-instructions", { state: { type: plant.id } })}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="plant-story-ring">
+                      <div className="plant-story-gap">
+                        <img src={plant.image_url} alt={plant.name} className="plant-story-image" />
+                      </div>
+                    </div>
+                    <div className="plant-story-label">{plant.name}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+            
+            {/* Today's Tasks */}
+            <section className="home-section tasks-section">
+              <div className="section-title-row">
+                <h3 className="section-title">Today's Tasks</h3>
+                <span className="view-all-link" onClick={() => navigate("/notifications")}>
+                  View all
+                </span>
+              </div>
+
+              <div className="task-list">
+                <div className="task-item">
+                  <div className="task-dot water"></div>
+                  <div className="task-text">
+                    <strong>Water Peace Lily</strong>
+                    <span className="task-sub">Every 5 days</span>
+                  </div>
+                </div>
+                <div className="task-item">
+                  <div className="task-dot prune"></div>
+                  <div className="task-text">
+                    <strong>Prune Snake Plant</strong>
+                    <span className="task-sub">Remove yellow leaves</span>
+                  </div>
+                </div>
+                <div className="task-item">
+                  <div className="task-dot sunlight"></div>
+                  <div className="task-text">
+                    <strong>Move Orchid to sunlight</strong>
+                    <span className="task-sub">Needs 3+ hours today</span>
+                  </div>
                 </div>
               </div>
             </section>
-              
-              <section className="status-card">
-                <div className="status-card-container">
-                  <img 
-                    src="/spanHomePage2.png" 
-                    alt="Next task" 
-                    className="status-card-image" 
-                  />
-                  <div className="status-card-content">
-                    <h3>YOUR NEXT TASK</h3>
-                    <p>Water your Lilys</p>
-                  </div>
-                </div>
-              </section>
-            </div>
 
-            <div className="action-buttons">
-
-              <StarActionButton 
-                title="Plant Match"
-                subtitle="Discover new plants for your space"
-                onClick={() => handleOpenModal('new')}  // Pass 'new' mode
-              />
-
-              <StarActionButton 
-                title="Plant Care"
-                subtitle="Tips for your existing plants"
-                onClick={() => handleOpenModal('care')}  // Pass 'care' mode
-              />
-            </div>
-            
+          
+            {/* Action Buttons */}
+            <section className="home-section actions-section">
+              <div className="action-buttons">
+                <StarActionButton 
+                  title="Plant Match"
+                  subtitle="Discover new plants for your space"
+                  onClick={() => handleOpenModal('new')}
+                />
+                <StarActionButton 
+                  title="Plant Care"
+                  subtitle="Tips for your existing plants"
+                  onClick={() => handleOpenModal('care')}
+                />
+              </div>
+            </section>
 
             {/* Care Articles */}
-            <div class="tips-section">
-              <h2 class="section-title page-title">Plant Care Tips</h2>
-              <hr class="section-divider" />
-              <div class="tips-carousel">
-                <div class="tip-card">
-                  <img src="/root-rot.png" alt="Root Rot Prevention" class="tip-image" />
-                  <div class="tip-content">
+            <div className="home-section tips-section">
+              <h3 className="section-title">Plant Care Tips</h3>
+              <div className="tips-carousel">
+                <a href="https://theplantgallery.com/how-to-fix-and-prevent-root-rot/" target="_blank" rel="noopener noreferrer" className="tip-card">
+                  <img src="/root-rot.png" alt="Root Rot Prevention" className="tip-image" />
+                  <div className="tip-content">
                     <h3>How to Prevent Root Rot</h3>
                     <p>Learn the signs of overwatering and how to save your plants from root rot.</p>
                   </div>
-                </div>
-                <div class="tip-card">
-                  <img src="/repotting.png" alt="Repotting 101" class="tip-image" />
-                  <div class="tip-content">
+                </a>
+                <a href="https://plnts.com/en/care/doctor/repotting/" target="_blank" rel="noopener noreferrer" className="tip-card"> 
+                  <img src="/repotting.png" alt="Repotting 101" className="tip-image" />
+                  <div className="tip-content">
                     <h3>Repotting 101</h3>
                     <p>Step-by-step guide to repotting your plants without stress.</p>
                   </div>
-                </div>
-                <div class="tip-card">
-                <img src="/light-indoor.png" alt="Repotting 101" class="tip-image" />
-                  <div class="tip-content">
+                </a>
+                <a href="https://www.rhs.org.uk/plants/types/houseplants/artificial-lighting/" target="_blank" rel="noopener noreferrer" className="tip-card"> 
+                  <img src="/light-indoor.png" alt="Repotting 101" className="tip-image" />
+                  <div className="tip-content">
                     <h3>Lighting for Indoor Plants</h3>
                     <p>Understanding your home's light conditions for healthier plants.</p>
                   </div>
-                </div>
-                <div class="tip-card">
-                <img src="/pest-control.png" alt="Pest Control" class="tip-image" />
-                  <div class="tip-content">
+                </a>
+                <a href="https://www.thebiggreenk.com/blog/homemade-pest-solutions-for-houseplants/" target="_blank" rel="noopener noreferrer" className="tip-card"> 
+                  <img src="/pest-control.png" alt="Pest Control" className="tip-image" />
+                  <div className="tip-content">
                     <h3>Natural Pest Control</h3>
                     <p>Eco-friendly solutions to common plant pests.</p>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
           </div>
