@@ -1,31 +1,27 @@
-name: Daily Firebase Update
+name: Watering Sensor Check
 
 on:
   schedule:
-    # Runs at 00:00 UTC every day
-    - cron: '0 0 * * *'
-
+    - cron: '0 0 * * *'  # runs every day at 0:00 AM UTC
   workflow_dispatch:
 
 jobs:
-  update-database:
+  run-watering-sensor:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Set up Firebase credentials
-        run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > firebase-service-account.json
-          export GOOGLE_APPLICATION_CREDENTIALS="./firebase-service-account.json"
-      
-      - name: Run database update script
-        run: node scripts/update-database.js
+
+      - name: Run watering sensor script
+        run: node scripts/watering-sensor.js
+        env:
+          FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
