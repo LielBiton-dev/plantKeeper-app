@@ -1,0 +1,12 @@
+{
+  "name": "firebase-daily-update",
+  "version": "1.0.0",
+  "description": "Daily Firebase database update",
+  "main": "scripts/update-database.js",
+  "dependencies": {
+    "firebase-admin": "^11.10.1"
+  },
+  "scripts": {
+    "update": "node scripts/update-database.js"
+  }
+}
