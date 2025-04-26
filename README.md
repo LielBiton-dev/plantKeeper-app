@@ -1,9 +1,12 @@
 # 🌿 PlantKeeper
 > A smart, elegant app for plant lovers to track, care for, and explore their personal plant collection.
- 
-<img src="https://github.com/user-attachments/assets/8be62da3-00e0-472e-9fa5-6b489729b7d1" width="150" />
-<img src="https://github.com/user-attachments/assets/1618e774-a1d2-4e1e-af54-e2fc42875db2" width="150" />
-<img src="https://github.com/user-attachments/assets/6dec72b5-6b80-42d9-a6fe-d88bdbf3f3a4" width="150" />
+
+<img src="https://github.com/user-attachments/assets/8df15565-6cf0-47a6-a505-764ef4768eaa" width="150" />
+<img src="https://github.com/user-attachments/assets/d3d0be0b-dcea-4ea7-85f3-38cb263d1c3c" width="150" />
+<img src="https://github.com/user-attachments/assets/a4def660-2b87-46c5-bf14-47a5892e8906" width="150" />
+<img src="https://github.com/user-attachments/assets/50b8278b-00d9-48f9-8839-1212a29d977c" width="150" />
+
+
 
 
 ## 🚀 Features
