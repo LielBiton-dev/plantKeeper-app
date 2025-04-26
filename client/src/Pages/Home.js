@@ -4,8 +4,9 @@ import RecommendationModal from "../components/RecommendationModal";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { IoLocationOutline } from "react-icons/io5";
+import { IoWaterOutline } from "react-icons/io5";
 import "./Home.css";
 import StarActionButton from '../components/StarActionButton';
 
@@ -18,6 +19,7 @@ const Home = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('new');
   const [userPlants, setUserPlants] = useState([]);
+  const [tasks, setTasks] = useState([]);   
   
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -73,6 +75,39 @@ const Home = () => {
           console.log("No user_plants document found");
           setUserPlants([]);
         }
+        
+        const notificationsRef = collection(db, "notifications");
+        const q = query(notificationsRef, where("user_id", "==", user.uid));
+        const notificationsSnapshot = await getDocs(q);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const upcomingTasks = notificationsSnapshot.docs
+          .map(doc => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              type: data.type,
+              plantId: data.plant_id,
+              scheduledDate: data.scheduled_date,
+              isRead: data.isRead || false,
+            };
+          })
+          .filter(task => {
+            if (!task.scheduledDate) return false;
+            const date = new Date(task.scheduledDate.year, task.scheduledDate.month - 1, task.scheduledDate.day);
+            date.setHours(0, 0, 0, 0);
+            return date >= today;
+          })
+          .sort((a, b) => {
+            const aDate = new Date(a.scheduledDate.year, a.scheduledDate.month - 1, a.scheduledDate.day);
+            const bDate = new Date(b.scheduledDate.year, b.scheduledDate.month - 1, b.scheduledDate.day);
+            return aDate - bDate;
+          })
+          .slice(0, 3); // Only first 3 tasks
+
+        setTasks(upcomingTasks);
 
       } else {
         // User not logged in, redirect to welcome
@@ -87,6 +122,72 @@ const Home = () => {
   const handleOpenModal = (mode) => {
     setModalMode(mode);
     setModalOpen(true);
+  };
+
+  /* Today's tasks helpers */
+
+  const formatTaskMessage = (task) => {
+    if (!task) return "";
+  
+    switch (task.type) {
+      case "watering":
+        return `Water ${formatPlantName(task.plantId)}`;
+      case "fertilizer":
+        return `Fertilize ${formatPlantName(task.plantId)}`;
+      case "repotting":
+        return `Repot ${formatPlantName(task.plantId)}`;
+      case "light":
+        return `Move ${formatPlantName(task.plantId)} to sunlight`;
+      default:
+        return `Care for ${formatPlantName(task.plantId)}`;
+    }
+  };
+
+  const formatPlantName = (plantId) => {
+    if (!plantId) return "your plant";
+  
+    const plant = userPlants.find(p => p.id === plantId);
+    return plant ? plant.name : "your plant";
+  };
+
+   // Helper: get icon based on type
+   const getIconByType = (type, size = 16) => {
+    switch (type) {
+      case "watering":
+        return <IoWaterOutline size={size} className="task-badge-icon" />;
+    }
+  };
+
+  const formatTaskType = (type) => {
+    switch (type) {
+      case "watering":
+        return "Water";
+      case "fertilizer":
+        return "Fertilize";
+      case "repotting":
+        return "Repot";
+      case "light":
+        return "Sunlight";
+      default:
+        return "Care";
+    }
+  };
+
+  const getTaskBadgeColor = (type) => {
+    switch (type) {
+      case "watering":
+        return { background: "#e0f2fe", text: "#0284c7" }; // light blue + blue
+      case "fertilizer":
+        return { background: "#dcfce7", text: "#22c55e" }; // light green + green
+      case "repotting":
+        return { background: "#ede9fe", text: "#8b5cf6" }; // light purple + purple
+      case "light":
+        return { background: "#fef9c3", text: "#eab308" }; // light yellow + gold
+      case "tip":
+        return { background: "#f3f4f6", text: "#6b7280" }; // gray
+      default:
+        return { background: "#f3f4f6", text: "#6b7280" }; // gray fallback
+    }
   };
 
   return (
@@ -146,27 +247,29 @@ const Home = () => {
               </div>
 
               <div className="task-list">
-                <div className="task-item">
-                  <div className="task-dot water"></div>
-                  <div className="task-text">
-                    <strong>Water Peace Lily</strong>
-                    <span className="task-sub">Every 5 days</span>
-                  </div>
-                </div>
-                <div className="task-item">
-                  <div className="task-dot prune"></div>
-                  <div className="task-text">
-                    <strong>Prune Snake Plant</strong>
-                    <span className="task-sub">Remove yellow leaves</span>
-                  </div>
-                </div>
-                <div className="task-item">
-                  <div className="task-dot sunlight"></div>
-                  <div className="task-text">
-                    <strong>Move Orchid to sunlight</strong>
-                    <span className="task-sub">Needs 3+ hours today</span>
-                  </div>
-                </div>
+                {tasks.length > 0 ? (
+                  tasks.map(task => (
+                    <div className="task-item">
+                      <div className="task-content">
+                      <div className="task-status-dot"
+                        style={{
+                          backgroundColor: task.isRead ? '#34d399' : '#f87171',  // Inner color
+                          boxShadow: task.isRead 
+                            ? '0 0 0 4px #bbf7d0'  // Outer green glow
+                            : '0 0 0 4px #fecaca', // Outer red glow
+                        }}
+                      ></div>
+                        <div className="plant-name">{formatPlantName(task.plantId)}</div>
+                      </div>
+
+                      <div className="task-badge">
+                        {getIconByType(task.type)} {formatTaskType(task.type)}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="no-tasks-text">🌱 No upcoming tasks!</p>
+                )}
               </div>
             </section>
 

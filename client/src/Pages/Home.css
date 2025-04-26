@@ -2,583 +2,610 @@
 
   /* Location display */
   .location-display {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      margin-top: 6px;
-      font-size: 0.95rem;
-  }
-  
-  .location-icon {
-    width: 14px;
-    height: 14px;
-    color: #2e553d;
-    stroke-width: 1.8;
-    opacity: 0.8;
-  }
-
-  .location-text {
-    color: #2e553d;
-    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    opacity: 0.8;
-  }
-  
-  /* Content area */
-  .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .loading-text {
-    color: #333;
-  }
-  
-  .content-container {
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .greeting p {
-    font-size: 1rem;
-    color: #555;
-    font-family: 'Poppins', sans-serif;
-  }
+    justify-content: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 0.95rem;
+}
 
-  .description-text {
-    margin-bottom: 1rem !important;
-  }
+.location-icon {
+  width: 14px;
+  height: 14px;
+  color: #2e553d;
+  stroke-width: 1.8;
+  opacity: 0.8;
+}
+
+.location-text {
+  color: #2e553d;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-text {
+  color: #333;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.greeting p {
+  font-size: 1rem;
+  color: #555;
+  font-family: 'Poppins', sans-serif;
+}
+
+.description-text {
+  margin-bottom: 1rem !important;
+}
 
 
-  .status-cards-grid {
-    display: grid;
-    grid-template-columns: 1fr;  /* Single column on mobile */
-    gap: 1.5rem;
-    width: 100%;
-    margin-bottom: 2rem;
-  }
+.status-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;  /* Single column on mobile */
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
 
 /* Status cards */
 .status-card {
-  margin-bottom: 0;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-  height: 140px;
-  width: 100%;
+margin-bottom: 0;
+border-radius: 1.25rem;
+overflow: hidden;
+box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+height: 140px;
+width: 100%;
 
-  /* Movement animation */
-  opacity: 0;
-  transform: translateX(100%);
-  animation: slideInRight 0.8s ease-out forwards;
-  animation-delay: 0.3s;
+/* Movement animation */
+opacity: 0;
+transform: translateX(100%);
+animation: slideInRight 0.8s ease-out forwards;
+animation-delay: 0.3s;
 }
 
 @keyframes slideInRight {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+to {
+  opacity: 1;
+  transform: translateX(0);
+}
 }
 
 /* First card animation */
 .status-card:nth-child(1) {
-  animation-delay: 0.5s;
+animation-delay: 0.5s;
 }
 
 /* Second card animation */
 .status-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-  
-    
-  .status-card-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .status-card-image {
-    width: 100%;
-    height: 140px; /* Match the card height */
-    display: block;
-    border-radius: 1.25rem;
-    object-fit: cover; /* Maintain aspect ratio while covering the area */
-  }
-  
-  .status-card-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70%; /* top half */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0.75rem 1.25rem;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.7) 60%,
-      rgba(255, 255, 255, 0.3) 90%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    backdrop-filter: blur(1px);
-    text-align: left;
-    line-height: 1;
-    border-top-left-radius: 1.25rem;
-    border-top-right-radius: 1.25rem;
-  }
-  
-  .status-card-content h3 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #222;
-    margin-bottom: 0rem;
-  }
-  
-  .status-card-content p {
-    color: #333;
-    font-size: 0.85rem;
-  }
-
-  @media (min-width: 768px) {
-    .status-cards-grid {
-      grid-template-columns: repeat(2, 1fr); /* Two columns on tablet */
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .status-cards-grid {
-      gap: 2rem;
-    }
-  
-    .status-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-  
-    .status-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  /* Action buttons */
-  .action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  /* Hover effect */
-.action-btn:hover .stars {
-  display: block;
-  filter: drop-shadow(0 0 10px #fffdef);
-  /*transform: scale(1.05) translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);*/
-}
-  
-  .action-btn {
-    background-color: var(--primary-color); /* Your dark green color */
-    color: white;
-    border: 2px solid transparent;
-    border-radius: 0.5rem;
-    padding: 0.75rem; /* Smaller padding */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    cursor: pointer;
-    font-size: 0.85rem; /* Smaller font */
-    font-family: 'Poppins', sans-serif;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-  
-  .action-icon {
-    margin-bottom: 0.4rem;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .action-subtitle {
-    font-size: 0.65rem; /* Smaller subtitle */
-    opacity: 0.8;
-    margin-top: 0.25rem;
-    font-family: 'Poppins', sans-serif;
-    position: relative;
-    z-index: 2;
-  }
-
-  #home-title {
-    margin-bottom: 0rem;
-    font-size: 1.8rem;
-    color: #2e553d;
-  }
-
-  #home-description {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  /* Stars container */
-  .stars {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1;
-  }
-
-  /* Star styling - four-pointed sparkle star */
-  .star {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    opacity: 0;
-  }
-
-  /* Create the four-pointed star shape */
-  .star svg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  /* Position stars around the button */
-  .star:nth-child(1) { top: -5px; left: 10%; }         /* Top left */
-  .star:nth-child(2) { top: -5px; right: 10%; }        /* Top right */
-  .star:nth-child(3) { bottom: -5px; left: 10%; }      /* Bottom left */
-  .star:nth-child(4) { bottom: -5px; right: 10%; }     /* Bottom right */
-  .star:nth-child(5) { top: 50%; left: -5px; }         /* Middle left */
-  .star:nth-child(6) { top: 50%; right: -5px; }        /* Middle right */
-  .star:nth-child(7) { top: -5px; left: 50%; }         /* Middle top */
-  .star:nth-child(8) { bottom: -5px; left: 50%; }      /* Middle bottom */
-
-  /* Different sizes for variety */
-  .star:nth-child(1), .star:nth-child(4), .star:nth-child(7) { 
-    transform: scale(0.5);
-  }
-  .star:nth-child(2), .star:nth-child(5) { 
-    transform: scale(0.5);
-  }
-  .star:nth-child(3), .star:nth-child(6) { 
-    transform: scale(0.6);
-  }
-
-  /* Hover effect for the button */
-  .action-btn:hover {
-    background-color: white;
-    color: var(--primary-color);
-    border: 2px solid var(--bg-white);
-    transform: translateY(-2px);
-  }
-
-  /* Make stars visible and animate them on hover */
-  .action-btn:hover .stars {
-    opacity: 1;
-  }
-
-  .action-btn:hover .star {
-    animation: twinkle 2s ease-in-out infinite;
-    opacity: 1;
-  }
-
-  /* Stagger the animations for stars */
-  .action-btn:hover .star:nth-child(1) { animation-delay: 0s; }
-  .action-btn:hover .star:nth-child(2) { animation-delay: 0.3s; }
-  .action-btn:hover .star:nth-child(3) { animation-delay: 0.5s; }
-  .action-btn:hover .star:nth-child(4) { animation-delay: 0.1s; }
-  .action-btn:hover .star:nth-child(5) { animation-delay: 0.4s; }
-  .action-btn:hover .star:nth-child(6) { animation-delay: 0.2s; }
-  .action-btn:hover .star:nth-child(7) { animation-delay: 0.6s; }
-
-  /* Twinkle animation */
-  @keyframes twinkle {
-    0% {
-      opacity: 0;
-      transform: scale(0) rotate(0deg);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1) rotate(0deg);
-      filter: drop-shadow(0 0 3px #fff68f);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(0) rotate(0deg);
-    }
-  }
-
-  .typewriter-text {
-    overflow: hidden;
-    white-space: nowrap;
-    display: inline-block;
-    border-right: 2px solid #2e553d; /* optional: cursor effect */
-    color: #2e553d;
-    font-weight: 500;
-    animation: typing 1.8s steps(12, end), blink-caret 0.75s step-end infinite;
-  }
-  
-  @keyframes typing {
-    from { width: 0 }
-    to { width: 9ch } /* matches character count */
-  }
-  
-  @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: #2e553d }
-  }
-
-
-  .home-section {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto 2rem auto;
-    box-sizing: border-box;
-  }
-  
-  
-  .tips-carousel {
-    display: flex;
-    overflow-x: auto;
-    gap: 1rem;
-    padding: 1rem;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 auto;
-    box-sizing: border-box;
-    /* Significantly increase side padding for mobile visibility */
-    padding-left: 0rem; /* Adjust this value as needed */
-    padding-right: 0rem; /* Adjust this value as needed */
-    
-  }
-  
-  .tip-card {
-    background-color: white;
-    border-radius: 1rem;
-    max-width: 80vw; /* Limit the maximum width */
-    flex: 0 0 auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    text-decoration: none;
-    color: inherit;
-  }
-
-  a.tip-card, 
-  .tip-card:link, 
-  .tip-card:visited {
-    text-decoration: none;
-    color: inherit;
-  }
-    
-  .tip-image {
-    width: 100%;
-    height: 60%;
-    object-fit: cover;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
-  
-  .tip-content {
-    padding: 1rem;
-  }
-  
-  .tip-content h3 {
-    color: var(--primary-green);
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
-  
-  .tip-content p {
-    font-size: 0.9rem;
-    color: var(--text-dark);
-  }
-  
-  /* Adjust for larger screens where the very wide cards might look odd */
-  @media (min-width: 768px) {
-    .tips-carousel {
-      padding-left: 3rem;
-      padding-right: 3rem;
-      gap: 1.5rem;
-    }
-  
-    .tip-card {
-      min-width: 280px; /* Revert to a fixed width on larger screens */
-      max-width: 320px;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .tips-carousel {
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  
-.section-divider {
-  width: 15%;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--primary-color), transparent);
-  border: none;
-  border-radius: 999px;
-  margin: 0.5rem auto 1.5rem;
+animation-delay: 0.2s;
 }
 
-.section-title {
-  text-align: left;
-}
-
-.plant-stories-carousel {
-  display: flex;
-  overflow-x: auto;
-  gap: 1rem;
-  padding: 1rem 0rem 0rem 0rem;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.plant-story {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  scroll-snap-align: start;
-  text-align: center;
-}
-
-/* Outer gradient ring */
-.plant-story-ring {
-  background: conic-gradient(
-    #88c57f, 
-    #3b945e, 
-    #b9fbc0, 
-    #88c57f
-  );
-  border-radius: 50%;
-  padding: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 68px;
-  height: 68px;
-}
-
-/* Inner white gap */
-.plant-story-gap {
-  background: white;
-  border-radius: 50%;
-  padding: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  
+.status-card-container {
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
+.status-card-image {
+  width: 100%;
+  height: 140px; /* Match the card height */
+  display: block;
+  border-radius: 1.25rem;
+  object-fit: cover; /* Maintain aspect ratio while covering the area */
+}
+
+.status-card-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70%; /* top half */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.7) 60%,
+    rgba(255, 255, 255, 0.3) 90%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  backdrop-filter: blur(1px);
+  text-align: left;
+  line-height: 1;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+}
+
+.status-card-content h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 0rem;
+}
+
+.status-card-content p {
+  color: #333;
+  font-size: 0.85rem;
+}
+
+@media (min-width: 768px) {
+  .status-cards-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on tablet */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .status-cards-grid {
+    gap: 2rem;
+  }
+
+  .status-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .status-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Action buttons */
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect */
+.action-btn:hover .stars {
+display: block;
+filter: drop-shadow(0 0 10px #fffdef);
+/*transform: scale(1.05) translateY(-4px);
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);*/
+}
+
+.action-btn {
+  background-color: var(--primary-color); /* Your dark green color */
+  color: white;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.75rem; /* Smaller padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.85rem; /* Smaller font */
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.action-icon {
+  margin-bottom: 0.4rem;
+  position: relative;
+  z-index: 2;
+}
+
+.action-subtitle {
+  font-size: 0.65rem; /* Smaller subtitle */
+  opacity: 0.8;
+  margin-top: 0.25rem;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  z-index: 2;
+}
+
+#home-title {
+  margin-bottom: 0rem;
+  font-size: 1.8rem;
+  color: #2e553d;
+}
+
+#home-description {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Stars container */
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+/* Star styling - four-pointed sparkle star */
+.star {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+
+/* Create the four-pointed star shape */
+.star svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Position stars around the button */
+.star:nth-child(1) { top: -5px; left: 10%; }         /* Top left */
+.star:nth-child(2) { top: -5px; right: 10%; }        /* Top right */
+.star:nth-child(3) { bottom: -5px; left: 10%; }      /* Bottom left */
+.star:nth-child(4) { bottom: -5px; right: 10%; }     /* Bottom right */
+.star:nth-child(5) { top: 50%; left: -5px; }         /* Middle left */
+.star:nth-child(6) { top: 50%; right: -5px; }        /* Middle right */
+.star:nth-child(7) { top: -5px; left: 50%; }         /* Middle top */
+.star:nth-child(8) { bottom: -5px; left: 50%; }      /* Middle bottom */
+
+/* Different sizes for variety */
+.star:nth-child(1), .star:nth-child(4), .star:nth-child(7) { 
+  transform: scale(0.5);
+}
+.star:nth-child(2), .star:nth-child(5) { 
+  transform: scale(0.5);
+}
+.star:nth-child(3), .star:nth-child(6) { 
+  transform: scale(0.6);
+}
+
+/* Hover effect for the button */
+.action-btn:hover {
+  background-color: white;
+  color: var(--primary-color);
+  border: 2px solid var(--bg-white);
+  transform: translateY(-2px);
+}
+
+/* Make stars visible and animate them on hover */
+.action-btn:hover .stars {
+  opacity: 1;
+}
+
+.action-btn:hover .star {
+  animation: twinkle 2s ease-in-out infinite;
+  opacity: 1;
+}
+
+/* Stagger the animations for stars */
+.action-btn:hover .star:nth-child(1) { animation-delay: 0s; }
+.action-btn:hover .star:nth-child(2) { animation-delay: 0.3s; }
+.action-btn:hover .star:nth-child(3) { animation-delay: 0.5s; }
+.action-btn:hover .star:nth-child(4) { animation-delay: 0.1s; }
+.action-btn:hover .star:nth-child(5) { animation-delay: 0.4s; }
+.action-btn:hover .star:nth-child(6) { animation-delay: 0.2s; }
+.action-btn:hover .star:nth-child(7) { animation-delay: 0.6s; }
+
+/* Twinkle animation */
+@keyframes twinkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 3px #fff68f);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+}
+
+.typewriter-text {
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  border-right: 2px solid #2e553d; /* optional: cursor effect */
+  color: #2e553d;
+  font-weight: 500;
+  animation: typing 1.8s steps(12, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 9ch } /* matches character count */
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #2e553d }
+}
+
+
+.home-section {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto 2rem auto;
+  box-sizing: border-box;
+}
+
+
+.tips-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 auto;
+  box-sizing: border-box;
+  /* Significantly increase side padding for mobile visibility */
+  padding-left: 0rem; /* Adjust this value as needed */
+  padding-right: 0rem; /* Adjust this value as needed */
+  
+}
+
+.tip-card {
+  background-color: white;
+  border-radius: 1rem;
+  max-width: 80vw; /* Limit the maximum width */
+  flex: 0 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+}
+
+a.tip-card, 
+.tip-card:link, 
+.tip-card:visited {
+  text-decoration: none;
+  color: inherit;
+}
+  
+.tip-image {
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.tip-content {
+  padding: 1rem;
+}
+
+.tip-content h3 {
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.tip-content p {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+}
+
+/* Adjust for larger screens where the very wide cards might look odd */
+@media (min-width: 768px) {
+  .tips-carousel {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    gap: 1.5rem;
+  }
+
+  .tip-card {
+    min-width: 280px; /* Revert to a fixed width on larger screens */
+    max-width: 320px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .tips-carousel {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+.section-divider {
+width: 15%;
+height: 1px;
+background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+border: none;
+border-radius: 999px;
+margin: 0.5rem auto 1.5rem;
+}
+
+.section-title {
+text-align: left;
+}
+
+.plant-stories-carousel {
+display: flex;
+overflow-x: auto;
+gap: 1rem;
+padding: 1rem 0rem 0rem 0rem;
+scroll-snap-type: x mandatory;
+-webkit-overflow-scrolling: touch;
+}
+
+.plant-story {
+flex: 0 0 auto;
+display: flex;
+flex-direction: column;
+align-items: center;
+scroll-snap-align: start;
+text-align: center;
+}
+
+/* Outer gradient ring */
+.plant-story-ring {
+background: conic-gradient(
+  #88c57f, 
+  #3b945e, 
+  #b9fbc0, 
+  #88c57f
+);
+border-radius: 50%;
+padding: 3px;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 68px;
+height: 68px;
+}
+
+/* Inner white gap */
+.plant-story-gap {
+background: white;
+border-radius: 50%;
+padding: 3px;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 100%;
+}
+
 /* Actual image inside */
 .plant-story-image {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
+width: 56px;
+height: 56px;
+border-radius: 50%;
+object-fit: cover;
+display: block;
 }
 
 /* Label */
 .plant-story-label {
-  margin-top: 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #28433F;
-  max-width: 70px;         /* restrict width */
-  white-space: nowrap;     /* prevent line break */
-  overflow: hidden;        /* hide overflow */
-  text-overflow: ellipsis; /* show ... for long names */
-  text-align: center;
+margin-top: 0.4rem;
+font-size: 0.75rem;
+font-weight: 500;
+color: #28433F;
+max-width: 70px;         /* restrict width */
+white-space: nowrap;     /* prevent line break */
+overflow: hidden;        /* hide overflow */
+text-overflow: ellipsis; /* show ... for long names */
+text-align: center;
 }
 
 
 .section-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 
 .view-all-link {
-  font-size: 0.75rem;
-  color: #2e553d;
-  cursor: pointer;
-  transition: opacity 0.2s;
+background: none;
+border: none;
+color: #16a34a;
+font-size: 0.875rem;
+font-weight: 500;
+cursor: pointer;
+transition: color 0.2s ease;
+padding-bottom: 1px;
 }
 
 .view-all-link:hover {
-  opacity: 1;
-  text-decoration: underline;
+color: #15803d;
 }
 
+
+/* Today's Tasks */
 .task-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 0.5rem;
+display: flex;
+flex-direction: column;
+gap: 0.75rem; /* smaller gap */
+margin-top: 0.5rem;
 }
 
 .task-item {
-  background: #f8f8f8;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+display: flex;
+align-items: center;
+justify-content: space-between; /* Space between dot+name and tag */
+background: white;
+border-radius: 12px;
+padding: 0.6rem 1rem;
+gap: 0.8rem;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+min-height: 48px;
+cursor: pointer;
 }
 
-.task-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 1rem;
-  flex-shrink: 0;
+
+.task-item:hover {
+background-color: #f9fafb;
 }
 
-.task-dot.water {
-  background: #8ac926;
+.task-content {
+display: flex;
+align-items: center;
+gap: 0.75rem;
 }
 
-.task-dot.prune {
-  background: #f78c6b;
+.task-text-column {
+display: flex;
+flex-direction: column;
+align-items: flex-start; /* Left align */
+
 }
 
-.task-dot.sunlight {
-  background: #ffd60a;
+.plant-name {
+font-weight: 600;
+font-size: 0.95rem !important; /* smaller text */
 }
 
-.task-text strong {
-  font-size: 0.95rem;
-  color: #2e553d;
-  display: block;
+.task-badge {
+display: inline-flex;
+align-items: center;
+gap: 0.25rem;
+font-size: 0.8rem;
+padding: 0.25rem 0.6rem;
+border-radius: 9999px;
+font-weight: 500;
+background-color: #eef6ff;
+color: #3b82f6; /* blue text */
+white-space: nowrap;
 }
 
-.task-sub {
-  font-size: 0.75rem;
-  color: #777;
-  margin-top: 2px;
+
+.task-badge-icon {
+width: 12px;  /* make the drop smaller */
+height: 12px;
 }
 
+.task-status-dot {
+width: 14px;
+height: 14px;
+border-radius: 50%;
+flex-shrink: 0;
+background-color: #f87171; /* fallback */
+box-shadow: 0 0 0 4px #fecaca; /* fallback */
+}
