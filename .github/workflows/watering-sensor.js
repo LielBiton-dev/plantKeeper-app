@@ -36,7 +36,7 @@ function toDateObj(date) {
     console.log('🚀 Starting watering sensor debug...');
 
     const today = getTodayDate();
-    const userPlantSnapshot = await db.collection('user_plant').get();
+    const userPlantSnapshot = await db.collection('user_plants').get();
 
     console.log(`🔎 Found ${userPlantSnapshot.size} users.`);
 
