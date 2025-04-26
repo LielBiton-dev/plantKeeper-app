@@ -115,6 +115,7 @@ function toDateObj(date) {
             user_id: userId,
             plant_id: plantId,
             scheduled_date: formattedDate,
+            isRead: false,
           });
 
           console.log(`✅ Scheduled watering for user ${userId}, plant ${plantId} on ${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`);
