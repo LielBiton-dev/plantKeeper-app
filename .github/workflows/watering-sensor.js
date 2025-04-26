@@ -33,29 +33,53 @@ function toDateObj(date) {
 
 (async () => {
   try {
-    const today = new Date();
-    const oneWeekLater = addDays(today, 7);
+    console.log('🚀 Starting watering sensor debug...');
 
+    const today = getTodayDate();
     const userPlantSnapshot = await db.collection('user_plant').get();
+
+    console.log(`🔎 Found ${userPlantSnapshot.size} users.`);
 
     for (const userDoc of userPlantSnapshot.docs) {
       const userId = userDoc.id.replace('user_', '');
       const plantIds = userDoc.data().plants || [];
 
+      console.log(`👤 User: ${userId}, Plants: ${plantIds.join(', ') || 'None'}`);
+
+      if (plantIds.length === 0) continue;
+
       for (const plantId of plantIds) {
+        console.log(`🌿 Checking plant: ${plantId}`);
+
         const plantDoc = await db.collection('plants').doc(plantId).get();
-        if (!plantDoc.exists) continue;
+        if (!plantDoc.exists) {
+          console.log(`❌ Plant ${plantId} not found in 'plants' collection.`);
+          continue;
+        }
 
         const careId = plantDoc.data().care_id;
+        if (!careId) {
+          console.log(`❌ Plant ${plantId} has no care_id.`);
+          continue;
+        }
+
         const careDoc = await db.collection('care_instructions').doc(careId).get();
-        if (!careDoc.exists) continue;
+        if (!careDoc.exists) {
+          console.log(`❌ Care profile ${careId} not found.`);
+          continue;
+        }
 
         const wateringFrequency = careDoc.data().watering_frequency_days;
-        if (!wateringFrequency) continue;
+        if (!wateringFrequency) {
+          console.log(`❌ Care profile ${careId} has no watering frequency.`);
+          continue;
+        }
+
+        console.log(`✅ Watering frequency for ${plantId} is every ${wateringFrequency} days.`);
 
         const notificationsRef = db.collection('notifications');
 
-        // Find latest watering notification
+        // Find latest watering
         const existing = await notificationsRef
           .where('user_id', '==', userId)
           .where('plant_id', '==', plantId)
@@ -66,35 +90,41 @@ function toDateObj(date) {
           .limit(1)
           .get();
 
-        let lastWaterDate = today;
-
+        let lastDate = null;
         if (!existing.empty) {
           const last = existing.docs[0].data().scheduled_date;
-          lastWaterDate = new Date(last.year, last.month - 1, last.day);
+          lastDate = new Date(last.year, last.month - 1, last.day);
+          console.log(`🕰 Last watering was on ${lastDate.toDateString()}`);
         } else {
           console.log(`🌱 No previous watering found for ${plantId}, starting from today.`);
+          lastDate = new Date(today.year, today.month - 1, today.day);
         }
 
-        let nextDate = lastWaterDate;
+        // Schedule for next 7 days based on wateringFrequency
+        let newScheduledDate = new Date(lastDate);
 
-        while (nextDate <= oneWeekLater) {
-          const newScheduledDate = toDateObj(nextDate);
+        while (newScheduledDate <= new Date(today.year, today.month - 1, today.day + 7)) {
+          const formattedDate = {
+            year: newScheduledDate.getFullYear(),
+            month: newScheduledDate.getMonth() + 1,
+            day: newScheduledDate.getDate()
+          };
 
           await notificationsRef.add({
             type: 'watering',
             user_id: userId,
             plant_id: plantId,
-            scheduled_date: newScheduledDate,
+            scheduled_date: formattedDate,
           });
 
-          console.log(`✅ Scheduled watering for user ${userId}, plant ${plantId} on ${newScheduledDate.year}-${newScheduledDate.month}-${newScheduledDate.day}`);
+          console.log(`✅ Scheduled watering for user ${userId}, plant ${plantId} on ${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`);
 
-          nextDate = addDays(nextDate, wateringFrequency);
+          newScheduledDate.setDate(newScheduledDate.getDate() + wateringFrequency);
         }
       }
     }
 
-    console.log('🌟 Watering tasks generated for the next week!');
+    console.log('🌱 Watering tasks generation complete!');
   } catch (error) {
     console.error('❌ Error running watering sensor:', error);
     process.exit(1);
