@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-watering-sensor:
+  run-delete-notifications:
     runs-on: ubuntu-latest
 
     steps:
