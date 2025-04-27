@@ -15,8 +15,13 @@ const db = admin.firestore();
 
 // Helper: today's date
 function getTodayDate() {
-  const today = new Date();
-  return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return {
+    year: local.getFullYear(),
+    month: local.getMonth() + 1,
+    day: local.getDate()
+  };
 }
 
 // Helper: add days to a Date
