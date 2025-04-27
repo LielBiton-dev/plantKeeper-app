@@ -15,21 +15,12 @@ const db = admin.firestore();
 
 // Helper: today's date
 function getTodayDate() {
-  const now = new Date();
-
-  const formatter = new Intl.DateTimeFormat('en-IL', {
-    timeZone: 'Asia/Jerusalem',  // <-- Israel's official timezone
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-  });
-
-  const parts = formatter.formatToParts(now);
-  const year = parseInt(parts.find(p => p.type === 'year').value, 10);
-  const month = parseInt(parts.find(p => p.type === 'month').value, 10);
-  const day = parseInt(parts.find(p => p.type === 'day').value, 10);
-
-  return { year, month, day };
+  const now = new Date(); // now is already UTC-based internally
+  return {
+    year: now.getUTCFullYear(),
+    month: now.getUTCMonth() + 1, // Months are 0-based in JS
+    day: now.getUTCDate()
+  };
 }
 
 // Helper: add days to a Date
