@@ -16,12 +16,20 @@ const db = admin.firestore();
 // Helper: today's date
 function getTodayDate() {
   const now = new Date();
-  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-  return {
-    year: local.getFullYear(),
-    month: local.getMonth() + 1,
-    day: local.getDate()
-  };
+
+  const formatter = new Intl.DateTimeFormat('en-IL', {
+    timeZone: 'Asia/Jerusalem',  // <-- Israel's official timezone
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
+
+  const parts = formatter.formatToParts(now);
+  const year = parseInt(parts.find(p => p.type === 'year').value, 10);
+  const month = parseInt(parts.find(p => p.type === 'month').value, 10);
+  const day = parseInt(parts.find(p => p.type === 'day').value, 10);
+
+  return { year, month, day };
 }
 
 // Helper: add days to a Date
