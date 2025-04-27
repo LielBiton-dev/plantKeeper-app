@@ -38,7 +38,7 @@ function toComparableNumber(dateObj) {
 
 (async () => {
   try {
-    console.log('🚀 Starting watering sensor debug...');
+    console.log('🚀 Starting watering sensor...');
 
     const today = getTodayDate();
     const todayNumber = toComparableNumber(today);
@@ -59,7 +59,7 @@ function toComparableNumber(dateObj) {
 
         const plantDoc = await db.collection('plants').doc(plantId).get();
         if (!plantDoc.exists) {
-          console.log(`❌ Plant ${plantId} not found in 'plants' collection.`);
+          console.log(`❌ Plant ${plantId} not found.`);
           continue;
         }
 
@@ -77,41 +77,39 @@ function toComparableNumber(dateObj) {
 
         const wateringFrequency = careDoc.data().watering_frequency_days;
         if (!wateringFrequency) {
-          console.log(`❌ Care profile ${careId} has no watering frequency.`);
+          console.log(`❌ No watering frequency set for care ${careId}.`);
           continue;
         }
 
-        console.log(`✅ Watering frequency for ${plantId} is every ${wateringFrequency} days.`);
+        console.log(`✅ Watering every ${wateringFrequency} days.`);
 
         const notificationsRef = db.collection('notifications');
 
-        // Check if there are future notifications
-        const futureSnapshot = await notificationsRef
+        // Find latest watering notification
+        const lastSnapshot = await notificationsRef
           .where('user_id', '==', userId)
           .where('plant_id', '==', plantId)
           .where('type', '==', 'watering')
+          .orderBy('scheduled_date.year', 'desc')
+          .orderBy('scheduled_date.month', 'desc')
+          .orderBy('scheduled_date.day', 'desc')
+          .limit(1)
           .get();
 
-        let futureExists = false;
-        for (const doc of futureSnapshot.docs) {
-          const scheduled = doc.data().scheduled_date;
-          if (toComparableNumber(scheduled) > todayNumber) {
-            futureExists = true;
-            break;
-          }
+        let lastDate = null;
+        if (!lastSnapshot.empty) {
+          const last = lastSnapshot.docs[0].data().scheduled_date;
+          lastDate = new Date(last.year, last.month - 1, last.day);
+          console.log(`🕰 Last watering on ${lastDate.toDateString()}`);
+        } else {
+          lastDate = new Date(today.year, today.month - 1, today.day);
+          console.log(`🌱 No previous watering, starting today.`);
         }
 
-        if (futureExists) {
-          console.log(`⏩ Future watering already scheduled for ${plantId}. Skipping.`);
-          continue; // skip to next plant
-        }
+        // Schedule next 3 watering dates
+        let newScheduledDate = addDays(lastDate, wateringFrequency);
 
-        console.log(`🛠 No future watering found. Scheduling new notifications.`);
-
-        // No future notification -> Schedule for next 7 days
-        let newScheduledDate = new Date(today.year, today.month - 1, today.day);
-
-        while (newScheduledDate <= addDays(new Date(today.year, today.month - 1, today.day), 7)) {
+        for (let i = 0; i < 3; i++) {
           const formattedDate = toDateObj(newScheduledDate);
 
           await notificationsRef.add({
@@ -122,17 +120,17 @@ function toComparableNumber(dateObj) {
             isRead: false,
           });
 
-          console.log(`✅ Scheduled watering for user ${userId}, plant ${plantId} on ${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`);
+          console.log(`✅ Scheduled watering #${i + 1} for ${plantId} on ${formattedDate.year}-${formattedDate.month}-${formattedDate.day}`);
 
           newScheduledDate = addDays(newScheduledDate, wateringFrequency);
         }
       }
     }
 
-    console.log('🌱 Watering tasks generation complete!');
+    console.log('🌱 Watering notifications creation complete!');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error running watering sensor:', error);
+    console.error('❌ Error:', error);
     process.exit(1);
   }
 })();
