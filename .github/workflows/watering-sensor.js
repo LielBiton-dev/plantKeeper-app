@@ -85,7 +85,29 @@ function toComparableNumber(dateObj) {
 
         const notificationsRef = db.collection('notifications');
 
-        // Find latest watering notification
+        // Check if there are any future notifications for this plant
+        const futureSnapshot = await notificationsRef
+          .where('user_id', '==', userId)
+          .where('plant_id', '==', plantId)
+          .where('type', '==', 'watering')
+          .get();
+
+        let futureExists = false;
+        futureSnapshot.forEach(doc => {
+          const scheduled = doc.data().scheduled_date;
+          if (toComparableNumber(scheduled) >= todayNumber) {
+            futureExists = true;
+          }
+        });
+
+        if (futureExists) {
+          console.log(`⏩ Future watering already scheduled for ${plantId}. Skipping.`);
+          continue;
+        }
+
+        console.log(`🛠 No future watering. Calculating new watering schedule.`);
+
+        // Find the last watering event (even if it was in the past)
         const lastSnapshot = await notificationsRef
           .where('user_id', '==', userId)
           .where('plant_id', '==', plantId)
@@ -96,18 +118,19 @@ function toComparableNumber(dateObj) {
           .limit(1)
           .get();
 
-        let lastDate = null;
+        let startingDate = null;
+
         if (!lastSnapshot.empty) {
           const last = lastSnapshot.docs[0].data().scheduled_date;
-          lastDate = new Date(last.year, last.month - 1, last.day);
-          console.log(`🕰 Last watering on ${lastDate.toDateString()}`);
+          startingDate = addDays(new Date(last.year, last.month - 1, last.day), wateringFrequency);
+          console.log(`🕰 Last watering found. Next watering starts at ${startingDate.toDateString()}`);
         } else {
-          lastDate = new Date(today.year, today.month - 1, today.day);
-          console.log(`🌱 No previous watering, starting today.`);
+          startingDate = new Date(today.year, today.month - 1, today.day);
+          console.log(`🌱 No previous watering. Starting from today: ${startingDate.toDateString()}`);
         }
 
-        // Schedule next 3 watering dates
-        let newScheduledDate = addDays(lastDate, wateringFrequency);
+        // Schedule next 3 watering notifications
+        let newScheduledDate = new Date(startingDate);
 
         for (let i = 0; i < 3; i++) {
           const formattedDate = toDateObj(newScheduledDate);
