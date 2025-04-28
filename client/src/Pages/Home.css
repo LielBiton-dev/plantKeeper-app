@@ -1,31 +1,31 @@
 /* Home.css */
 
-  /* Location display */
-  .location-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 6px;
-    font-size: 0.95rem;
+
+.location-pill {
+  display: flex;
+  align-items: center;
+  background-color: rgba(26, 71, 42, 0.08);
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin: 16px auto 0;
+  justify-content: center;
+  width: fit-content;
 }
 
 .location-icon {
-  width: 14px;
-  height: 14px;
-  color: #2e553d;
-  stroke-width: 1.8;
-  opacity: 0.8;
+  margin-right: 6px;
+  color: #1a472a !important;
+  font-size: 18px;
+}
+
+.location-pill svg {
+  background: transparent;
 }
 
 .location-text {
-  color: #2e553d;
+  font-size: 14px;
+  color: #1a472a;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  opacity: 0.8;
 }
 
 /* Content area */
@@ -223,7 +223,6 @@ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);*/
 #home-title {
   margin-bottom: 0rem;
   font-size: 1.8rem;
-  color: #2e553d;
 }
 
 #home-description {

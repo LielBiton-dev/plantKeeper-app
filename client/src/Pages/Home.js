@@ -91,14 +91,14 @@ const Home = () => {
               type: data.type,
               plantId: data.plant_id,
               scheduledDate: data.scheduled_date,
-              isRead: data.isRead || false,
+              isRead: data.isRead,
             };
           })
           .filter(task => {
             if (!task.scheduledDate) return false;
             const date = new Date(task.scheduledDate.year, task.scheduledDate.month - 1, task.scheduledDate.day);
             date.setHours(0, 0, 0, 0);
-            return date >= today;
+            return date.getTime() === today.getTime();;
           })
           .sort((a, b) => {
             const aDate = new Date(a.scheduledDate.year, a.scheduledDate.month - 1, a.scheduledDate.day);
@@ -126,23 +126,6 @@ const Home = () => {
 
   /* Today's tasks helpers */
 
-  const formatTaskMessage = (task) => {
-    if (!task) return "";
-  
-    switch (task.type) {
-      case "watering":
-        return `Water ${formatPlantName(task.plantId)}`;
-      case "fertilizer":
-        return `Fertilize ${formatPlantName(task.plantId)}`;
-      case "repotting":
-        return `Repot ${formatPlantName(task.plantId)}`;
-      case "light":
-        return `Move ${formatPlantName(task.plantId)} to sunlight`;
-      default:
-        return `Care for ${formatPlantName(task.plantId)}`;
-    }
-  };
-
   const formatPlantName = (plantId) => {
     if (!plantId) return "your plant";
   
@@ -154,6 +137,8 @@ const Home = () => {
    const getIconByType = (type, size = 16) => {
     switch (type) {
       case "watering":
+        return <IoWaterOutline size={size} className="task-badge-icon" />;
+      default:
         return <IoWaterOutline size={size} className="task-badge-icon" />;
     }
   };
@@ -173,23 +158,6 @@ const Home = () => {
     }
   };
 
-  const getTaskBadgeColor = (type) => {
-    switch (type) {
-      case "watering":
-        return { background: "#e0f2fe", text: "#0284c7" }; // light blue + blue
-      case "fertilizer":
-        return { background: "#dcfce7", text: "#22c55e" }; // light green + green
-      case "repotting":
-        return { background: "#ede9fe", text: "#8b5cf6" }; // light purple + purple
-      case "light":
-        return { background: "#fef9c3", text: "#eab308" }; // light yellow + gold
-      case "tip":
-        return { background: "#f3f4f6", text: "#6b7280" }; // gray
-      default:
-        return { background: "#f3f4f6", text: "#6b7280" }; // gray fallback
-    }
-  };
-
   return (
     <div className="page-container bg-light">
       <TopNav userName={userName} />
@@ -204,10 +172,10 @@ const Home = () => {
             <section>
               <h2 className="page-title" id="home-title">WELCOME TO YOUR GREENHOUSE</h2>
               <p className="description-text" id="home-description">Let's see how your plants are doing</p>
-              <p className="location-display">
-              <IoLocationOutline color="#2e553d"/>
+              <div className="location-pill">
+                <IoLocationOutline className="location-icon" />
                 <span className="location-text">{userLocation}</span>
-              </p>
+              </div>
             </section>
             
             {/* Your Plants */}
@@ -268,7 +236,11 @@ const Home = () => {
                     </div>
                   ))
                 ) : (
-                  <p className="no-tasks-text">🌱 No upcoming tasks!</p>
+                  <div className="task-item no-tasks">
+                    <div className="task-content">
+                      <div className="plant-name">🌱 No upcoming tasks!</div>
+                    </div>
+                  </div>
                 )}
               </div>
             </section>
