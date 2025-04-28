@@ -21,7 +21,6 @@ const CareInstructions = () => {
 
   const [plantData, setPlantData] = useState(null);
   const [careData, setCareData] = useState(null);
-  const [userPlants, setUserPlants] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -37,12 +36,6 @@ const CareInstructions = () => {
             setUserName("Plant Lover");
             console.log("No name found in user data, using default");
           }          
-        }
-
-        const userPlantRef = doc(db, "user_plants", `user_${user.uid}`);
-        const userPlantSnap = await getDoc(userPlantRef);
-        if (userPlantSnap.exists()) {
-          setUserPlants(userPlantSnap.data().plants || []);
         }
       }
     });
@@ -75,6 +68,20 @@ const CareInstructions = () => {
     if (type) fetchPlantAndCare();
   }, [type]);
 
+
+  const getLevelNumber = (level) => {
+    switch ((level || "").toLowerCase()) {
+      case "easy":
+        return 1;
+      case "medium":
+        return 2;
+      case "hard":
+        return 3;
+      default:
+        return 0;
+    }
+  };
+  
   if (!plantData || !careData) return <div className="loading">Loading...</div>;
 
   return (
@@ -90,6 +97,19 @@ const CareInstructions = () => {
         <div className="care-card">
           <div className="image-container">
             <img src={plantData.image_url} alt={plantData.name} className="care-plant-image" />
+            <div className="care-level-indicator">
+              <div className="dots">
+                {[...Array(3)].map((_, i) => (
+                  <span
+                    key={i}
+                    className={`dot ${i < getLevelNumber(careData.care_level) ? 'filled' : ''}`}
+                  ></span>
+                ))}
+              </div>
+              <div className="care-level-text">
+                {careData.care_level}
+              </div>
+            </div>
           </div>
           
           <div className="plant-info-container">

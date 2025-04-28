@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { TopNav } from '../components/Nav';
 import { useLocation, useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { IoIosArrowBack } from "react-icons/io";
 import PageTransition from "../components/PageTransition";
 import axios from "axios";
 import "./Identification.css";
 
+let currentScanId = null; // Track scan document for feedback
+
 const IdentificationResults = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const file = location.state?.file;    
+    const file = location.state?.file;
 
     const [prediction, setPrediction] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -22,10 +24,26 @@ const IdentificationResults = () => {
     const [addingToCollection, setAddingToCollection] = useState(false);
     const [addedToCollection, setAddedToCollection] = useState(false);
 
-    const handleFeedback = (isGood) => {
+    const hasPredicted = useRef(false); // ✅ Fix double call issue
+
+    const handleFeedback = async (isGood) => {
         setFeedbackGiven(true);
         console.log(`User feedback: ${isGood ? 'Good' : 'Bad'} identification`);
-        // Optionally send this to Firestore or analytics
+
+        if (!currentScanId) {
+            console.error("No scan ID found to update feedback.");
+            return;
+        }
+
+        try {
+            const scanRef = doc(db, "scans", currentScanId);
+            await updateDoc(scanRef, {
+                feedback: isGood ? "good" : "bad"
+            });
+            console.log("Feedback saved to scan.");
+        } catch (error) {
+            console.error("Error updating feedback:", error);
+        }
     };
 
     const handleAddToCollection = async () => {
@@ -37,10 +55,10 @@ const IdentificationResults = () => {
                 return;
             }
 
-            const plantId = cleanPlantId; // Using the cleanPlantId from the component
+            const plantId = cleanPlantId;
             const userPlantsRef = doc(db, "user_plants", `user_${user.uid}`);
             const userPlantsDoc = await getDoc(userPlantsRef);
-            
+
             if (userPlantsDoc.exists()) {
                 await updateDoc(userPlantsRef, {
                     plants: arrayUnion(plantId)
@@ -50,7 +68,7 @@ const IdentificationResults = () => {
                     plants: [plantId]
                 });
             }
-            
+
             console.log("Plant added to collection:", plantId);
             setAddedToCollection(true);
         } catch (error) {
@@ -62,59 +80,66 @@ const IdentificationResults = () => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            try {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                setUserName(userData.firstName || "Plant Lover");
-            } else {
-                setUserName("Plant Lover");
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        setUserName(userData.firstName || "Plant Lover");
+                    } else {
+                        setUserName("Plant Lover");
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch user name:", error);
+                    setUserName("Plant Lover");
+                }
             }
-            } catch (error) {
-            console.error("Failed to fetch user name:", error);
-            setUserName("Plant Lover");
-            }
-        }
         });
         return () => unsubscribe();
     }, []);
 
-  useEffect(() => {
-    
-    if (!file) return;
+    useEffect(() => {
+        if (!file || hasPredicted.current) return; // ✅ prevent second call
 
-    const sendFileToModel = async () => {
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
+        console.log("Calling /predict for file:", file.name);
 
-        const response = await axios.post(
-          "https://coralengel-plant-recognition-api.hf.space/predict",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const sendFileToModel = async () => {
+            const startTime = Date.now();
 
-        const rawResults = response.data.results;
-        const parsed = typeof rawResults === "string" ? JSON.parse(rawResults) : rawResults;
-        setPrediction(parsed[0]);
-      } catch (error) {
-        console.error("Prediction failed:", error);
-        setPrediction({ error: "Failed to classify the image." });
-      } finally {
-        setLoading(false);
-      }
-    };
+            try {
+                const formData = new FormData();
+                formData.append("file", file);
 
-    sendFileToModel();
-  }, [file]);
-  
+                const response = await axios.post(
+                    "https://coralengel-plant-recognition-api.hf.space/predict",
+                    formData,
+                    { headers: { "Content-Type": "multipart/form-data" } }
+                );
+
+                const endTime = Date.now();
+                const elapsed = endTime - startTime;
+
+                const rawResults = response.data.results;
+                const parsed = typeof rawResults === "string" ? JSON.parse(rawResults) : rawResults;
+                setPrediction(parsed[0]);
+
+                await logScan(parsed[0], elapsed);
+
+            } catch (error) {
+                console.error("Prediction failed:", error);
+                setPrediction({ error: "Failed to classify the image." });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        sendFileToModel();
+        hasPredicted.current = true; // ✅ lock after first call
+    }, [file]);
+
     useEffect(() => {
         if (!prediction?.confidence) return;
+
         const targetConfidence = Math.round(prediction.confidence * 100);
         const duration = 1500;
         const interval = 10;
@@ -123,105 +148,129 @@ const IdentificationResults = () => {
 
         let current = 0;
         const timer = setInterval(() => {
-        current += increment;
-        if (current >= targetConfidence) {
-            setConfidence(targetConfidence);
-            clearInterval(timer);
-        } else {
-            setConfidence(current);
-        }
+            current += increment;
+            if (current >= targetConfidence) {
+                setConfidence(targetConfidence);
+                clearInterval(timer);
+            } else {
+                setConfidence(current);
+            }
         }, interval);
 
         return () => clearInterval(timer);
     }, [prediction]);
 
-  if (loading) return <div className="loading">🌿 Analyzing image...</div>;
-  if (prediction?.error) return <div className="error">{prediction.error}</div>;
-  if (!prediction?.name) return <div className="error">No plant identified.</div>;
+    const logScan = async (predictionResult, latencyMs) => {
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error("No authenticated user for scan log");
+                return;
+            }
 
-  const radius = 120;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (confidence / 100) * circumference;
-  const cleanPlantId = prediction.name.split("(")[0].trim().toLowerCase().replace(/\s+/g, "_");
+            const docRef = await addDoc(collection(db, "scans"), {
+                user_id: user.uid,
+                timestamp: serverTimestamp(),
+                prediction: {
+                    name: predictionResult.name,
+                    confidence: predictionResult.confidence,
+                },
+                latency_ms: latencyMs,
+                feedback: null,
+            });
 
-  const mainName = prediction.name.split("(")[0].trim();
+            currentScanId = docRef.id;
+            console.log("Scan logged:", docRef.id);
+        } catch (error) {
+            console.error("Error logging scan:", error);
+        }
+    };
 
-  return (
-    <div className="identification-page">
-      <TopNav userName={userName} />
-      <div className="back-button" onClick={() => navigate("/scan")}>
-        <IoIosArrowBack size={20} />
-        <span>Back</span>
-        </div>
-      <PageTransition>
-      <div className="identification-content">
-        <div className="greeting">
-            <p>Your plant is</p>
-            <h2 id="main">{mainName}</h2>
-        </div>
-        <div className="identification-image-container">
-            <svg className="progress-ring" viewBox="0 0 260 260">
-            <circle cx="130" cy="130" r="120" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-            <circle
-                cx="130"
-                cy="130"
-                r="120"
-                fill="none"
-                stroke="#059669"
-                strokeWidth="8"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                className="circle-progress"
-            />
-            </svg>
+    if (loading) return <div className="loading">🌿 Analyzing image...</div>;
+    if (prediction?.error) return <div className="error">{prediction.error}</div>;
+    if (!prediction?.name) return <div className="error">No plant identified.</div>;
 
-            <div className="plant-image-circle">
-                <img src={URL.createObjectURL(file)} alt="Uploaded Plant" className="plant-image" />
+    const radius = 120;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (confidence / 100) * circumference;
+    const cleanPlantId = prediction.name.split("(")[0].trim().toLowerCase().replace(/\s+/g, "_");
+    const mainName = prediction.name.split("(")[0].trim();
+
+    return (
+        <div className="identification-page">
+            <TopNav userName={userName} />
+            <div className="back-button" onClick={() => navigate("/scan")}>
+                <IoIosArrowBack size={20} />
+                <span>Back</span>
             </div>
+            <PageTransition>
+                <div className="identification-content">
+                    <div className="greeting">
+                        <p>Your plant is</p>
+                        <h2 id="main">{mainName}</h2>
+                    </div>
+                    <div className="identification-image-container">
+                        <svg className="progress-ring" viewBox="0 0 260 260">
+                            <circle cx="130" cy="130" r="120" fill="none" stroke="#e5e7eb" strokeWidth="8" />
+                            <circle
+                                cx="130"
+                                cy="130"
+                                r="120"
+                                fill="none"
+                                stroke="#059669"
+                                strokeWidth="8"
+                                strokeLinecap="round"
+                                strokeDasharray={circumference}
+                                strokeDashoffset={strokeDashoffset}
+                                className="circle-progress"
+                            />
+                        </svg>
 
-            <div className="confidence-badge">
-                <span className="confidence-value">{Math.round(confidence)}%</span>
-                <span className="confidence-label">match</span>
-            </div>
-        </div>
-        <div className="feedback-buttons">          
-            {!feedbackGiven ? (
-            <>
-                <p className="text-center mb-2">Is this identification correct?</p>
-                <div className="button-row fade-in">
-                    <button className="good-btn" onClick={() => handleFeedback(true)}>✓ Good Match</button>
-                    <button className="bad-btn" onClick={() => handleFeedback(false)}>✗ Not a Match</button>
-                </div>
-                </>
-                ) : (
-                <div className="fade-in care-transition">
-                    <p className="text-emerald-700 font-medium mb-3">Thanks for your feedback!</p>
-                    <div className="action-buttons">
-                        <button
-                            className="care-tips-btn"
-                            onClick={() => navigate("/care-instructions", { state: { type: cleanPlantId } })}
-                        >
-                            🌿 Get Care Tips
-                        </button>
-                        
-                        <button
-                            className="care-tips-btn"
-                            onClick={handleAddToCollection}
-                            disabled={addingToCollection || addedToCollection}
-                        >
-                            {addingToCollection ? "Adding..." : 
-                             addedToCollection ? "Added ✓" : "🪴 Add to Collection"}
-                        </button>
+                        <div className="plant-image-circle">
+                            <img src={URL.createObjectURL(file)} alt="Uploaded Plant" className="plant-image" />
+                        </div>
+
+                        <div className="confidence-badge">
+                            <span className="confidence-value">{Math.round(confidence)}%</span>
+                            <span className="confidence-label">match</span>
+                        </div>
+                    </div>
+
+                    <div className="feedback-buttons">
+                        {!feedbackGiven ? (
+                            <>
+                                <p className="text-center mb-2">Is this identification correct?</p>
+                                <div className="button-row fade-in">
+                                    <button className="good-btn" onClick={() => handleFeedback(true)}>✓ Good Match</button>
+                                    <button className="bad-btn" onClick={() => handleFeedback(false)}>✗ Not a Match</button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="fade-in care-transition">
+                                <p className="text-emerald-700 font-medium mb-3">Thanks for your feedback!</p>
+                                <div className="action-buttons">
+                                    <button
+                                        className="care-tips-btn"
+                                        onClick={() => navigate("/care-instructions", { state: { type: cleanPlantId } })}
+                                    >
+                                        🌿 Get Care Tips
+                                    </button>
+                                    <button
+                                        className="care-tips-btn"
+                                        onClick={handleAddToCollection}
+                                        disabled={addingToCollection || addedToCollection}
+                                    >
+                                        {addingToCollection ? "Adding..." :
+                                            addedToCollection ? "Added ✓" : "🪴 Add to Collection"}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
-                )}
+            </PageTransition>
         </div>
-      </div>
-
-      </PageTransition>
-    </div>
-  );
+    );
 };
 
 export default IdentificationResults;

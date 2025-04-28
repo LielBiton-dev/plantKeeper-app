@@ -167,3 +167,40 @@
     max-height: 180px;
   }
 }
+
+
+.care-level-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #065f46; /* dark green for now */
+  gap: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #d1d5db; /* light gray empty dots */
+  border-radius: 50%;
+}
+
+.dot.filled {
+  background: #065f46; /* dark green filled dots */
+}
+
+.care-level-text {
+  white-space: nowrap;
+}

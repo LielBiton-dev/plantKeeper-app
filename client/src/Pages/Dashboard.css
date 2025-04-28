@@ -1,0 +1,74 @@
+.stats-grid {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  width: 100%; /* ✅ make full width */
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* ✅ make card stretch */
+}
+
+.stat-title {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  color: #111827;
+  font-weight: bold;
+}
+
+/* Table */
+.scans-table {
+  width: 100%; /* ✅ make full width */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-header,
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: white;
+  border-radius: 10px;
+  font-size: 14px;
+  width: 100%; /* ✅ make full width */
+}
+
+.table-header {
+  font-weight: bold;
+  background-color: #e5e7eb;
+}
+
+.feedback.good {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.feedback.bad {
+  color: #ef4444;
+  font-weight: bold;
+}
