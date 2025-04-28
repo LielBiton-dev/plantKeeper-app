@@ -397,3 +397,26 @@ input:checked + .slider:before {
     font-size: 22px;
   }
 }
+
+
+/* Admin Panel Button */
+.admin-panel-button {
+  display: flex;
+  justify-content: center;
+}
+
+.admin-panel-button button {
+  padding: 4px 10px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--text-dark);
+  border: 1px solid rgba(0, 0, 0, 0.2); /* light gray thin border */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-panel-button button:hover {
+  border-color: var(--primary-green); /* bright green border */
+  color: var(--primary-green); /* text color also becomes green */
+}

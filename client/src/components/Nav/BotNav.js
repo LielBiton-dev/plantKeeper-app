@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { IoBookmark} from "react-icons/io5";
 import { LuScanSearch } from "react-icons/lu";
 import { MdHomeFilled } from "react-icons/md";
 import { IoMdPerson, IoIosNotifications, IoIosHeart} from "react-icons/io";
