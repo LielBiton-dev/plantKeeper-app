@@ -1,10 +1,8 @@
 .stats-grid {
-  margin-top: 20px;
-  margin-bottom: 30px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
-  width: 100%; /* ✅ make full width */
+  width: 100%;
 }
 
 @media (max-width: 480px) {
@@ -14,35 +12,37 @@
 }
 
 .stat-card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  background: var(--bg-white);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%; /* ✅ make card stretch */
+  width: 100%;
 }
 
 .stat-title {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-medium);
   margin-bottom: 8px;
+  text-align: center;
 }
 
 .stat-value {
-  font-size: 24px;
-  color: #111827;
-  font-weight: bold;
+  font-size: 28px;
+  color: var(--text-dark);
+  font-weight: 700;
 }
 
 /* Table */
 .scans-table {
-  width: 100%; /* ✅ make full width */
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: 30px;
 }
 
 .table-header,
@@ -52,15 +52,16 @@
   align-items: center;
   gap: 10px;
   padding: 12px;
-  background: white;
-  border-radius: 10px;
+  background: var(--bg-white);
+  border-radius: 12px;
   font-size: 14px;
-  width: 100%; /* ✅ make full width */
+  width: 100%;
+  box-shadow: var(--card-shadow);
 }
 
 .table-header {
   font-weight: bold;
-  background-color: #e5e7eb;
+  background-color: #d8d6d6cf;
 }
 
 .feedback.good {
@@ -71,4 +72,94 @@
 .feedback.bad {
   color: #ef4444;
   font-weight: bold;
+}
+
+/* Pie Chart card */
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* two charts side by side */
+  gap: 20px;
+  width: 100%;
+}
+
+
+@media (max-width: 480px) {
+  .chart-grid {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0px;
+  }
+}
+
+.chart-card {
+  background: var(--bg-white);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* Pie Chart Legend */
+
+.custom-legend {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-dark);
+  gap: 8px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+
+
+/* Tabs */
+
+.tab-switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-white);
+  border: 1px solid var(--primary-green);
+  border-radius: 9999px; /* Full pill shape */
+  overflow: hidden;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.switch-button {
+  padding: 8px 20px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.switch-button.active {
+  background: var(--primary-green);
+  color: #fff;
 }

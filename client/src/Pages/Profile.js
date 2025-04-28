@@ -169,6 +169,15 @@ const Profile = () => {
             <p className="profile-account-type">Personal Account</p>
           </div>
           
+          {/* Admin Panel Button */}
+          {user?.isAdmin && (
+            <div className="admin-panel-button">
+              <button onClick={() => navigate("/dashboard")}>
+                Admin Panel
+              </button>
+            </div>
+          )}
+
           {/* Accordion Menu */}
           <div className="profile-menu">
             {/* My Account Section */}
