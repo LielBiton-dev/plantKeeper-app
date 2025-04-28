@@ -230,10 +230,7 @@ const Notifications = () => {
       <TopNav userName={userName} />
       <PageTransition>
         <div className="content-container notification-content">
-          <div className="notification-header-row">
-            <h2 className="page-title">Notifications</h2>
-          </div>
-
+          <h2 className="page-title">Notifications</h2>
           <div className="notification-container">
             <div className="notification-actions">
               <button onClick={markAllAsRead} className="mark-all-button">
