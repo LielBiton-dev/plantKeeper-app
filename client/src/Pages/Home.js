@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { IoLocationOutline } from "react-icons/io5";
+import { FaLocationDot } from "react-icons/fa6";
 import { IoWaterOutline } from "react-icons/io5";
+import PageTransition from "../components/PageTransition";
 import "./Home.css";
 import StarActionButton from '../components/StarActionButton';
 
@@ -161,19 +162,20 @@ const Home = () => {
   return (
     <div className="page-container bg-light">
       <TopNav userName={userName} />
-      
+      <PageTransition>
       {/* Main content */}
       <main className="content page-fade">
         {loading ? (
           <p className="loading-text">Loading your garden profile...</p>
         ) : (
+          
           <div className="content-container">
             {/* Greeting section */}
             <section>
-              <h2 className="page-title" id="home-title">WELCOME TO YOUR GREENHOUSE</h2>
+              <h2 className="page-title" id="home-title">Welcome to your greenhouse</h2>
               <p className="description-text" id="home-description">Let's see how your plants are doing</p>
               <div className="location-pill">
-                <IoLocationOutline className="location-icon" />
+                <FaLocationDot className="location-icon" />
                 <span className="location-text">{userLocation}</span>
               </div>
             </section>
@@ -219,12 +221,13 @@ const Home = () => {
                   tasks.map(task => (
                     <div className="task-item">
                       <div className="task-content">
-                      <div className="task-status-dot"
+                      <div
+                        className={`task-status-dot ${!task.isRead ? 'unread' : ''}`}
                         style={{
-                          backgroundColor: task.isRead ? '#34d399' : '#f87171',  // Inner color
+                          backgroundColor: task.isRead ? '#34d399' : '#f87171',
                           boxShadow: task.isRead 
-                            ? '0 0 0 4px #bbf7d0'  // Outer green glow
-                            : '0 0 0 4px #fecaca', // Outer red glow
+                            ? '0 0 0 4px #bbf7d0'  
+                            : '0 0 0 4px #fecaca', 
                         }}
                       ></div>
                         <div className="plant-name">{formatPlantName(task.plantId)}</div>
@@ -300,7 +303,7 @@ const Home = () => {
 
         )}
       </main>
-
+      </PageTransition>
       <BotNav />    
       <RecommendationModal 
         isOpen={modalOpen} 

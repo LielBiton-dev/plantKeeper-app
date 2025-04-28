@@ -13,9 +13,9 @@
 }
 
 .location-icon {
-  margin-right: 6px;
+  margin-right: 4px;
   color: #1a472a !important;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .location-pill svg {
@@ -38,11 +38,6 @@
 
 .loading-text {
   color: #333;
-}
-
-.content-container {
-  width: 100%;
-  max-width: 100%;
 }
 
 .greeting p {
@@ -222,7 +217,7 @@ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);*/
 
 #home-title {
   margin-bottom: 0rem;
-  font-size: 1.8rem;
+  font-size: 2rem;
 }
 
 #home-description {
@@ -607,4 +602,64 @@ border-radius: 50%;
 flex-shrink: 0;
 background-color: #f87171; /* fallback */
 box-shadow: 0 0 0 4px #fecaca; /* fallback */
+}
+
+
+
+/* Location pill animation */
+@keyframes jumpAndShake {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  40% {
+    transform: translateY(-10px) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  60% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  80% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.location-icon {
+  animation: jumpAndShake 1.4s ease-in-out forwards;
+  display: inline-block; /* Needed for transform to work */
+}
+
+
+
+/* Status dot animation */
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.2);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* Add this class to your task dots */
+.task-status-dot.unread {
+  animation: heartbeat 2s infinite;
+  transform-origin: center;
 }
