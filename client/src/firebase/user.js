@@ -59,12 +59,7 @@
         email: user.email,
         notificationEnable: user.notificationEnable
       };
-  
-      // Only add registrationDate for new documents
-      if (!user.uid) {
-        data.registrationDate = new Date();
-      }
-  
+      data.registrationDate = new Date();
       return data;
     },
   

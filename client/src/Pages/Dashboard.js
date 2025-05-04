@@ -3,9 +3,12 @@ import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { PieChart, Pie, Legend, LineChart, Line, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { db } from "../firebase/firebase";
 import PageTransition from "../components/PageTransition";
+import { useNavigate } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 import "./Dashboard.css";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [scans, setScans] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,6 +118,10 @@ const Dashboard = () => {
   return (
     <div className="page-container bg-light">
       <PageTransition>
+            <div className="back-button" onClick={() => navigate("/profile")}>
+              <IoIosArrowBack size={20} />
+              <span>Back</span>
+            </div>
         <div className="content-container">
           <h2 className="page-title">Overview</h2>
 

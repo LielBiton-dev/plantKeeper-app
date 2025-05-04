@@ -166,6 +166,9 @@
   .care-plant-image {
     max-height: 180px;
   }
+  .care-level-indicator {
+    margin-right: 18px;
+  }
 }
 
 

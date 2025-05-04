@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaPaw } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
 import { useLocation } from "react-router-dom";
-import { db, auth } from "../firebase/firebase";
+import { db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
-import { TopNav } from '../components/Nav';
 import { IoIosArrowBack } from "react-icons/io";
 import { IoWaterOutline } from "react-icons/io5";
 import { PiSunLight } from "react-icons/pi";
@@ -17,31 +15,8 @@ const CareInstructions = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const type = location.state?.type;
-  const [userName, setUserName] = useState("");
-
   const [plantData, setPlantData] = useState(null);
   const [careData, setCareData] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          console.log("User data retrieved:", userData);
-          
-          if (userData.firstName) {
-            setUserName(userData.firstName);
-          } else {
-            setUserName("Plant Lover");
-            console.log("No name found in user data, using default");
-          }          
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     const fetchPlantAndCare = async () => {
@@ -86,8 +61,6 @@ const CareInstructions = () => {
 
   return (
     <div className="page-container bg-light">
-      <TopNav userName={userName} />
-
       <div className="back-button" onClick={() => navigate("/collection")}>
         <IoIosArrowBack size={20} />
         <span>Back</span>

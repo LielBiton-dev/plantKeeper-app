@@ -198,7 +198,6 @@ const IdentificationResults = () => {
 
     return (
         <div className="identification-page">
-            <TopNav userName={userName} />
             <div className="back-button" onClick={() => navigate("/scan")}>
                 <IoIosArrowBack size={20} />
                 <span>Back</span>
