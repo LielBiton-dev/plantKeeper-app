@@ -79,7 +79,7 @@ const PlantScan = () => {
       </div>
       <div className="scan-content">
         <div className="scan-instruction">
-          <h2>Get ready to scan<br />your image</h2>
+          <h2>Get ready to scan your image</h2>
         </div>
         
         <div className="image-preview-container">
