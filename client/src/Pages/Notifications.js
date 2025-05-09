@@ -4,8 +4,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
-import "./Notifications.css";
 import { IoFilterOutline } from "react-icons/io5";
+import { IoChevronDown } from "react-icons/io5";
+import "./Notifications.css";
 
 const Notifications = () => {
   const [userName, setUserName] = useState("");
@@ -14,6 +15,8 @@ const Notifications = () => {
   const [selectedPlants, setSelectedPlants] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
+  const [plantDropdownOpen, setPlantDropdownOpen] = useState(false);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -225,6 +228,22 @@ const Notifications = () => {
       }
     };
 
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (plantDropdownOpen || typeDropdownOpen) {
+          if (!event.target.closest('.filter-dropdown')) {
+            setPlantDropdownOpen(false);
+            setTypeDropdownOpen(false);
+          }
+        }
+      };
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [plantDropdownOpen, typeDropdownOpen]);
+
   return (
     <div className="page-container bg-light">
       <TopNav userName={userName} />
@@ -246,41 +265,73 @@ const Notifications = () => {
 
             {showFilters && (
               <div className="notification-filter-panel">
-                {/* Plant Filter */}
+                {/* Plant Filter Dropdown */}
                 <div className="notification-filter-group">
                   <h3 className="notification-filter-title">Filter by Plant</h3>
-                  <div className="notification-filter-options">
-                    {plantOptions.map(plant => (
-                      <label key={plant} className="notification-filter-option">
-                        <input
-                          type="checkbox"
-                          checked={selectedPlants.includes(plant)}
-                          onChange={() => togglePlantSelection(plant)}
-                          className="notification-filter-checkbox"
-                        />
-                        <span className="notification-filter-label">{plant}</span>
-                      </label>
-                    ))}
+                  <div className="filter-dropdown">
+                    <button 
+                      className={`filter-dropdown-toggle ${plantDropdownOpen ? 'open' : ''}`}
+                      onClick={() => setPlantDropdownOpen(!plantDropdownOpen)}
+                    >
+                      <span>
+                        {selectedPlants.length === 0 
+                          ? 'Select plants' 
+                          : `${selectedPlants.length} plant${selectedPlants.length > 1 ? 's' : ''} selected`}
+                      </span>
+                      <IoChevronDown />
+                    </button>
+                    
+                    {plantDropdownOpen && (
+                      <div className="filter-dropdown-menu">
+                        {plantOptions.map(plant => (
+                          <label key={plant} className="filter-dropdown-item">
+                            <input
+                              type="checkbox"
+                              checked={selectedPlants.includes(plant)}
+                              onChange={() => togglePlantSelection(plant)}
+                              className="filter-dropdown-checkbox"
+                            />
+                            <span className="filter-dropdown-label">{plant}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Type Filter */}
+                {/* Type Filter Dropdown */}
                 <div className="notification-filter-group">
                   <h3 className="notification-filter-title">Filter by Type</h3>
-                  <div className="notification-filter-options">
-                    {typeOptions.map(type => (
-                      <label key={type} className="notification-filter-option">
-                        <input
-                          type="checkbox"
-                          checked={selectedTypes.includes(type)}
-                          onChange={() => toggleTypeSelection(type)}
-                          className="notification-filter-checkbox"
-                        />
-                        <span className="notification-filter-label">
-                          {type.charAt(0).toUpperCase() + type.slice(1)}
-                        </span>
-                      </label>
-                    ))}
+                  <div className="filter-dropdown">
+                    <button 
+                      className={`filter-dropdown-toggle ${typeDropdownOpen ? 'open' : ''}`}
+                      onClick={() => setTypeDropdownOpen(!typeDropdownOpen)}
+                    >
+                      <span>
+                        {selectedTypes.length === 0 
+                          ? 'Select types' 
+                          : `${selectedTypes.length} type${selectedTypes.length > 1 ? 's' : ''} selected`}
+                      </span>
+                      <IoChevronDown />
+                    </button>
+                    
+                    {typeDropdownOpen && (
+                      <div className="filter-dropdown-menu">
+                        {typeOptions.map(type => (
+                          <label key={type} className="filter-dropdown-item">
+                            <input
+                              type="checkbox"
+                              checked={selectedTypes.includes(type)}
+                              onChange={() => toggleTypeSelection(type)}
+                              className="filter-dropdown-checkbox"
+                            />
+                            <span className="filter-dropdown-label">
+                              {type.charAt(0).toUpperCase() + type.slice(1)}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
