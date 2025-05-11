@@ -464,7 +464,7 @@ text-align: left;
 display: flex;
 overflow-x: auto;
 gap: 1rem;
-padding: 1rem 0rem 0rem 0rem;
+padding: 1rem 0rem 1rem 0rem;
 scroll-snap-type: x mandatory;
 -webkit-overflow-scrolling: touch;
 }
