@@ -69,7 +69,7 @@ const BotNav = () => {
           <label htmlFor="tab-collection">
             <IoIosHeart size={25}/>
           </label>
-          <label htmlFor="tab-scan">
+          <label htmlFor="tab-scan" style={{ opacity: 0.95 }}>
             <LuScanSearch size={28} />
           </label>
           <label htmlFor="tab-notifications">
@@ -78,7 +78,6 @@ const BotNav = () => {
           <label htmlFor="tab-profile">
             <IoMdPerson size={24} />
           </label>
-          <div className="underline"></div>
         </div>
       </div>
     </nav>
