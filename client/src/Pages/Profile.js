@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TopNav, BotNav } from '../components/Nav';
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
+import { IoCamera } from "react-icons/io5";
 import { 
   IoPersonOutline,
   IoNotificationsOutline, 
@@ -31,11 +32,13 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [profilePic, setProfilePic] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   
   // Accordion state
   const [openSection, setOpenSection] = useState(null);
 
-  // Fetch user data
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -46,6 +49,11 @@ const Profile = () => {
           if (userDoc.exists()) {
             const userData = userDoc.data();
             setUser(userData);
+            
+            // Set profile picture if it exists
+            if (userData.profilePictureBase64) {
+              setProfilePic(userData.profilePictureBase64);
+            }
             
             // Set form data from user data
             setFormData({
@@ -78,6 +86,94 @@ const Profile = () => {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     });
+  };
+
+  const handlePictureClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const resizeImage = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          
+          const MAX_SIZE = 300;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+          resolve(base64Image);
+        };
+        
+        img.onerror = () => {
+          reject(new Error('Failed to load image'));
+        };
+        
+        img.src = event.target.result;
+      };
+      
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      
+      reader.readAsDataURL(file);
+    });
+  };
+  
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+      setError("Please select an image file");
+      return;
+    }
+    
+    setUploading(true);
+    setError(null);
+    
+    try {
+      const resizedImage = await resizeImage(file);
+      
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Not authenticated");
+      
+      const userRef = doc(db, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        profilePictureBase64: resizedImage
+      });
+      
+      setProfilePic(resizedImage);
+      
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+      console.error("Error uploading picture:", error);
+      setError("Failed to upload profile picture");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -161,10 +257,34 @@ const Profile = () => {
           )}
           
           <div className="profile-header">
-              <div className="profile-initials">
+          <div className="profile-initials" onClick={handlePictureClick}>
+              {profilePic ? (
+                <img src={profilePic} alt="Profile" className="profile-picture" />
+              ) : (
+                <>
                   {formData.firstName ? formData.firstName.charAt(0).toUpperCase() : ""}
                   {formData.lastName ? formData.lastName.charAt(0).toUpperCase() : ""}
+                </>
+              )}
+              
+              <div className="camera-icon">
+                <IoCamera size={14} />
+              </div>
+              
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="profile-picture-input"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              
+              {uploading && (
+                <div className="uploading-overlay">
+                  <div className="uploading-spinner"></div>
                 </div>
+              )}
+            </div>
             <h1 className="profile-name">{formData.firstName || ""} {formData.lastName || ""}</h1>
             <p className="profile-account-type">Personal Account</p>
           </div>
