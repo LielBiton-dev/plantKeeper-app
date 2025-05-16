@@ -3,13 +3,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAf8N8d6WPa-MFofL9900238jcicU5WdOY",
-    authDomain: "plantkeeper-app.firebaseapp.com",
-    projectId: "plantkeeper-app",
-    storageBucket: "plantkeeper-app.firebasestorage.app",
-    messagingSenderId: "11583777848",
-    appId: "1:11583777848:web:87b0581b3e2e20446d4acd",
-    measurementId: "G-JL4WFLF3TT"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASURMENT_ID
   };
 
 // Initialize Firebase

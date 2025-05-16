@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { TopNav } from '../components/Nav';
 import { useLocation, useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { IoIosArrowBack } from "react-icons/io";
@@ -18,7 +16,6 @@ const IdentificationResults = () => {
 
     const [prediction, setPrediction] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [userName, setUserName] = useState("");
     const [confidence, setConfidence] = useState(0);
     const [feedbackGiven, setFeedbackGiven] = useState(false);
     const [addingToCollection, setAddingToCollection] = useState(false);
@@ -77,26 +74,6 @@ const IdentificationResults = () => {
             setAddingToCollection(false);
         }
     };
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        setUserName(userData.firstName || "Plant Lover");
-                    } else {
-                        setUserName("Plant Lover");
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch user name:", error);
-                    setUserName("Plant Lover");
-                }
-            }
-        });
-        return () => unsubscribe();
-    }, []);
 
     useEffect(() => {
         if (!file || hasPredicted.current) return; // ✅ prevent second call
