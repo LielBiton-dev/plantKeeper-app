@@ -1,16 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
-import { doc, getDoc, collection, getDocs, query, where, orderBy, limit } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, where, orderBy, 
+  limit,   updateDoc, setDoc, arrayUnion } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import { TopNav, BotNav } from '../components/Nav';
+import { FaPlus } from 'react-icons/fa';
 import "./Collection.css"; 
 
 const Collection = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [userPlants, setUserPlants] = useState([]);
+  const [showPlantList, setShowPlantList] = useState(false);
+  const [availablePlants, setAvailablePlants] = useState([]);
+  const [selectedPlant, setSelectedPlant] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const fetchAvailablePlants = useCallback(async () => {
+    try {
+      const plantsRef = collection(db, "plants");
+      const plantsSnapshot = await getDocs(plantsRef);
+      const plantsList = plantsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      // Filter out plants the user already has
+      const userPlantIds = userPlants.map(plant => plant.id);
+      const filteredPlants = plantsList.filter(plant => !userPlantIds.includes(plant.id));
+      
+      setAvailablePlants(filteredPlants);
+    } catch (error) {
+      console.error("Error fetching available plants:", error);
+    }
+  }, [userPlants]);
 
   useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -94,9 +120,14 @@ const Collection = () => {
         }
       }
     );
-      
       return () => unsubscribe();
     }, [navigate]);
+
+    useEffect(() => {
+      if (showPlantList) {
+        fetchAvailablePlants();
+      }
+    }, [showPlantList, fetchAvailablePlants, userPlants]); 
 
     const formatNextTaskMessage = (type, scheduledDate) => {
       if (!scheduledDate) return "";
@@ -126,6 +157,48 @@ const Collection = () => {
       return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
+    const handleAddPlantToCollection = async () => {
+      if (!selectedPlant) return;
+      
+      setIsAdding(true);
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          console.error("User not authenticated");
+          return;
+        }
+
+        const plantId = selectedPlant.id;
+        const userPlantsRef = doc(db, "user_plants", `user_${user.uid}`);
+        const userPlantsDoc = await getDoc(userPlantsRef);
+
+        if (userPlantsDoc.exists()) {
+          await updateDoc(userPlantsRef, {
+            plants: arrayUnion(plantId)
+          });
+        } else {
+          await setDoc(userPlantsRef, {
+            plants: [plantId]
+          });
+        }
+
+        console.log("Plant added to collection:", plantId);
+        
+        // Update the UI by adding the plant to userPlants
+        setUserPlants([...userPlants, selectedPlant]);
+        
+        // Close the modals
+        setShowConfirmation(false);
+        setShowPlantList(false);
+        setSelectedPlant(null);
+        
+      } catch (error) {
+        console.error("Error adding plant to collection:", error);
+      } finally {
+        setIsAdding(false);
+      }
+    };
+
   return (
     <div className="page-container bg-light">
       <TopNav userName={userName} />
@@ -148,8 +221,71 @@ const Collection = () => {
               </div>
             ))}
           </div>
+          {/* Plant selection modal */}
+          {showPlantList && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h3>Add a plant to your collection</h3>
+                  <button className="close-button" onClick={() => setShowPlantList(false)}>×</button>
+                </div>
+                <div className="available-plants-list">
+                  {availablePlants.map(plant => (
+                    <div 
+                      key={plant.id} 
+                      className="available-plant-item"
+                      onClick={() => {
+                        setSelectedPlant(plant);
+                        setShowConfirmation(true);
+                      }}
+                    >
+                      <img src={plant.image_url} alt={plant.name} className="plant-thumbnail" />
+                      <div className="plant-info">
+                        <div className="available-plant-name">{plant.name}</div>
+                        <div className="plant-scientific-name">{plant.scientific_name}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {availablePlants.length === 0 && (
+                    <div className="no-plants-message">
+                      No more plants available to add to your collection.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          {/* Confirmation dialog */}
+          {showConfirmation && selectedPlant && (
+            <div className="confirmation-overlay">
+              <div className="confirmation-dialog">
+                <p>You are about to add {selectedPlant.name} to your collection, are you sure?</p>
+                <div className="confirmation-actions">
+                  <button 
+                    className="cancel-button"
+                    onClick={() => {
+                      setShowConfirmation(false);
+                      setSelectedPlant(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="confirm-button" 
+                    onClick={handleAddPlantToCollection}
+                    disabled={isAdding}
+                  >
+                    {isAdding ? 'Adding...' : 'Add to Collection'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="floating-add-button" onClick={() => setShowPlantList(true)}>
+            <FaPlus />
+          </div>  
         </div>
-        </PageTransition>      
+        </PageTransition>    
         <BotNav />
       </div>
     
