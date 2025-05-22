@@ -1,0 +1,460 @@
+.journal-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #1a3a1a;
+  }
+  
+  .back-button {
+    position: absolute;
+    transform: translateY(-50%);
+    left: 1.5rem;
+    cursor: pointer;
+  }
+
+.add-button {
+    position: absolute;
+    font-size: 1.5rem;
+    right: 1.5rem;
+    color: #2e7d32;
+    font-weight: normal;
+    cursor: pointer;
+  }
+  
+  .journal-title {
+    text-align: center;
+    width: 100%;
+    color: #1a3a1a;
+  }
+  
+  .journal-camera-icon {
+    background: #efefef;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* <- make it round */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    margin: 0 auto 1.5rem auto; /* <- center horizontally */
+  }
+  
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .empty-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 2rem;
+  }
+  
+  .add-photo-button {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .add-photo-button:hover {
+    background-color: #256729;
+  }
+ 
+
+  /* Toggle between designs */
+  .switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+    gap: 0.5rem;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #2e7d32;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  
+  .switch-label {
+    font-size: 0.9rem;
+    color: #2e7d32;
+  }
+  
+
+  /* Carousel tryout */
+
+  /* PlantJournalCarousel.css */
+
+.carousel-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  }
+  
+  /* Image Carousel Styles */
+  .image-carousel {
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: 40px 0;
+    touch-action: pan-y;
+  }
+  
+  .center-image-container {
+    width: 400px;
+    height: 450px;
+    border-radius: 20px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 3;
+    background-color: #fff;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+  }
+  
+  .center-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  
+  .side-image-container {
+    position: absolute;
+    width: 200px;
+    height: 250px;
+    border-radius: 15px;
+    opacity: 0.6;
+    transition: all 0.4s ease;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .side-image-container:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+  
+  .left-image {
+    left: -100px;
+    transform: perspective(600px) rotateY(15deg) scale(0.85);
+  }
+  
+  .right-image {
+    right: -100px;
+    transform: perspective(600px) rotateY(-15deg) scale(0.85);
+  }
+  
+  .side-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  
+  .image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+  
+  .date-text {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  .caption-text {
+    color: #fff;
+    font-size: 14px;
+    opacity: 0.95;
+    line-height: 1.4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Navigation Buttons */
+  .nav-button {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .nav-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+  }
+  
+  .nav-button:active {
+    transform: scale(0.95);
+  }
+  
+  .left-nav-button {
+    left: 50px;
+  }
+  
+  .right-nav-button {
+    right: 50px;
+  }
+  
+  /* Timeline Dots */
+  .timeline-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 0;
+    gap: 12px;
+  }
+  
+  .timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ddd;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+  }
+  
+  .timeline-dot:hover {
+    background-color: #74b9ff;
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  
+  .timeline-dot.active {
+    background-color: #00b894;
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  
+  /* Empty State */
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 40px;
+    text-align: center;
+    min-height: 400px;
+  }
+  
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.6;
+  }
+  
+  .empty-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: #636e72;
+    margin: 0 0 12px 0;
+  }
+  
+  .empty-subtext {
+    font-size: 16px;
+    color: #636e72;
+    opacity: 0.8;
+    margin: 0;
+    max-width: 300px;
+    line-height: 1.4;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .carousel-header {
+      padding: 16px;
+    }
+    
+    .header-title {
+      font-size: 20px;
+    }
+    
+    .image-carousel {
+      height: 400px;
+      margin: 20px 0;
+    }
+    
+    .center-image-container {
+      width: 300px;
+      height: 350px;
+    }
+    
+    .side-image-container {
+      width: 150px;
+      height: 180px;
+    }
+    
+    .left-image {
+      left: -75px;
+    }
+    
+    .right-image {
+      right: -75px;
+    }
+    
+    .nav-button {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+    
+    .left-nav-button {
+      left: 20px;
+    }
+    
+    .right-nav-button {
+      right: 20px;
+    }
+    
+    .details-container {
+      margin: 0 16px 20px;
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .center-image-container {
+      width: 280px;
+      height: 320px;
+    }
+    
+    .side-image-container {
+      width: 120px;
+      height: 150px;
+    }
+    
+    .left-image {
+      left: -60px;
+    }
+    
+    .right-image {
+      right: -60px;
+    }
+    
+    .image-carousel {
+      height: 350px;
+    }
+    
+    .timeline-container {
+      padding: 20px 0;
+      gap: 8px;
+    }
+    
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+    }
+    
+    .timeline-dot.active {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  /* Animation for smooth transitions */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .center-image-container {
+    animation: fadeIn 1s ease-out;
+  }
+  
+  /* Accessibility improvements */
+  .nav-button:focus,
+  .timeline-dot:focus {
+    outline: 2px solid #00b894;
+    outline-offset: 2px;
+  }
+  
+  /* Print styles */
+  @media print {
+    .nav-button,
+    .timeline-container {
+      display: none;
+    }
+    
+  }

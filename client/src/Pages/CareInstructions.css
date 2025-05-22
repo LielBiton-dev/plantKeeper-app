@@ -2,14 +2,17 @@
 
 /* Plant details container */
 .care-card {
-  background: #fff;
   border-radius: 2rem;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  max-width: 90%;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  margin-top: 2rem;
+}
+
+.back-button {
+  margin-top: 2rem !important;
 }
 
 /* Image container */
@@ -24,8 +27,6 @@
 }
 
 .care-plant-image {
-  max-width: 250px;
-  max-height: 250px;
   width: 100%;
   height: auto;
   border-radius: 1.5rem;
@@ -58,7 +59,6 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;
-  margin-bottom: 2rem;
 }
 
 .care-tag {
@@ -166,16 +166,13 @@
   .care-plant-image {
     max-height: 180px;
   }
-  .care-level-indicator {
-    margin-right: 18px;
-  }
 }
 
 
 .care-level-indicator {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 15px;
+  right: 10px;
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.85);
@@ -206,4 +203,23 @@
 
 .care-level-text {
   white-space: nowrap;
+}
+
+
+/* Journal Button */
+.journal-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1a3a1a;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.journal-link:hover {
+  color: #2e7d32;
+  transform: translateX(2px);
 }

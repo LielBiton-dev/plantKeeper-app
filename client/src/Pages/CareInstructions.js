@@ -109,6 +109,10 @@ const CareInstructions = () => {
             </div>
           </div>
         </div>
+        <div className="journal-link" onClick={() => navigate("/journal")}>
+        → View Plant Journal
+          </div>
+
       </PageTransition>
     </div>
   );
