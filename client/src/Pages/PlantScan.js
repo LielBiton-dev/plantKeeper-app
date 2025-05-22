@@ -78,7 +78,7 @@ const PlantScan = () => {
         <span>Back</span>
       </div>
       <div className="scan-content">
-        <div className="scan-instruction">
+        <div className="page-title scan-instruction">
           <h2>Get ready to scan your image</h2>
         </div>
         

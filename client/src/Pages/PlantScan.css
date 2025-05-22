@@ -29,6 +29,7 @@
   color: white;
   font-size: 2rem;
   font-weight: 300;
+  margin-top: 4rem;
 }
 
 /* Image preview area */
@@ -135,7 +136,7 @@
   
   .scan-instruction {
     width: 100%;
-    margin-bottom: 1rem; /* Reduced from 1.5rem */
+    margin-bottom: 1rem; 
   }
   
   .image-preview-container {

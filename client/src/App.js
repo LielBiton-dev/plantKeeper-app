@@ -17,6 +17,7 @@ import Notifications from "./Pages/Notifications";
 import Profile from "./Pages/Profile";
 import IdentificationResults from "./Pages/Identification";
 import Dashboard from "./Pages/Dashboard";
+import Journal from "./Pages/Journal";
 import './styles/global.css';
 import './styles/allowScreens.css';
 import './styles/auth.css';
@@ -118,6 +119,7 @@ function App() {
         <Route path="/identification" element={<IdentificationResults />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/journal" element={<Journal />} />
       </Routes>
     </Router>
   );
