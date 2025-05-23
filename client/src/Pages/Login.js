@@ -9,29 +9,43 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);  
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (error) {
-      alert("Invalid Credentials");
+      console.error("Login error:", error);
+      setError("Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
   
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
       navigate("/");
     } catch (error) {
       console.error("Google sign in error:", error);
-      alert("Google sign in failed. Please try again.");
+      setError("Google sign in failed. Please try again."); 
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Check if we're in development mode
+  const isEmulator = process.env.NODE_ENV === 'development';
 
   return (
     <div
@@ -40,6 +54,12 @@ export default function Login() {
     >
       <form onSubmit={handleLogin}>
         <h1>Login</h1>
+
+        {error && (
+          <div className="auth-error">
+            {error}
+          </div>
+        )}
         
         <div className="floating-label-group">
           <input
@@ -81,24 +101,42 @@ export default function Login() {
           </label>
         </div>
         
-        <button type="submit" className="login_button">Login</button>
-        
-        <div className="divider">
-          <span>or</span>
-        </div>
-        
         <button 
-          type="button" 
-          onClick={handleGoogleSignIn} 
-          className="google-signin-button"
+          type="submit" 
+          className="login_button"
+          disabled={loading}
         >
-          <img 
-            src={`${process.env.PUBLIC_URL}/google-icon.png`} 
-            alt="Google" 
-            className="google-icon" 
-          />
-          Sign in with Google
+          {loading ? "Signing in..." : "Login"}
         </button>
+        
+        {/* Only show Google sign-in in production or add a note in development */}
+        {!isEmulator ? (
+          <>
+            <div className="divider">
+              <span>or</span>
+            </div>
+            
+            <button 
+              type="button" 
+              onClick={handleGoogleSignIn} 
+              className="google-signin-button"
+              disabled={loading}
+            >
+              <img 
+                src={`${process.env.PUBLIC_URL}/google-icon.png`} 
+                alt="Google" 
+                className="google-icon" 
+              />
+              {loading ? "Signing in..." : "Sign in with Google"}
+            </button>
+          </>
+        ) : (
+          <div className="emulator-note">
+            <p style={{ fontSize: '0.9em', color: '#ffffff', textAlign: 'center', marginTop: '1rem' }}>
+              Google sign-in disabled in development mode
+            </p>
+          </div>
+        )}
         
         <button
           type="button"

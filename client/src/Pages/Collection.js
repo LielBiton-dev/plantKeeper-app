@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebase/firebase";
+import { httpsCallable } from "firebase/functions";
+import { auth, db, functions } from "../firebase/firebase";
 import { doc, getDoc, collection, getDocs, query, where, orderBy, 
-  limit,   updateDoc, setDoc, arrayUnion } from "firebase/firestore";
+  limit } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import { TopNav, BotNav } from '../components/Nav';
 import { FaPlus } from 'react-icons/fa';
@@ -168,32 +169,31 @@ const Collection = () => {
           return;
         }
 
-        const plantId = selectedPlant.id;
-        const userPlantsRef = doc(db, "user_plants", `user_${user.uid}`);
-        const userPlantsDoc = await getDoc(userPlantsRef);
+        // ✅ Use Cloud Function instead of direct Firestore write
+        const addPlantToUserCollection = httpsCallable(functions, 'addPlantToUserCollection');
+        const result = await addPlantToUserCollection({ plantId: selectedPlant.id });
 
-        if (userPlantsDoc.exists()) {
-          await updateDoc(userPlantsRef, {
-            plants: arrayUnion(plantId)
-          });
+        if (result.data.success) {
+          console.log("Plant added to collection:", selectedPlant.id);
+          
+          if (result.data.alreadyExists) {
+            console.log("Plant was already in collection");
+          }
+          
+          // Update the UI by adding the plant to userPlants
+          setUserPlants([...userPlants, selectedPlant]);
+          
+          // Close the modals
+          setShowConfirmation(false);
+          setShowPlantList(false);
+          setSelectedPlant(null);
         } else {
-          await setDoc(userPlantsRef, {
-            plants: [plantId]
-          });
+          console.error("Failed to add plant to collection");
         }
-
-        console.log("Plant added to collection:", plantId);
-        
-        // Update the UI by adding the plant to userPlants
-        setUserPlants([...userPlants, selectedPlant]);
-        
-        // Close the modals
-        setShowConfirmation(false);
-        setShowPlantList(false);
-        setSelectedPlant(null);
         
       } catch (error) {
         console.error("Error adding plant to collection:", error);
+        // You could show an error message to the user here
       } finally {
         setIsAdding(false);
       }

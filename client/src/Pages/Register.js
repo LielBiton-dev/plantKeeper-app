@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase";
+import { auth, functions } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
-import { User, userConverter } from "../firebase/user";
+import { httpsCallable } from "firebase/functions";
 
 export default function Register() {
   const [firstName, setFirstName] = useState("");
@@ -27,24 +26,22 @@ export default function Register() {
     setError(null);
     
     try {
+      // 1. Create user account
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
-      console.log("The user auth id: " + uid);
+      console.log("User created:", userCredential.user.uid);
       
-      const newUser = new User(
-        uid,                // Use the Firebase Auth UID as our user ID
-        firstName,
-        lastName,
-        email,
-        new Date(),         // Current timestamp for registration date
-        1                   // Enable notifications by default
-      );
+      // 2. Create user document
+      const createUserDocument = httpsCallable(functions, 'createUserDocument');
+      await createUserDocument();
       
-      // Save the user to Firestore using the converter
-      const userRef = doc(db, "users", uid).withConverter(userConverter);
-      await setDoc(userRef, newUser);
+      // 3. Update user profile with firstName/lastName
+      const updateUserProfile = httpsCallable(functions, 'updateUserProfile');
+      await updateUserProfile({
+        firstName: firstName,
+        lastName: lastName
+      });
       
-      // Redirect to login page after successful registration
+      console.log("Registration completed successfully");
       navigate("/login");
     } catch (error) {
       console.error("Registration error:", error);
@@ -53,6 +50,7 @@ export default function Register() {
       setLoading(false);
     }
   };
+
 
   return (
     <div

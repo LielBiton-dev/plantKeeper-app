@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from 'firebase/firestore';
 import { getStorage } from "firebase/storage";
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -23,5 +24,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 const storage = getStorage(app);
+const functions = getFunctions(app);
 
-export { app, db, auth, storage };
+console.log('Connected to production Firebase');
+
+export { app, db, auth, storage, functions };
