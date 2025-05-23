@@ -61,7 +61,7 @@ const CareInstructions = () => {
 
   return (
     <div className="page-container bg-light">
-      <div className="back-button" onClick={() => navigate("/collection")}>
+      <div className="back-button back-btn-care" onClick={() => navigate("/collection")}>
         <IoIosArrowBack size={20} />
         <span>Back</span>
       </div>
@@ -109,7 +109,12 @@ const CareInstructions = () => {
             </div>
           </div>
         </div>
-        <div className="journal-link" onClick={() => navigate("/journal")}>
+        <div className="journal-link" onClick={() =>  navigate("/journal", {
+          state: {
+            plantId: type.toLowerCase(),
+            plantName: plantData.name
+          }
+        })}>
         → View Plant Journal
           </div>
 
