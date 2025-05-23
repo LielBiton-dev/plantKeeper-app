@@ -1,53 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Journal.css";
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { FiCamera } from "react-icons/fi";
+import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+import { useLocation } from "react-router-dom";
+import { storage } from "../firebase/firebase";
+import { getAuth } from "firebase/auth";
 
-const Journal = ({ plantImages = [] }) => {
+const Journal = () => {
   const navigate = useNavigate();
   const [showEmptyAlt, setShowEmptyAlt] = useState(false);
 
+  const location = useLocation();
+  const plantId = location.state?.plantId;
+  const plantName = location.state?.plantName;
+  const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
-   // Sample data structure for your plant images
-   const sampleImages = plantImages.length > 0 ? plantImages : [
-    {
-      id: 1,
-      uri: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop',
-      date: '2024-01-15',
-      caption: 'First day - just planted!'
-    },
-    {
-      id: 2,
-      uri: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a?w=400&h=400&fit=crop',
-      date: '2024-02-01',
-      caption: 'First sprouts appearing'
-    },
-    {
-      id: 3,
-      uri: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop',
-      date: '2024-02-15',
-      caption: 'Growing strong'
-    },
-    {
-      id: 4,
-      uri: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a?w=400&h=400&fit=crop',
-      date: '2024-03-01',
-      caption: 'First leaves fully developed'
-    },
-    {
-      id: 5,
-      uri: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop',
-      date: '2024-03-15',
-      caption: 'Flowering stage'
-    },
-  ];
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+  
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be signed in to upload.");
+      return;
+    }
+  
+    const userId = user.uid;
+    const date = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
+    const filePath = `${userId}/${plantId}/${date}_${file.name}`;
+  
+    try {
+      const storageRef = ref(storage, filePath);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      console.log("Uploaded image:", url);
+      alert("Upload successful!");
+      // Optionally update state or DB here
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert("Upload failed.");
+    }
+  };
+
+  const [plantImages, setPlantImages] = useState([]);
 
   const goToNext = () => {
-    if (currentIndex < sampleImages.length - 1) {
+    if (currentIndex < plantImages.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -86,6 +90,36 @@ const Journal = ({ plantImages = [] }) => {
     }
   };
 
+  useEffect(() => {
+    const fetchPlantImages = async () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user || !plantId) return;
+  
+      const folderRef = ref(storage, `${user.uid}/${plantId}`);
+      try {
+        const res = await listAll(folderRef);
+        const imageData = await Promise.all(
+          res.items.map(async (itemRef) => {
+            const url = await getDownloadURL(itemRef);
+            const name = itemRef.name; // e.g., 2025-05-23_Peace_lily.jpg
+            const date = name.split("_")[0]; // "2025-05-23"
+            return {
+              uri: url,
+              date: date,
+              caption: '', // Optionally pull from metadata
+            };
+          })
+        );
+        setPlantImages(imageData);
+      } catch (err) {
+        console.error("Failed to fetch images:", err);
+      }
+    };
+  
+    fetchPlantImages();
+  }, [plantId]);
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -109,45 +143,40 @@ const Journal = ({ plantImages = [] }) => {
     });
   };
 
-  if (sampleImages.length === 0) {
-    return (
-      <div className="empty-container">
-        <div className="empty-icon">📸</div>
-        <h3 className="empty-text">No photos yet</h3>
-        <p className="empty-subtext">
-          Start documenting your plant's growth journey!
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="page-container">
       <div className="journal-header">
-        <div className="back-button" onClick={() => navigate(-1)}>
+        <div className="back-button back-btn-journal" onClick={() => navigate(-1)}>
           <IoIosArrowBack size={20} />
         </div>
-        <div className="journal-title">Monstera Journal</div>
-        <div className="add-button" onClick={() => alert("Add photo clicked")}>
-          +
-        </div>
-      </div>
-
-      <div className="switch-container">
-        <label className="switch">
+        <div className="journal-title">{plantName} Journal</div>
+          <div className="add-button-container">
+            <button className="add-button">+</button>
+            <div className="add-options">
+              <div onClick={() => cameraInputRef.current.click()}>📷 Take Photo</div>
+              <div onClick={() => fileInputRef.current.click()}>🖼 Upload from Device</div>
+            </div>
+          </div>
           <input
-            type="checkbox"
-            checked={showEmptyAlt}
-            onChange={() => setShowEmptyAlt((prev) => !prev)}
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={(e) => handleImageUpload(e.target.files[0])}
           />
-          <span className="slider"></span>
-        </label>
-        <span className="switch-label">
-          {showEmptyAlt ? "Empty View" : "Current View"}
-        </span>
-      </div>
 
-      {showEmptyAlt ? (
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            ref={cameraInputRef}
+            style={{ display: "none" }}
+            onChange={(e) => handleImageUpload(e.target.files[0])}
+          />
+        </div>
+
+      {plantImages.length > 0 ? (
         <div className="alternative-empty-container">
           <div className="content-container carousel-container">
 
@@ -162,8 +191,8 @@ const Journal = ({ plantImages = [] }) => {
                 {currentIndex > 0 && (
                 <div className="side-image-container left-image">
                     <img
-                    src={sampleImages[currentIndex - 1].uri}
-                    alt={`Plant photo from ${sampleImages[currentIndex - 1].date}`}
+                    src={plantImages[currentIndex - 1].uri}
+                    alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
                     className="side-image"
                     loading="lazy"
                     />
@@ -173,29 +202,29 @@ const Journal = ({ plantImages = [] }) => {
                 {/* Current Image (Center) */}
                 <div className="center-image-container">
                 <img
-                    src={sampleImages[currentIndex].uri}
-                    alt={`Plant photo from ${sampleImages[currentIndex].date}`}
+                    src={plantImages[currentIndex].uri}
+                    alt={`Plant photo from ${plantImages[currentIndex].date}`}
                     className="center-image"
                     loading="lazy"
                 />
                 <div className="image-overlay">
                     <div className="date-text">
-                    {formatDate(sampleImages[currentIndex].date)}
+                    {formatDate(plantImages[currentIndex].date)}
                     </div>
-                    {sampleImages[currentIndex].caption && (
+                    {plantImages[currentIndex].caption && (
                     <div className="caption-text">
-                        {sampleImages[currentIndex].caption}
+                        {plantImages[currentIndex].caption}
                     </div>
                     )}
                 </div>
                 </div>
 
                 {/* Next Image (Right) */}
-                {currentIndex < sampleImages.length - 1 && (
+                {currentIndex < plantImages.length - 1 && (
                 <div className="side-image-container right-image">
                     <img
-                    src={sampleImages[currentIndex + 1].uri}
-                    alt={`Plant photo from ${sampleImages[currentIndex + 1].date}`}
+                    src={plantImages[currentIndex + 1].uri}
+                    alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
                     className="side-image"
                     loading="lazy"
                     />
@@ -213,7 +242,7 @@ const Journal = ({ plantImages = [] }) => {
                 </button>
                 )}
 
-                {currentIndex < sampleImages.length - 1 && (
+                {currentIndex < plantImages.length - 1 && (
                 <button
                     className="nav-button right-nav-button"
                     onClick={goToNext}
@@ -226,7 +255,7 @@ const Journal = ({ plantImages = [] }) => {
 
                 {/* Timeline Dots */}
                 <div className="timeline-container">
-                    {sampleImages.map((_, index) => (
+                    {plantImages.map((_, index) => (
                     <button
                         key={index}
                         className={`timeline-dot ${index === currentIndex ? 'active' : ''}`}
@@ -244,7 +273,7 @@ const Journal = ({ plantImages = [] }) => {
             </div>
             <h2 className="empty-title">No photos yet</h2>
             <p className="empty-description">
-                Start documenting your Monstera's growth journey
+                Start documenting your Plant's growth journey
             </p>
             <button
                 className="add-photo-button"

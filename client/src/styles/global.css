@@ -296,10 +296,12 @@
     margin: 16px;
     background-color: transparent;
     border-radius: 12px;
-    cursor: pointer;
     transition: all 0.3s ease;
     width: fit-content;
     color: #28433F;
+    position: absolute;
+    cursor: pointer;
+    transform: translateY(-50%);
   }
   
   .back-button:hover {
