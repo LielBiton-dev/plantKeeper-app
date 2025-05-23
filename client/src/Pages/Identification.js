@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { auth, db } from "../firebase/firebase";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { auth, functions } from "../firebase/firebase";
 import { IoIosArrowBack } from "react-icons/io";
 import PageTransition from "../components/PageTransition";
 import axios from "axios";
@@ -33,9 +33,10 @@ const IdentificationResults = () => {
         }
 
         try {
-            const scanRef = doc(db, "scans", currentScanId);
-            await updateDoc(scanRef, {
-                feedback: isGood ? "good" : "bad"
+            const updateScanFeedback = httpsCallable(functions, 'updateScanFeedback');
+            await updateScanFeedback({
+            scanId: currentScanId,
+            feedback: isGood ? "good" : "bad"
             });
             console.log("Feedback saved to scan.");
         } catch (error) {
@@ -52,21 +53,10 @@ const IdentificationResults = () => {
                 return;
             }
 
-            const plantId = cleanPlantId;
-            const userPlantsRef = doc(db, "user_plants", `user_${user.uid}`);
-            const userPlantsDoc = await getDoc(userPlantsRef);
+            const addPlantToUserCollection = httpsCallable(functions, 'addPlantToUserCollection');
+            await addPlantToUserCollection({ plantId: cleanPlantId });
 
-            if (userPlantsDoc.exists()) {
-                await updateDoc(userPlantsRef, {
-                    plants: arrayUnion(plantId)
-                });
-            } else {
-                await setDoc(userPlantsRef, {
-                    plants: [plantId]
-                });
-            }
-
-            console.log("Plant added to collection:", plantId);
+            console.log("Plant added to collection:", cleanPlantId);
             setAddedToCollection(true);
         } catch (error) {
             console.error("Error adding plant to collection:", error);
@@ -141,23 +131,21 @@ const IdentificationResults = () => {
         try {
             const user = auth.currentUser;
             if (!user) {
-                console.error("No authenticated user for scan log");
-                return;
+            console.error("No authenticated user for scan log");
+            return;
             }
 
-            const docRef = await addDoc(collection(db, "scans"), {
-                user_id: user.uid,
-                timestamp: serverTimestamp(),
-                prediction: {
-                    name: predictionResult.name,
-                    confidence: predictionResult.confidence,
-                },
-                latency_ms: latencyMs,
-                feedback: null,
+            const createScan = httpsCallable(functions, 'createScan');
+            const result = await createScan({
+            prediction: {
+                name: predictionResult.name,
+                confidence: predictionResult.confidence,
+            },
+            latencyMs: latencyMs
             });
 
-            currentScanId = docRef.id;
-            console.log("Scan logged:", docRef.id);
+            currentScanId = result.data.scanId;
+            console.log("Scan logged:", currentScanId);
         } catch (error) {
             console.error("Error logging scan:", error);
         }

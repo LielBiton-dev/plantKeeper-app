@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { TopNav, BotNav } from '../components/Nav';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebase/firebase";
-import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { auth, db, functions } from "../firebase/firebase";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import { IoFilterOutline } from "react-icons/io5";
 import { IoChevronDown } from "react-icons/io5";
@@ -191,58 +192,56 @@ const Notifications = () => {
     ? filteredNotifications
     : notifications;
 
-    const markAsRead = async (id) => {
-      try {
-        // 1. Update Firestore
-        const notifDocRef = doc(db, "notifications", id);
-        await updateDoc(notifDocRef, { isRead: true });
-    
-        // 2. Update local state
-        setNotifications(prevNotifications => 
-          prevNotifications.map(notification => 
-            notification.id === id ? { ...notification, isRead: true } : notification
-          )
-        );
-    
-        setFilteredNotifications(prevFiltered => 
-          prevFiltered.map(notification => 
-            notification.id === id ? { ...notification, isRead: true } : notification
-          )
-        );
-      } catch (error) {
-        console.error("Failed to mark notification as read:", error);
-      }
-    };
+  const markAsRead = async (id) => {
+    try {
+      // Call Cloud Function instead of direct Firestore update
+      const markNotificationAsRead = httpsCallable(functions, 'markNotificationAsRead');
+      await markNotificationAsRead({ notificationId: id });
 
-    const markAllAsRead = async () => {
-      try {
-        const updatePromises = notifications.map(notification => 
-          updateDoc(doc(db, "notifications", notification.id), { isRead: true })
-        );
-        await Promise.all(updatePromises);
-    
-        setNotifications(notifications.map(notification => ({ ...notification, isRead: true })));
-        setFilteredNotifications(filteredNotifications.map(notification => ({ ...notification, isRead: true })));
-      } catch (error) {
-        console.error("❌ Failed to mark all notifications as read:", error);
-      }
-    };
+      // Update local state
+      setNotifications(prevNotifications => 
+        prevNotifications.map(notification => 
+          notification.id === id ? { ...notification, isRead: true } : notification
+        )
+      );
 
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (plantDropdownOpen || typeDropdownOpen) {
-          if (!event.target.closest('.filter-dropdown')) {
-            setPlantDropdownOpen(false);
-            setTypeDropdownOpen(false);
-          }
+      setFilteredNotifications(prevFiltered => 
+        prevFiltered.map(notification => 
+          notification.id === id ? { ...notification, isRead: true } : notification
+        )
+      );
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      const markAllNotificationsAsRead = httpsCallable(functions, 'markAllNotificationsAsRead');
+      await markAllNotificationsAsRead();
+
+      setNotifications(notifications.map(notification => ({ ...notification, isRead: true })));
+      setFilteredNotifications(filteredNotifications.map(notification => ({ ...notification, isRead: true })));
+    } catch (error) {
+      console.error("❌ Failed to mark all notifications as read:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (plantDropdownOpen || typeDropdownOpen) {
+        if (!event.target.closest('.filter-dropdown')) {
+          setPlantDropdownOpen(false);
+          setTypeDropdownOpen(false);
         }
-      };
-  
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [plantDropdownOpen, typeDropdownOpen]);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [plantDropdownOpen, typeDropdownOpen]);
 
   return (
     <div className="page-container bg-light">
