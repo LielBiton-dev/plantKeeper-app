@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
 import { auth, functions } from "../firebase/firebase";
@@ -22,6 +22,17 @@ const IdentificationResults = () => {
     const [addedToCollection, setAddedToCollection] = useState(false);
 
     const hasPredicted = useRef(false); // ✅ Fix double call issue
+
+    // Function to navigate back with error state
+    const handleNoPlantIdentified = useCallback(() => {
+        // Navigate back to scan page with error state
+        navigate("/scan", { 
+            state: { 
+                showError: true, 
+                errorMessage: "No plant identified. Try again" 
+            } 
+        });
+    }, [navigate]);
 
     const handleFeedback = async (isGood) => {
         setFeedbackGiven(true);
@@ -88,8 +99,15 @@ const IdentificationResults = () => {
 
                 const rawResults = response.data.results;
                 const parsed = typeof rawResults === "string" ? JSON.parse(rawResults) : rawResults;
-                setPrediction(parsed[0]);
 
+                // Check if no plant was identified
+                if (!parsed[0]?.name) {
+                    setLoading(false);
+                    handleNoPlantIdentified();
+                    return;
+                }
+                
+                setPrediction(parsed[0]);
                 await logScan(parsed[0], elapsed);
 
             } catch (error) {
@@ -102,7 +120,7 @@ const IdentificationResults = () => {
 
         sendFileToModel();
         hasPredicted.current = true; // ✅ lock after first call
-    }, [file]);
+    }, [file, handleNoPlantIdentified]);
 
     useEffect(() => {
         if (!prediction?.confidence) return;
@@ -153,13 +171,13 @@ const IdentificationResults = () => {
 
     if (loading) return <div className="loading">🌿 Analyzing image...</div>;
     if (prediction?.error) return <div className="error">{prediction.error}</div>;
-    if (!prediction?.name) return <div className="error">No plant identified.</div>;
+    //if (!prediction?.name) return <div className="error">No plant identified.</div>;
 
     const radius = 120;
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (confidence / 100) * circumference;
-    const cleanPlantId = prediction.name.split("(")[0].trim().toLowerCase().replace(/\s+/g, "_");
-    const mainName = prediction.name.split("(")[0].trim();
+    const cleanPlantId = prediction?.name?.split("(")[0].trim().toLowerCase().replace(/\s+/g, "_");
+    const mainName = prediction?.name?.split("(")[0].trim();
 
     return (
         <div className="identification-page">

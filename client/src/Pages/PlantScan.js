@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import "./PlantScan.css";
 import { IoIosArrowBack } from "react-icons/io";
+import "./PlantScan.css";
 
 const PlantScan = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   
   // Check if user is authenticated
   useEffect(() => {
@@ -22,6 +25,23 @@ const PlantScan = () => {
     });  
     return () => unsubscribe();
   }, [navigate]);
+
+  useEffect(() => {
+    if (location.state?.showError) {
+      setErrorMessage(location.state.errorMessage || "An error occurred");
+      setShowErrorPopup(true);
+
+      // Hide popup after 3 seconds
+      const timer = setTimeout(() => {
+        setShowErrorPopup(false);
+      }, 3000);
+
+      // Clear the navigation state to prevent showing popup on page refresh
+      window.history.replaceState({}, document.title);
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   // Handle file selection from device library
   const handleFileUpload = (event) => {
@@ -176,6 +196,12 @@ const PlantScan = () => {
           )}
         </div>
       </div>
+      {/* Error Popup */}
+      {showErrorPopup && (
+        <div className="error-popup">
+          <span>{errorMessage}</span>
+        </div>
+      )}
     </div>
   );
 };
