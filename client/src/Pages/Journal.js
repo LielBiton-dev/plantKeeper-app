@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Journal.css";
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { FiCamera } from "react-icons/fi";
 import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
@@ -188,16 +188,20 @@ const Journal = () => {
                 onTouchEnd={handleTouchEnd}
             >
                 {/* Previous Image (Left) */}
-                {currentIndex > 0 && (
-                <div className="side-image-container left-image">
-                    <img
-                    src={plantImages[currentIndex - 1].uri}
-                    alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
-                    className="side-image"
-                    loading="lazy"
-                    />
-                </div>
-                )}
+                  {currentIndex > 0 && (
+                    <div
+                      className="side-image-container left-image"
+                      onClick={goToPrevious}          /* ← click on left image to go back */
+                      style={{ cursor: "pointer" }}   /* make it clear it's clickable */
+                    >
+                      <img
+                        src={plantImages[currentIndex - 1].uri}
+                        alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
+                        className="side-image"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
                 
                 {/* Current Image (Center) */}
                 <div className="center-image-container">
@@ -220,37 +224,21 @@ const Journal = () => {
                 </div>
 
                 {/* Next Image (Right) */}
-                {currentIndex < plantImages.length - 1 && (
-                <div className="side-image-container right-image">
-                    <img
-                    src={plantImages[currentIndex + 1].uri}
-                    alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
-                    className="side-image"
-                    loading="lazy"
-                    />
-                </div>
-                )}
+                  {currentIndex < plantImages.length - 1 && (
+                    <div
+                      className="side-image-container right-image"
+                      onClick={goToNext}              /* ← click on right image to advance */
+                      style={{ cursor: "pointer" }}
+                    >
+                      <img
+                        src={plantImages[currentIndex + 1].uri}
+                        alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
+                        className="side-image"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
 
-                {/* Navigation Buttons */}
-                {currentIndex > 0 && (
-                <button
-                    className="nav-button left-nav-button"
-                    onClick={goToPrevious}
-                    aria-label="Previous image"
-                >
-                    ←
-                </button>
-                )}
-
-                {currentIndex < plantImages.length - 1 && (
-                <button
-                    className="nav-button right-nav-button"
-                    onClick={goToNext}
-                    aria-label="Next image"
-                >
-                    →
-                </button>
-                )}
                 </div>
 
                 {/* Timeline Dots */}
