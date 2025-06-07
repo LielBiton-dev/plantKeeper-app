@@ -1,3 +1,4 @@
+const {getAuth} = require("firebase-admin/auth");
 const {onCall, HttpsError} = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 // const functions = require("firebase-functions");
@@ -313,6 +314,9 @@ exports.updateUserPreferences = onCall(async (request) => {
       type: "number",
       values: [0, 1],
     },
+    profilePictureBase64: {
+      type: ["string", "null"],
+    },
   };
 
   // Validate that we only have allowed preferences
@@ -354,13 +358,13 @@ exports.updateUserPreferences = onCall(async (request) => {
   }
 
   // Special validation for location-related fields
-  if ("locationEnable" in updates) {
+  if ("locationEnable" in updates && "userLocation" in updates) {
     const locationEnable = updates.locationEnable;
     const userLocation = updates.userLocation;
 
     if (locationEnable === 1) {
       if (!userLocation || typeof userLocation !== "string" ||
-          userLocation.trim() === "") {
+            userLocation.trim() === "") {
         throw new HttpsError("invalid-argument",
             "userLocation is required when locationEnable is 1");
       }
@@ -386,5 +390,51 @@ exports.updateUserPreferences = onCall(async (request) => {
   } catch (error) {
     console.error("Error updating user preferences:", error);
     throw new HttpsError("internal", "Failed to update user preferences");
+  }
+});
+
+// Delete user account and all associated data
+exports.deleteUserAccount = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be authenticated");
+  }
+
+  const uid = request.auth.uid;
+  const {currentPassword} = request.data;
+
+  if (!currentPassword) {
+    throw new HttpsError("invalid-argument", "Current password is required");
+  }
+
+  try {
+    // Delete user data from Firestore
+    const batch = db.batch();
+    // Delete user document
+    const userRef = db.collection("users").doc(uid);
+    batch.delete(userRef);
+    // Delete user's scans
+    const scansSnapshot = await db.collection("scans")
+        .where("user_id", "==", uid).get();
+    scansSnapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    // Delete user's notifications
+    const notificationsSnapshot = await db.collection("notifications")
+        .where("user_id", "==", uid).get();
+    notificationsSnapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    // Delete user's plant collection
+    const userPlantsRef = db.collection("user_plants").doc(`user_${uid}`);
+    batch.delete(userPlantsRef);
+    // Commit the batch
+    await batch.commit();
+    // Delete the user from Firebase Auth
+    await getAuth().deleteUser(uid);
+    console.log(`User account ${uid} deleted successfully`);
+    return {success: true};
+  } catch (error) {
+    console.error("Error deleting user account:", error);
+    throw new HttpsError("internal", "Failed to delete user account");
   }
 });
