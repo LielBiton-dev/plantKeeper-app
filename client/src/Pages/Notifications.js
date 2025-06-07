@@ -94,7 +94,7 @@ const Notifications = () => {
     switch (type) {
       case "watering":
         return "💧";
-      case "fertilizer":
+      case "fertilizing":
         return "🌱";
       case "repotting":
         return "🪴";
@@ -112,7 +112,7 @@ const Notifications = () => {
     switch (type) {
       case "watering":
         return `Time to water your ${plantId}`;
-      case "fertilizer":
+      case "fertilizing":
         return `Fertilize your ${plantId}`;
       case "repotting":
         return `${plantId} needs a bigger pot`;

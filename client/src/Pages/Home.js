@@ -6,7 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { FaLocationDot } from "react-icons/fa6";
-import { IoWaterOutline } from "react-icons/io5";
+import { IoWaterOutline, IoLeafOutline } from "react-icons/io5";
 import PageTransition from "../components/PageTransition";
 import "./Home.css";
 import StarActionButton from '../components/StarActionButton';
@@ -139,6 +139,8 @@ const Home = () => {
     switch (type) {
       case "watering":
         return <IoWaterOutline size={size} className="task-badge-icon" />;
+      case "fertilizing":
+        return <IoLeafOutline size={size} className="task-badge-icon" />;
       default:
         return <IoWaterOutline size={size} className="task-badge-icon" />;
     }
@@ -148,7 +150,7 @@ const Home = () => {
     switch (type) {
       case "watering":
         return "Water";
-      case "fertilizer":
+      case "fertilizing":
         return "Fertilize";
       case "repotting":
         return "Repot";
@@ -233,7 +235,7 @@ const Home = () => {
                         <div className="plant-name">{formatPlantName(task.plantId)}</div>
                       </div>
 
-                      <div className="task-badge">
+                      <div className={`task-badge task-type-${task.type}`}>
                         {getIconByType(task.type)} {formatTaskType(task.type)}
                       </div>
                     </div>
