@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../firebase/firebase"; // Import auth and db
-import { doc, updateDoc } from "firebase/firestore"; // Import Firestore functions
+import { auth, functions } from "../firebase/firebase";
+import { httpsCallable } from "firebase/functions";
 
 export default function LocationScreen({ onComplete }) {
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const user = auth.currentUser; 
+
+    // General function to update user preferences
+    const updateUserPreferences = async (preferences) => {
+      if (!user) {
+        throw new Error("No user is currently signed in");
+      }
+      
+      const updatePrefs = httpsCallable(functions, 'updateUserPreferences');
+      const result = await updatePrefs(preferences);
+      return result.data;
+    };
   
     const handleAllowLocation = () => {
       if (navigator.geolocation) {
@@ -17,18 +28,11 @@ export default function LocationScreen({ onComplete }) {
               const longitude = position.coords.longitude;
               const locationString = await getCityCountry(latitude, longitude);
               
-              if (user) {
-                const uid = user.uid;
-                const userRef = doc(db, "users", uid);
-                await updateDoc(userRef, {
-                  locationEnable: 1,
-                  userLocation: locationString
-                });
-                
-                console.log("Location saved to database:", locationString);
-              } else {
-                console.error("No user is currently signed in");
-              }
+              await updateUserPreferences({
+                locationEnable: 1,
+                userLocation: locationString
+              });
+              console.log("Location saved to database:", locationString);
 
               onComplete();
               navigate("/");
@@ -88,18 +92,11 @@ export default function LocationScreen({ onComplete }) {
 
   const handleSkip = async () => {
     try {
-      if (user) {
-        const uid = user.uid;
-        const userRef = doc(db, "users", uid);
-        await updateDoc(userRef, {
-          locationEnable: 0,
-          userLocation: null
-        });
-        
-        console.log("Location permission denied saved to database");
-      } else {
-        console.error("No user is currently signed in");
-      }
+      await updateUserPreferences({
+        locationEnable: 0,
+        userLocation: null
+      });
+      console.log("Location permission denied saved to database");
       onComplete();
       navigate("/");
     } catch (error) {

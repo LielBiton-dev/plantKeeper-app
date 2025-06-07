@@ -29,9 +29,10 @@ exports.createUserDocument = onCall(async (request) => {
     const userDoc = {
       email: userRecord.email,
       registrationDate: admin.firestore.FieldValue.serverTimestamp(),
-      notificationEnable: 1,
+      notificationsEnable: 0,
       locationEnable: 0,
       userLocation: null,
+      cameraUseEnable: 0,
       profileCompleted: false,
     };
 
@@ -279,5 +280,111 @@ exports.removePlantFromUserCollection = onCall(async (request) => {
       throw error;
     }
     throw new HttpsError("internal", "Failed to remove plant from collection");
+  }
+});
+
+// ========== USER PREFERENCES FUNCTION ==========
+
+// Update user preferences (location, camera, notifications, etc.)
+exports.updateUserPreferences = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be authenticated");
+  }
+
+  const uid = request.auth.uid;
+  const updates = request.data;
+
+  // Define allowed preference keys and their validation rules
+  const allowedPreferences = {
+    locationEnable: {
+      type: "number",
+      values: [0, 1],
+      requiresField: "userLocation",
+    },
+    userLocation: {
+      type: ["string", "null"],
+      dependsOn: "locationEnable",
+    },
+    cameraUseEnable: {
+      type: "number",
+      values: [0, 1],
+    },
+    notificationsEnable: {
+      type: "number",
+      values: [0, 1],
+    },
+  };
+
+  // Validate that we only have allowed preferences
+  const updateKeys = Object.keys(updates);
+  for (const key of updateKeys) {
+    if (!allowedPreferences[key]) {
+      throw new HttpsError("invalid-argument",
+          `Invalid preference key: ${key}`);
+    }
+  }
+
+  // Validate each preference
+  for (const [key, value] of Object.entries(updates)) {
+    const rules = allowedPreferences[key];
+
+    // Type validation
+    if (Array.isArray(rules.type)) {
+      const validTypes = rules.type.map((t) => t === "null" ?
+          null : typeof value);
+      const actualType = value === null ? null : typeof value;
+      if (!validTypes.includes(actualType)) {
+        throw new HttpsError("invalid-argument",
+            `${key} must be one of types: ${rules.type.join(", ")}`);
+      }
+    } else {
+      if (rules.type === "null" && value !== null) {
+        throw new HttpsError("invalid-argument", `${key} must be null`);
+      } else if (rules.type !== "null" && typeof value !== rules.type) {
+        throw new HttpsError("invalid-argument",
+            `${key} must be of type ${rules.type}`);
+      }
+    }
+
+    // Value validation
+    if (rules.values && !rules.values.includes(value)) {
+      throw new HttpsError("invalid-argument",
+          `${key} must be one of: ${rules.values.join(", ")}`);
+    }
+  }
+
+  // Special validation for location-related fields
+  if ("locationEnable" in updates) {
+    const locationEnable = updates.locationEnable;
+    const userLocation = updates.userLocation;
+
+    if (locationEnable === 1) {
+      if (!userLocation || typeof userLocation !== "string" ||
+          userLocation.trim() === "") {
+        throw new HttpsError("invalid-argument",
+            "userLocation is required when locationEnable is 1");
+      }
+    } else if (locationEnable === 0) {
+      if (userLocation !== null && userLocation !== undefined) {
+        throw new HttpsError("invalid-argument",
+            "userLocation must be null when locationEnable is 0");
+      }
+    }
+  }
+
+  try {
+    // Prepare update data
+    const updateData = {
+      ...updates,
+    };
+
+    await db.collection("users").doc(uid).update(updateData);
+
+    console.log(`Preferences updated for user ${uid}:`,
+        Object.keys(updates).join(", "));
+    return {success: true, updated: Object.keys(updates)};
+  } catch (error) {
+    console.error("Error updating user preferences:", error);
+    throw new HttpsError("internal", "Failed to update user preferences");
   }
 });
