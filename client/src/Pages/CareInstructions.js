@@ -101,8 +101,16 @@ const CareInstructions = () => {
 
             <div className="care-tags">
               <div className="care-tag">
-                <FaPaw />
-                <div>Pet Friendly</div>
+                {plantData.pet_friendly ? (
+                  <FaPaw />
+                ) : (
+                  <img 
+                    src="/not_pet_friendly.png" 
+                    alt="Not pet friendly" 
+                    style={{ width: '30px', height: '26px', marginBottom: '10px' }}
+                  />
+                )}
+                <div>{plantData.pet_friendly ? 'Pet Friendly' : 'Not Pet Friendly'}</div>
               </div>
               <div className="care-tag">
                 <IoWaterOutline />
