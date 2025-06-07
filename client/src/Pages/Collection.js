@@ -7,7 +7,8 @@ import { doc, getDoc, collection, getDocs, query, where, orderBy,
   limit } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import { TopNav, BotNav } from '../components/Nav';
-import { FaPlus } from 'react-icons/fa';
+import { MdModeEditOutline } from "react-icons/md";
+import { FaPlus, FaTimes } from 'react-icons/fa';
 import "./Collection.css"; 
 
 const Collection = () => {
@@ -19,6 +20,10 @@ const Collection = () => {
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [plantToDelete, setPlantToDelete] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchAvailablePlants = useCallback(async () => {
     try {
@@ -199,25 +204,87 @@ const Collection = () => {
       }
     };
 
+    const handleRemovePlant = async () => {
+      if (!plantToDelete) return;
+      
+      setIsDeleting(true);
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          console.error("User not authenticated");
+          return;
+        }
+
+        const removePlantComplete = httpsCallable(functions, 'removePlantFromUserCollectionComplete');
+        const result = await removePlantComplete({ plantId: plantToDelete.id });
+
+        if (result.data.success) {
+          console.log("Plant removed from collection:", plantToDelete.id);
+          console.log("Deleted notifications:", result.data.deletedNotifications);
+
+          setUserPlants(userPlants.filter(plant => plant.id !== plantToDelete.id));
+
+          setShowDeleteConfirmation(false);
+          setPlantToDelete(null);
+          setEditMode(false);
+        } else {
+          console.error("Failed to remove plant from collection");
+        }
+        
+      } catch (error) {
+        console.error("Error removing plant from collection:", error);
+      } finally {
+        setIsDeleting(false);
+      }
+    };
+
   return (
     <div className="page-container bg-light">
       <TopNav userName={userName} />
       <PageTransition>
         <div className="content-container">
-          <h2 className="page-title">My plants</h2>
+          <div className="page-header">
+            <div className="page-title-container">
+              {userPlants.length > 0 && (
+                <button 
+                  className={`edit-plants-button ${editMode ? 'active' : ''}`}
+                  onClick={() => setEditMode(!editMode)}
+                >
+                  {editMode ? <FaTimes size={20} /> : <MdModeEditOutline size={20} />}
+                </button>
+              )}
+              <h2 className="page-title">My plants</h2>
+            </div>
+          </div>
 
           <div className="plant-grid">
             {userPlants.map(plant => (
-              <div key={plant.id} className="plant-card" 
-              onClick={() => navigate("/care-instructions", { state: { type: plant.id } })}
-              style={{ cursor: 'pointer' }}>
-                <img src={plant.image_url} alt={plant.name} />
-                <div className="collection-plant-name">{plant.name}</div>
-                <span className="next-care">
-                  {plant.nextTask
-                    ? formatNextTaskMessage(plant.nextTask.type, plant.nextTask.scheduledDate)
-                    : "No upcoming tasks"}
-                </span>
+                <div key={plant.id} className={`plant-card ${editMode ? 'edit-mode' : ''}`}>
+                  {editMode && (
+                    <button 
+                      className="delete-plant-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPlantToDelete(plant);
+                        setShowDeleteConfirmation(true);
+                      }}
+                    >
+                      −
+                    </button>
+                  )}
+                  <div 
+                    className="plant-card-content"
+                    onClick={() => !editMode && navigate("/care-instructions", { state: { type: plant.id } })}
+                    style={{ cursor: editMode ? 'default' : 'pointer' }}
+                  >
+                  <img src={plant.image_url} alt={plant.name} />
+                  <div className="collection-plant-name">{plant.name}</div>
+                  <span className="next-care">
+                    {plant.nextTask
+                      ? formatNextTaskMessage(plant.nextTask.type, plant.nextTask.scheduledDate)
+                      : "No upcoming tasks"}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
@@ -285,6 +352,32 @@ const Collection = () => {
             <FaPlus />
           </div>  
         </div>
+        {/* Delete confirmation dialog */}
+        {showDeleteConfirmation && plantToDelete && (
+          <div className="confirmation-overlay">
+            <div className="confirmation-dialog">
+              <p>You are about to delete {plantToDelete.name} from your collection. <br></br>This will also remove all related notifications. <br></br>Are you sure?</p>
+              <div className="confirmation-actions">
+                <button 
+                  className="cancel-button"
+                  onClick={() => {
+                    setShowDeleteConfirmation(false);
+                    setPlantToDelete(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="delete-button" 
+                  onClick={handleRemovePlant}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Plant'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         </PageTransition>    
         <BotNav />
       </div>
