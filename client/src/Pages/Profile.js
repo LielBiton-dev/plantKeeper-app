@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TopNav, BotNav } from '../components/Nav';
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebase/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import { auth, db, functions } from "../firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import PageTransition from "../components/PageTransition";
 import { IoCamera } from "react-icons/io5";
 import { 
@@ -35,9 +36,39 @@ const Profile = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   
   // Accordion state
   const [openSection, setOpenSection] = useState(null);
+  // General function to update user preferences
+  const updateUserPreferences = async (preferences) => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+    
+    const updatePrefs = httpsCallable(functions, 'updateUserPreferences');
+    const result = await updatePrefs(preferences);
+    return result.data;
+  };
+
+  const updateUserProfile = async (profileData) => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+    
+    const updateProfile = httpsCallable(functions, 'updateUserProfile');
+    const result = await updateProfile(profileData);
+    return result.data;
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -60,7 +91,7 @@ const Profile = () => {
               firstName: userData.firstName || "",
               lastName: userData.lastName || "",
               email: userData.email || currentUser.email || "",
-              notificationsEnabled: userData.notificationsEnabled === 1,
+              notificationsEnabled: userData.notificationsEnable === 1,
               locationEnabled: userData.locationEnable === 1
             });
           } else {
@@ -159,8 +190,8 @@ const Profile = () => {
       const currentUser = auth.currentUser;
       if (!currentUser) throw new Error("Not authenticated");
       
-      const userRef = doc(db, "users", currentUser.uid);
-      await updateDoc(userRef, {
+      // Use Cloud Function for profile picture
+      await updateUserPreferences({
         profilePictureBase64: resizedImage
       });
       
@@ -186,13 +217,16 @@ const Profile = () => {
       const currentUser = auth.currentUser;
       if (!currentUser) throw new Error("Not authenticated");
       
-      const userRef = doc(db, "users", currentUser.uid);
+      // Update preferences using updateUserPreferences
+      await updateUserPreferences({
+        notificationsEnable: formData.notificationsEnabled ? 1 : 0,
+        locationEnable: formData.locationEnabled ? 1 : 0
+      });
       
-      await updateDoc(userRef, {
+      // Update name fields using updateUserProfile
+      await updateUserProfile({
         firstName: formData.firstName,
         lastName: formData.lastName,
-        notificationsEnabled: formData.notificationsEnabled ? 1 : 0,
-        locationEnable: formData.locationEnabled ? 1 : 0
       });
       
       setSuccess(true);
@@ -203,7 +237,7 @@ const Profile = () => {
         ...user,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        notificationsEnabled: formData.notificationsEnabled ? 1 : 0,
+        notificationsEnable: formData.notificationsEnabled ? 1 : 0,
         locationEnable: formData.locationEnabled ? 1 : 0
       });
     } catch (error) {
@@ -211,6 +245,65 @@ const Profile = () => {
       setError("Failed to update profile");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New passwords don't match");
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Not authenticated");
+
+      // Re-authenticate user before changing password
+      const credential = EmailAuthProvider.credential(
+        currentUser.email,
+        passwordData.currentPassword
+      );
+      
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, passwordData.newPassword);
+      
+      setSuccess("Password updated successfully!");
+      setShowPasswordModal(false);
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (error) {
+      console.error("Error updating password:", error);
+      if (error.code === 'auth/wrong-password') {
+        setError("Current password is incorrect");
+      } else if (error.code === 'auth/weak-password') {
+        setError("New password is too weak");
+      } else {
+        setError("Failed to update password");
+      }
+    }
+  };
+
+  // Delete account function
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmation !== "DELETE") {
+      setError("Please type 'DELETE' to confirm");
+      return;
+    }
+
+    try {
+      const deleteAccount = httpsCallable(functions, 'deleteUserAccount');
+      await deleteAccount({ currentPassword: passwordData.currentPassword });
+      
+      // Sign out and redirect
+      await auth.signOut();
+      navigate("/welcome");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      setError("Failed to delete account");
     }
   };
 
@@ -418,7 +511,7 @@ const Profile = () => {
                       </label>
                     </div>
                     
-                    <div className="setting-item clickable">
+                    <div className="setting-item clickable" onClick={() => setShowPasswordModal(true)}>
                       <div className="setting-icon password-icon">
                         <IoLockClosedOutline />
                       </div>
@@ -428,7 +521,7 @@ const Profile = () => {
                       </div>
                     </div>
                     
-                    <div className="setting-item clickable delete-item">
+                    <div className="setting-item clickable delete-item" onClick={() => setShowDeleteModal(true)}>
                       <div className="setting-icon delete-icon">
                         <IoTrashOutline />
                       </div>
@@ -442,6 +535,65 @@ const Profile = () => {
               )}
             </div>
           </div>
+          {showPasswordModal && (
+            <div className="profile-modal-overlay" onClick={() => setShowPasswordModal(false)}>
+              <div className="profile-modal-content" onClick={(e) => e.stopPropagation()}>
+                <h3>Change Password</h3>
+                <input
+                  className="profile-modal-input"
+                  type="password"
+                  placeholder="Current Password"
+                  value={passwordData.currentPassword}
+                  onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                />
+                <input
+                  className="profile-modal-input"
+                  type="password"
+                  placeholder="New Password"
+                  value={passwordData.newPassword}
+                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                />
+                <input
+                  className="profile-modal-input"
+                  type="password"
+                  placeholder="Confirm New Password"
+                  value={passwordData.confirmPassword}
+                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                />
+                <div className="profile-modal-buttons">
+                  <button className="profile-modal-button profile-modal-button-cancel" onClick={() => setShowPasswordModal(false)}>Cancel</button>
+                  <button className="profile-modal-button profile-modal-button-primary" onClick={handleChangePassword}>Update Password</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showDeleteModal && (
+            <div className="profile-modal-overlay" onClick={() => setShowDeleteModal(false)}>
+              <div className="profile-modal-content" onClick={(e) => e.stopPropagation()}>
+                <h3>Delete Account</h3>
+                <p>This action cannot be undone. All your data will be permanently deleted.</p>
+                <input
+                  className="profile-modal-input"
+                  type="password"
+                  placeholder="Current Password"
+                  value={passwordData.currentPassword}
+                  onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                />
+                <input
+                  className="profile-modal-input"
+                  type="text"
+                  placeholder="Type 'DELETE' to confirm"
+                  value={deleteConfirmation}
+                  onChange={(e) => setDeleteConfirmation(e.target.value)}
+                />
+                <div className="profile-modal-buttons">
+                  <button className="profile-modal-button profile-modal-button-cancel" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                  <button className="profile-modal-button profile-modal-button-delete" onClick={handleDeleteAccount}>Delete Account</button>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Extra space to prevent content from being hidden by bottom nav */}
           <div className="bottom-spacing"></div>
