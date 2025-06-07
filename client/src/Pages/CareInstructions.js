@@ -86,37 +86,40 @@ const CareInstructions = () => {
           </div>
           
           <div className="plant-info-container">
-            <h1 className="plant-name">{plantData.name}</h1>
+            <div className="plant-name-row">
+              <h1 className="plant-name">{plantData.name}</h1>
+              <div className="journal-link" onClick={() =>  navigate("/journal", {
+                  state: {
+                    plantId: type.toLowerCase(),
+                    plantName: plantData.name
+                  }
+                })}>
+                  → View Plant Journal
+              </div>
+            </div>
             <p className="plant-description">{plantData.description}</p>
 
             <div className="care-tags">
               <div className="care-tag">
-                <FaPaw size={28} />
+                <FaPaw />
                 <div>Pet Friendly</div>
               </div>
               <div className="care-tag">
-                <IoWaterOutline size={28} />
+                <IoWaterOutline />
                 <div>Every {careData.watering_frequency_days} days</div>
               </div>
               <div className="care-tag">
-                <PiSunLight size={28} weight="bold" />
+                <PiSunLight weight="bold" />
                 <div>{careData.sunlight} Hours</div>
               </div>
               <div className="care-tag">
-                <TbTemperature size={28} />
+                <TbTemperature />
                 <div>{careData.temperature_range_celsius}°</div>
               </div>
             </div>
           </div>
         </div>
-        <div className="journal-link" onClick={() =>  navigate("/journal", {
-          state: {
-            plantId: type.toLowerCase(),
-            plantName: plantData.name
-          }
-        })}>
-        → View Plant Journal
-          </div>
+
 
       </PageTransition>
     </div>
