@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Journal.css";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { FiCamera } from "react-icons/fi";
 import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
@@ -8,9 +8,10 @@ import { useLocation } from "react-router-dom";
 import { storage } from "../firebase/firebase";
 import { getAuth } from "firebase/auth";
 
+
 const Journal = () => {
   const navigate = useNavigate();
-  const [showEmptyAlt, setShowEmptyAlt] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const plantId = location.state?.plantId;
@@ -112,8 +113,10 @@ const Journal = () => {
           })
         );
         setPlantImages(imageData);
+        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch images:", err);
+        setLoading(false);
       }
     };
   
@@ -142,6 +145,14 @@ const Journal = () => {
       day: 'numeric'
     });
   };
+
+  const formatMonthYear = (dateStr) => {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    year: '2-digit',
+  });
+};
 
 
   return (
@@ -176,7 +187,12 @@ const Journal = () => {
           />
         </div>
 
-      {plantImages.length > 0 ? (
+      {loading ? (
+      <div className="content-container loading-container">
+        <div className="loading-spinner" />
+        <p className="loading-text">Loading journal...</p>
+      </div>
+    ) : plantImages.length > 0 ? (
         <div className="alternative-empty-container">
           <div className="content-container carousel-container">
 
@@ -212,8 +228,8 @@ const Journal = () => {
                     loading="lazy"
                 />
                 <div className="image-overlay">
-                    <div className="date-text">
-                    {formatDate(plantImages[currentIndex].date)}
+                    <div className="date-badge">
+                      {formatDate(plantImages[currentIndex].date)}
                     </div>
                     {plantImages[currentIndex].caption && (
                     <div className="caption-text">
@@ -243,14 +259,13 @@ const Journal = () => {
 
                 {/* Timeline Dots */}
                 <div className="timeline-container">
-                    {plantImages.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`timeline-dot ${index === currentIndex ? 'active' : ''}`}
-                        onClick={() => goToIndex(index)}
-                        aria-label={`Go to image ${index + 1}`}
-                    />
-                    ))}
+                  {plantImages.map((img, index) => (
+                    <div key={index} className="timeline-entry">
+                      <div className={`timeline-dot ${index === currentIndex ? 'active' : ''}`}/>
+                      <span className="timeline-label">{formatMonthYear(img.date)}</span>
+                      {index !== plantImages.length - 1 && <div className="timeline-line" />}
+                    </div>
+                  ))}
                 </div>
             </div>
         </div>
