@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import { auth, db, functions } from "../firebase/firebase";
-import { doc, getDoc, collection, getDocs, query, where, orderBy, 
-  limit } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import PageTransition from "../components/PageTransition";
 import { TopNav, BotNav } from '../components/Nav';
 import { MdModeEditOutline } from "react-icons/md";
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import "./Collection.css"; 
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
 const Collection = () => {
   const navigate = useNavigate();
@@ -94,14 +96,20 @@ const Collection = () => {
                   orderBy("scheduled_date.year", "asc"),
                   orderBy("scheduled_date.month", "asc"),
                   orderBy("scheduled_date.day", "asc"),
-                  limit(1)
                 );
-          
+                
                 const notificationsSnapshot = await getDocs(notificationsQuery);
-                let nextTask = null;
+                const todayNumber = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+                const upcoming = notificationsSnapshot.docs.find(doc => {
+                    const d = doc.data().scheduled_date;
+                    const docDateNum = d.year * 10000 + d.month * 100 + d.day;
+                    return docDateNum >= todayNumber;
+                  });
           
-                if (!notificationsSnapshot.empty) {
-                  const taskDoc = notificationsSnapshot.docs[0].data();
+                let nextTask = null;
+                if (upcoming) {
+                  const taskDoc =  upcoming.data();
                   nextTask = {
                     type: taskDoc.type,
                     scheduledDate: taskDoc.scheduled_date,
@@ -137,9 +145,6 @@ const Collection = () => {
 
     const formatNextTaskMessage = (type, scheduledDate) => {
       if (!scheduledDate) return "";
-    
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
     
       const taskDate = new Date(scheduledDate.year, scheduledDate.month - 1, scheduledDate.day);
       taskDate.setHours(0, 0, 0, 0);
