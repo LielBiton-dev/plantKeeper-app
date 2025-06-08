@@ -63,10 +63,6 @@ const Journal = () => {
     }
   };
 
-  const goToIndex = (index) => {
-    setCurrentIndex(index);
-  };
-
   // Handle touch events for swipe
   const handleTouchStart = (e) => {
     setTouchEnd(null);
