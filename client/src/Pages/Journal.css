@@ -115,6 +115,40 @@
     background-color: #256729;
   }
  
+  .tooltip-bubble {
+  position: absolute;
+  top: -60px; /* Distance above the "+" button */
+  right: 0;
+  background-color: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  z-index: 999;
+  text-align: center;
+  animation: fadeIn 0.2s ease-in-out;
+}
+.tooltip-top {
+  top: 2rem;
+  right: 0rem;
+}
+
+.add-button-container {
+  position: relative; /* So tooltip is placed relative to the "+" */
+}
+
+.tooltip-bubble::before {
+  content: "";
+  position: absolute;
+  bottom: 100%; /* position above the tooltip */
+  right: 2rem;  /* align it under the "+" button */
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #333; /* triangle facing up */
+}
 
   /* PlantJournalCarousel.css */
 
@@ -367,6 +401,14 @@
       height: 350px;
     }
 
+    .tooltip-top {
+    right: 1rem;
+  }
+
+    .tooltip-bubble::before {
+      right: 2.5rem;
+    }
+
   }
   
   /* Animation for smooth transitions */
@@ -420,3 +462,4 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
