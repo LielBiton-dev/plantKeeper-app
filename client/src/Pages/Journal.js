@@ -21,7 +21,7 @@ const Journal = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [showTooltip] = useState(false);
   const plusButtonRef = useRef(null);
 
   const handleImageUpload = async (file) => {
@@ -64,19 +64,6 @@ const Journal = () => {
       setCurrentIndex((prev) => prev - 1);
     }
   }, [currentIndex]);
-
- useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (e.key === 'ArrowLeft') {
-      goToPrevious();
-    } else if (e.key === 'ArrowRight') {
-      goToNext();
-    }
-  }, [currentIndex]);
-
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [goToNext, goToPrevious]);
 
   // Handle touch events for swipe
   const handleTouchStart = (e) => {
