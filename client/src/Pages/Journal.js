@@ -72,7 +72,7 @@ const Journal = () => {
     } else if (e.key === 'ArrowRight') {
       goToNext();
     }
-  };
+  }, [currentIndex]);
 
   window.addEventListener('keydown', handleKeyDown);
   return () => window.removeEventListener('keydown', handleKeyDown);
@@ -146,7 +146,7 @@ const Journal = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex]);
+  }, [currentIndex, goToPrevious, goToNext]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -228,7 +228,8 @@ const Journal = () => {
                     >
                       <img
                         src={plantImages[currentIndex - 1].uri}
-                        alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
+                        alt={`${plantName} growth on ${plantImages[currentIndex - 1].date}`}
+                        //alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
                         className="side-image"
                         loading="lazy"
                       />
@@ -239,7 +240,8 @@ const Journal = () => {
                 <div className="center-image-container">
                 <img
                     src={plantImages[currentIndex].uri}
-                    alt={`Plant photo from ${plantImages[currentIndex].date}`}
+                    alt={`${plantName} growth on ${plantImages[currentIndex].date}`}
+                    //alt={`Plant photo from ${plantImages[currentIndex].date}`}
                     className="center-image"
                     loading="lazy"
                 />
@@ -264,7 +266,8 @@ const Journal = () => {
                     >
                       <img
                         src={plantImages[currentIndex + 1].uri}
-                        alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
+                        alt={`${plantName} growth on ${plantImages[currentIndex + 1].date}`}
+                        //alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
                         className="side-image"
                         loading="lazy"
                       />
@@ -296,12 +299,9 @@ const Journal = () => {
             </p>
             <button
                 className="add-photo-button"
-                onClick={() => {
-                  setShowTooltip(true);
-                  setTimeout(() => setShowTooltip(false), 3000); // auto-hide after 3s
-                }}
+                onClick={() => fileInputRef.current.click()}
             >
-                Add First Photo
+                Add Your First Photo
             </button>
             </div>
         )}
