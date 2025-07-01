@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./Journal.css";
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -51,17 +51,17 @@ const Journal = () => {
 
   const [plantImages, setPlantImages] = useState([]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     if (currentIndex < plantImages.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
-  };
+  }, [currentIndex, plantImages.length]);
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
-  };
+  }, [currentIndex]);
 
   // Handle touch events for swipe
   const handleTouchStart = (e) => {
@@ -131,7 +131,7 @@ const Journal = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex]);
+  }, [currentIndex, goToPrevious, goToNext]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -208,7 +208,8 @@ const Journal = () => {
                     >
                       <img
                         src={plantImages[currentIndex - 1].uri}
-                        alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
+                        alt={`${plantName} growth on ${plantImages[currentIndex - 1].date}`}
+                        //alt={`Plant photo from ${plantImages[currentIndex - 1].date}`}
                         className="side-image"
                         loading="lazy"
                       />
@@ -219,7 +220,8 @@ const Journal = () => {
                 <div className="center-image-container">
                 <img
                     src={plantImages[currentIndex].uri}
-                    alt={`Plant photo from ${plantImages[currentIndex].date}`}
+                    alt={`${plantName} growth on ${plantImages[currentIndex].date}`}
+                    //alt={`Plant photo from ${plantImages[currentIndex].date}`}
                     className="center-image"
                     loading="lazy"
                 />
@@ -244,7 +246,8 @@ const Journal = () => {
                     >
                       <img
                         src={plantImages[currentIndex + 1].uri}
-                        alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
+                        alt={`${plantName} growth on ${plantImages[currentIndex + 1].date}`}
+                        //alt={`Plant photo from ${plantImages[currentIndex + 1].date}`}
                         className="side-image"
                         loading="lazy"
                       />
@@ -276,9 +279,9 @@ const Journal = () => {
             </p>
             <button
                 className="add-photo-button"
-                onClick={() => alert("Add First Photo")}
+                onClick={() => fileInputRef.current.click()}
             >
-                Add First Photo
+                Add Your First Photo
             </button>
             </div>
         )}
